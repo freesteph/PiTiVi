@@ -49,12 +49,11 @@ def _in_devel():
 
 def get_pixmap_dir():
     """ Returns the directory for program-only pixmaps """
-    _dir = os.path.dirname(os.path.abspath(__file__))
     if _in_devel():
-        root = _dir
+        root = _get_root_dir()
     else:
         root = PKGDATADIR
-    return os.path.join(root, 'pixmaps')
+    return os.path.join(root, 'data/pixmaps')
 
 def get_global_pixmap_dir():
     """ Returns the directory for global pixmaps (ex : application icon) """

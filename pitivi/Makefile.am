@@ -1,9 +1,7 @@
 SUBDIRS = \
-	ui 		\
 	elements 	\
 	factories	\
 	formatters	\
-	pixmaps		\
 	timeline	\
 	log
 

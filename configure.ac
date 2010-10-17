@@ -81,22 +81,22 @@ common/Makefile
 common/m4/Makefile
 pitivi/Makefile
 pitivi/configure.py
-pitivi/ui/Makefile
+dnl pitivi/ui/Makefile
 pitivi/elements/Makefile
 pitivi/factories/Makefile
 pitivi/log/Makefile
 pitivi/formatters/Makefile
-pitivi/pixmaps/Makefile
+dnl pitivi/pixmaps/Makefile
 pitivi/timeline/Makefile
 pitivi.spec
 pitivi.desktop.in
 po/Makefile.in
 tests/Makefile
-icons/Makefile
-icons/16x16/Makefile
-icons/22x22/Makefile
-icons/24x24/Makefile
-icons/32x32/Makefile
-icons/48x48/Makefile
-icons/scalable/Makefile
+dnl icons/Makefile
+dnl icons/16x16/Makefile
+dnl icons/22x22/Makefile
+dnl icons/24x24/Makefile
+dnl icons/32x32/Makefile
+dnl icons/48x48/Makefile
+dnl icons/scalable/Makefile
 )

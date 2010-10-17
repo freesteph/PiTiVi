@@ -1,6 +1,6 @@
 AUTOMAKE_OPTIONS = dist-bzip2
 
-SUBDIRS	= bin pitivi common po tests icons
+SUBDIRS	= bin pitivi common po tests
 
 desktopdir = $(datadir)/applications
 desktop_in_files = pitivi.desktop.in
