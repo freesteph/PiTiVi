@@ -256,6 +256,7 @@
                       <object class="GtkImageMenuItem" id="about-item">
                         <property name="visible">True</property>
                         <property name="related_action">About</property>
+                        <property name="use_underline">True</property>
                         <property name="use_stock">True</property>
                       </object>
                     </child>
@@ -582,6 +583,13 @@
         <property name="stock_id">gtk-add</property>
         <signal name="activate" handler="_importNetstreamCb" swapped="no"/>
       </object>
+    </child>
+    <child>
+      <object class="GtkToggleAction" id="FullScreenAlternate">
+        <property name="stock_id">gtk-fullscreen</property>
+        <signal name="toggled" handler="_fullScreenAlternateCb" swapped="no"/>
+      </object>
+      <accelerator key="F11"/>
     </child>
   </object>
 </interface>
