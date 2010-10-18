@@ -999,7 +999,7 @@ class PitiviMainWindow(Loggable):
             if dirty:
                 title = "*" + title
             title = title.encode("utf8")
-            #self.set_title(title)
+            self.win.set_title(title)
 
 ## PiTiVi current project callbacks
 
