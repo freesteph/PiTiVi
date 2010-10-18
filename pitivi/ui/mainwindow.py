@@ -257,11 +257,13 @@ class PitiviMainWindow(Loggable):
 
     def _createUi(self, instance):
         """ Create the graphical interface """
+
         self.win = self.builder.get_object("mainwindow")
         self.vbox = self.builder.get_object("mainvbox")
         self.vpaned = self.builder.get_object("vpaned")
         self.mainhpaned = self.builder.get_object("mainhpaned")
         self.secondhpaned = self.builder.get_object("secondhpaned")
+        self.toolbar = self.builder.get_object("toolbar")
 
         self.builder.connect_signals(self)
 
@@ -359,8 +361,9 @@ class PitiviMainWindow(Loggable):
             self.toolbar.props.visible = False
 
         if not self.settings.mainWindowShowTimelineToolbar:
-            ttb.props.visible = False
-
+            #ttb.props.visible = False
+            # FIXME
+            pass
         #application icon
         #self.set_icon_name("pitivi")
 
@@ -375,8 +378,10 @@ class PitiviMainWindow(Loggable):
 
         """ sets up the GtkActions """
         self.actions = [
+            #DONE
             ("ProjectSettings", gtk.STOCK_PROPERTIES, _("Project Settings"),
              None, _("Edit the project settings"), self._projectSettingsCb),
+            #DONE
             ("RenderProject", 'pitivi-render' , _("_Render project"),
              None, _("Render project"), self._recordCb),
             ("PluginManager", gtk.STOCK_PREFERENCES ,
@@ -637,7 +642,7 @@ class PitiviMainWindow(Loggable):
 
     def _projectSettingsCb(self, unused_action):
         from projectsettings import ProjectSettingsDialog
-        ProjectSettingsDialog(self, self.app.current).show()
+        ProjectSettingsDialog(self.win, self.app.current).show()
 
     def _quitCb(self, unused_action):
         self._saveWindowSettings()
