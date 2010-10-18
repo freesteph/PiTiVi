@@ -387,7 +387,7 @@ class PitiviMainWindow(Loggable):
              None, _("Manage plugins"), self._pluginManagerCb),
             #("Preferences", gtk.STOCK_PREFERENCES, _("_Preferences"),
             #  None, None, self._prefsCb),
-            #("ImportfromCam", gtk.STOCK_ADD ,
+            #("ImportFromCam", gtk.STOCK_ADD ,
             # _("Import from _Webcam..."),
             # None, _("Import Camera stream"), self._importWebcamCb),
             #("Screencast", gtk.STOCK_ADD ,
@@ -446,7 +446,7 @@ class PitiviMainWindow(Loggable):
                 # this will be set sensitive when the timeline duration changes
                 action.set_sensitive(False)
                 action.props.is_important = True
-            elif action_name == "ImportfromCam":
+            elif action_name == "ImportFromCam":
                 self.webcam_button = action
                 action.set_sensitive(False)
             elif action_name == "Screencast":
