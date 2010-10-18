@@ -62,6 +62,7 @@ from pitivi.ui.clipproperties import ClipProperties
 from pitivi.ui.common import beautify_factory
 from pitivi.utils import beautify_length
 from pitivi.ui.zoominterface import Zoomable
+from pitivi.configure import get_ui_dir
 
 if HAVE_GCONF:
     D_G_INTERFACE = "/desktop/gnome/interface"
@@ -165,7 +166,7 @@ def create_stock_icons():
         factory.add_default()
 
 
-class PitiviMainWindow(gtk.Window, Loggable):
+class PitiviMainWindow(Loggable):
     """
     Pitivi's main window.
 
@@ -178,7 +179,6 @@ class PitiviMainWindow(gtk.Window, Loggable):
 
     def __init__(self, instance):
         """ initialize with the Pitivi object """
-        gtk.Window.__init__(self)
         Loggable.__init__(self)
         self.log("Creating MainWindow")
         self.actions = None
@@ -229,7 +229,7 @@ class PitiviMainWindow(gtk.Window, Loggable):
         else:
             self.webcam_button.set_sensitive(False)
 
-        self.show()
+        #self.show()
 
     def showEncodingDialog(self, project, pause=True):
         """
@@ -255,6 +255,120 @@ class PitiviMainWindow(gtk.Window, Loggable):
     def _recordCb(self, unused_button):
         self.showEncodingDialog(self.project)
 
+    def _createUi(self, instance):
+        """ Create the graphical interface """
+        self.win = self.builder.get_object("mainwindow")
+        self.vbox = self.builder.get_object("mainvbox")
+        self.vpaned = self.builder.get_object("vpaned")
+        self.mainhpaned = self.builder.get_object("mainhpaned")
+        self.secondhpaned = self.builder.get_object("secondhpaned")
+
+        self.builder.connect_signals(self)
+
+        self.win.show_all()
+        self.win.set_title("%s" % (APPNAME))
+        """
+        # main menu & toolbar
+        self.menu = self.uimanager.get_widget("/MainMenuBar")
+        vbox.pack_start(self.menu, expand=False)
+        self.menu.show()
+        self.toolbar = self.uimanager.get_widget("/MainToolBar")
+        vbox.pack_start(self.toolbar, expand=False)
+        self.toolbar.show()
+        # timeline and project tabs
+        """
+        self.timeline = Timeline(instance)
+        self.timeline.project = self.project
+        self.vpaned.pack2(self.timeline, resize=True, shrink=False)
+
+
+        self.projecttabs = BaseTabs(instance)
+
+        self.sourcelist = SourceList(instance)
+        self.projecttabs.append_page(self.sourcelist, gtk.Label(_("Media Library")))
+        self._connectToSourceList()
+        self.sourcelist.show()
+
+        self.effectlist = EffectList(instance)
+        self.projecttabs.append_page(self.effectlist, gtk.Label(_("Effect Library")))
+        self.effectlist.show()
+
+        self.secondhpaned.pack1(self.projecttabs, resize=True, shrink=False)
+        self.projecttabs.show()
+
+        # Actions with key accelerators that will be made unsensitive while
+        # a gtk entry box is used to avoid conflicts.
+        self.sensitive_actions = []
+        for action in self.timeline.playhead_actions:
+            self.sensitive_actions.append(action[0])
+        for action in self.toggleactions:
+            self.sensitive_actions.append(action[0])
+
+        #Clips properties
+        self.propertiestabs = BaseTabs(instance, True)
+        self.clipconfig = ClipProperties(instance, self.uimanager)
+        self.clipconfig.project = self.project
+        self.propertiestabs.append_page(self.clipconfig,
+                                        gtk.Label(_("Effects configurations")))
+        self.clipconfig.show()
+
+        self.secondhpaned.pack2(self.propertiestabs, resize= True, shrink=False)
+        self.propertiestabs.show()
+
+        # Viewer
+        self.viewer = PitiviViewer()
+        # drag and drop
+        self.viewer.drag_dest_set(gtk.DEST_DEFAULT_DROP | gtk.DEST_DEFAULT_MOTION,
+                           [dnd.FILESOURCE_TUPLE, dnd.URI_TUPLE],
+                           gtk.gdk.ACTION_COPY)
+        self.viewer.connect("drag_data_received", self._viewerDndDataReceivedCb)
+        self.mainhpaned.pack2(self.viewer, resize=False, shrink=False)
+        self.viewer.show()
+        self.viewer.connect("expose-event", self._exposeEventCb)
+
+        # window and pane position defaults
+        self.hpaned = self.secondhpaned
+        height = -1
+        width = -1
+        if self.settings.mainWindowHPanePosition:
+            self.hpaned.set_position(self.settings.mainWindowHPanePosition)
+        if self.settings.mainWindowMainHPanePosition:
+            self.mainhpaned.set_position(self.settings.mainWindowMainHPanePosition)
+        if self.settings.mainWindowVPanePosition:
+            self.vpaned.set_position(self.settings.mainWindowVPanePosition)
+        if self.settings.mainWindowWidth:
+            width = self.settings.mainWindowWidth
+        if self.settings.mainWindowHeight:
+            height = self.settings.mainWindowHeight
+        self.win.set_default_size(width, height)
+        if height == -1 and width == -1:
+            self.win.maximize()
+        self._do_pending_fullscreen = False
+        # FIXME: don't know why this doesn't work
+        #if self.settings.mainWindowFullScreen:
+        #    self._do_pending_fullscreen = True
+
+        # timeline toolbar
+        # FIXME: remove toolbar padding and shadow. In fullscreen mode, the
+        # toolbar buttons should be clickable with the mouse cursor at the
+        # very bottom of the screen.
+        #ttb = self.uimanager.get_widget("/TimelineToolBar")
+        #self.vbox.pack_start(ttb, expand=False)
+        #ttb.show()
+
+        if not self.settings.mainWindowShowMainToolbar:
+            self.toolbar.props.visible = False
+
+        if not self.settings.mainWindowShowTimelineToolbar:
+            ttb.props.visible = False
+
+        #application icon
+        #self.set_icon_name("pitivi")
+
+        #pulseaudio 'role' (http://0pointer.de/blog/projects/tagging-audio.htm
+        os.environ["PULSE_PROP_media.role"] = "production"
+        os.environ["PULSE_PROP_application.icon_name"] = "pitivi"
+
     def _setActions(self, instance):
         PLAY = _("Start Playback")
         PAUSE = _("Stop Playback")
@@ -262,26 +376,10 @@ class PitiviMainWindow(gtk.Window, Loggable):
 
         """ sets up the GtkActions """
         self.actions = [
-            ("NewProject", gtk.STOCK_NEW, None,
-             None, _("Create a new project"), self._newProjectMenuCb),
-            ("OpenProject", gtk.STOCK_OPEN, None,
-             None, _("Open an existing project"), self._openProjectCb),
-            ("SaveProject", gtk.STOCK_SAVE, None,
-             None, _("Save the current project"), self._saveProjectCb),
-            ("SaveProjectAs", gtk.STOCK_SAVE_AS, None,
-             None, _("Save the current project"), self._saveProjectAsCb),
-            ("RevertToSavedProject", gtk.STOCK_REVERT_TO_SAVED, None,
-             None, _("Reload the current project"), self._revertToSavedProjectCb),
             ("ProjectSettings", gtk.STOCK_PROPERTIES, _("Project Settings"),
              None, _("Edit the project settings"), self._projectSettingsCb),
             ("RenderProject", 'pitivi-render' , _("_Render project"),
              None, _("Render project"), self._recordCb),
-            ("Undo", gtk.STOCK_UNDO,
-             _("_Undo"),
-             "<Ctrl>Z", _("Undo the last operation"), self._undoCb),
-            ("Redo", gtk.STOCK_REDO,
-             _("_Redo"),
-             "<Ctrl>Y", _("Redo the last operation that was undone"), self._redoCb),
             ("PluginManager", gtk.STOCK_PREFERENCES ,
              _("_Plugins..."),
              None, _("Manage plugins"), self._pluginManagerCb),
@@ -296,7 +394,6 @@ class PitiviMainWindow(gtk.Window, Loggable):
             ("NetstreamCapture", gtk.STOCK_ADD ,
              _("_Capture Network Stream..."),
              None, _("Capture Network Stream"), self._ImportNetstream),
-            ("Quit", gtk.STOCK_QUIT, None, None, None, self._quitCb),
             ("About", gtk.STOCK_ABOUT, None, None,
              _("Information about %s") % APPNAME, self._aboutCb),
             ("UserManual", gtk.STOCK_HELP, _("User manual"),
@@ -328,14 +425,17 @@ class PitiviMainWindow(gtk.Window, Loggable):
                 self.settings.mainWindowShowTimelineToolbar),
         ]
 
-        self.actiongroup = gtk.ActionGroup("mainwindow")
-        self.actiongroup.add_actions(self.actions)
-        self.actiongroup.add_toggle_actions(self.toggleactions)
+
+        self.builder = gtk.Builder()
+        # FIXME: don't harcode, don't be ugly, save a pony
+        self.builder.add_from_file(os.path.join (get_ui_dir(),"main-window.ui"))
+
+        self.actiongroup = self.builder.get_object("mainwindowactions")
 
         # deactivating non-functional actions
         # FIXME : reactivate them
-        save_action = self.actiongroup.get_action("SaveProject")
-        save_action.set_sensitive(False)
+        #save_action = self.actiongroup.get_action("SaveProject")
+        #save_action.set_sensitive(False)
 
         for action in self.actiongroup.list_actions():
             action_name = action.get_name()
@@ -376,139 +476,14 @@ class PitiviMainWindow(gtk.Window, Loggable):
                 action.set_sensitive(False)
 
         self.uimanager = gtk.UIManager()
-        self.add_accel_group(self.uimanager.get_accel_group())
+        # self.add_accel_group(self.uimanager.get_accel_group())
         self.uimanager.insert_action_group(self.actiongroup, 0)
         if 'pitivi.exe' in __file__.lower():
             xml = LIBDIR + '\\pitivi.exe'
         else:
             xml = __file__
-        self.uimanager.add_ui_from_file(os.path.join(os.path.dirname(
-            os.path.abspath(xml)), "mainwindow.xml"))
-
-    def _createUi(self, instance):
-        """ Create the graphical interface """
-        self.set_title("%s" % (APPNAME))
-        self.connect("delete-event", self._deleteCb)
-        self.connect("configure-event", self._configureCb)
-
-        # main menu & toolbar
-        vbox = gtk.VBox(False)
-        self.add(vbox)
-        vbox.show()
-        self.menu = self.uimanager.get_widget("/MainMenuBar")
-        vbox.pack_start(self.menu, expand=False)
-        self.menu.show()
-        self.toolbar = self.uimanager.get_widget("/MainToolBar")
-        vbox.pack_start(self.toolbar, expand=False)
-        self.toolbar.show()
-        # timeline and project tabs
-        vpaned = gtk.VPaned()
-        vbox.pack_start(vpaned)
-        vpaned.show()
-
-        self.timeline = Timeline(instance, self.uimanager)
-        self.timeline.project = self.project
-
-        vpaned.pack2(self.timeline, resize=True, shrink=False)
-        self.timeline.show()
-        self.mainhpaned = gtk.HPaned()
-        vpaned.pack1(self.mainhpaned, resize=True, shrink=False)
-
-        self.secondhpaned = gtk.HPaned()
-        self.mainhpaned.pack1(self.secondhpaned, resize=True, shrink=False)
-        self.secondhpaned.show()
-        self.mainhpaned.show()
-
-        self.projecttabs = BaseTabs(instance)
-
-        self.sourcelist = SourceList(instance, self.uimanager)
-        self.projecttabs.append_page(self.sourcelist, gtk.Label(_("Media Library")))
-        self._connectToSourceList()
-        self.sourcelist.show()
-
-        self.effectlist = EffectList(instance, self.uimanager)
-        self.projecttabs.append_page(self.effectlist, gtk.Label(_("Effect Library")))
-        self.effectlist.show()
-
-        self.secondhpaned.pack1(self.projecttabs, resize=True, shrink=False)
-        self.projecttabs.show()
-
-        # Actions with key accelerators that will be made unsensitive while
-        # a gtk entry box is used to avoid conflicts.
-        self.sensitive_actions = []
-        for action in self.timeline.playhead_actions:
-            self.sensitive_actions.append(action[0])
-        for action in self.toggleactions:
-            self.sensitive_actions.append(action[0])
-
-        #Clips properties
-        self.propertiestabs = BaseTabs(instance, True)
-        self.clipconfig = ClipProperties(instance, self.uimanager)
-        self.clipconfig.project = self.project
-        self.propertiestabs.append_page(self.clipconfig,
-                                        gtk.Label(_("Effects configurations")))
-        self.clipconfig.show()
-
-        self.secondhpaned.pack2(self.propertiestabs, resize= True, shrink=False)
-        self.propertiestabs.show()
-
-        # Viewer
-        self.viewer = PitiviViewer()
-        # drag and drop
-        self.viewer.drag_dest_set(gtk.DEST_DEFAULT_DROP | gtk.DEST_DEFAULT_MOTION,
-                           [dnd.FILESOURCE_TUPLE, dnd.URI_TUPLE],
-                           gtk.gdk.ACTION_COPY)
-        self.viewer.connect("drag_data_received", self._viewerDndDataReceivedCb)
-        self.mainhpaned.pack2(self.viewer, resize=False, shrink=False)
-        self.viewer.show()
-        self.viewer.connect("expose-event", self._exposeEventCb)
-
-        # window and pane position defaults
-        self.mainhpaned = self.mainhpaned
-        self.hpaned = self.secondhpaned
-        self.vpaned = vpaned
-        height = -1
-        width = -1
-        if self.settings.mainWindowHPanePosition:
-            self.hpaned.set_position(self.settings.mainWindowHPanePosition)
-        if self.settings.mainWindowMainHPanePosition:
-            self.mainhpaned.set_position(self.settings.mainWindowMainHPanePosition)
-        if self.settings.mainWindowVPanePosition:
-            self.vpaned.set_position(self.settings.mainWindowVPanePosition)
-        if self.settings.mainWindowWidth:
-            width = self.settings.mainWindowWidth
-        if self.settings.mainWindowHeight:
-            height = self.settings.mainWindowHeight
-        self.set_default_size(width, height)
-        if height == -1 and width == -1:
-            self.maximize()
-        self._do_pending_fullscreen = False
-        # FIXME: don't know why this doesn't work
-        #if self.settings.mainWindowFullScreen:
-        #    self._do_pending_fullscreen = True
-
-        # timeline toolbar
-        # FIXME: remove toolbar padding and shadow. In fullscreen mode, the
-        # toolbar buttons should be clickable with the mouse cursor at the
-        # very bottom of the screen.
-        ttb = self.uimanager.get_widget("/TimelineToolBar")
-        vbox.pack_start(ttb, expand=False)
-        ttb.show()
-
-        self.show()
-
-        if not self.settings.mainWindowShowMainToolbar:
-            self.toolbar.props.visible = False
-
-        if not self.settings.mainWindowShowTimelineToolbar:
-            ttb.props.visible = False
-
-        #application icon
-        self.set_icon_name("pitivi")
-
-        #pulseaudio 'role' (http://0pointer.de/blog/projects/tagging-audio.htm
-        os.environ["PULSE_PROP_media.role"] = "production"
-        os.environ["PULSE_PROP_application.icon_name"] = "pitivi"
+        #self.uimanager.add_ui_from_file(os.path.join(os.path.dirname(
+        #  os.path.abspath(xml)), "mainwindow.xml"))
 
     def _connectToSourceList(self):
         self.sourcelist.connect('play', self._sourceListPlayCb)
@@ -1019,7 +994,7 @@ class PitiviMainWindow(gtk.Window, Loggable):
             if dirty:
                 title = "*" + title
             title = title.encode("utf8")
-            self.set_title(title)
+            #self.set_title(title)
 
 ## PiTiVi current project callbacks
 

@@ -316,7 +316,7 @@ When -r is specified, the given project file is rendered without opening the GUI
         else:
             # create the ui
             self.gui = PitiviMainWindow(self)
-            self.gui.show()
+            #self.gui.show()
 
         if not options.import_sources and args:
             index = 0

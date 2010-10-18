@@ -204,7 +204,7 @@ class Timeline(gtk.Table, Loggable, Zoomable):
     # specific levels of zoom, in (multiplier, unit) pairs which
     # from zoomed out to zoomed in
 
-    def __init__(self, instance, ui_manager):
+    def __init__(self, instance):
         gtk.Table.__init__(self, rows=2, columns=1, homogeneous=False)
         Loggable.__init__(self)
         Zoomable.__init__(self)
@@ -212,7 +212,6 @@ class Timeline(gtk.Table, Loggable, Zoomable):
 
         self._updateZoom = True
         self.project = None
-        self.ui_manager = ui_manager
         self.app = instance
         self._temp_objects = None
         self._factories = None
@@ -323,7 +322,7 @@ class Timeline(gtk.Table, Loggable, Zoomable):
 
         actiongroup = gtk.ActionGroup("timelinepermanent")
         actiongroup.add_actions(actions)
-        self.ui_manager.insert_action_group(actiongroup, 0)
+        #self.ui_manager.insert_action_group(actiongroup, 0)
 
         actiongroup = gtk.ActionGroup("timelineselection")
         actiongroup.add_actions(selection_actions)
@@ -338,9 +337,9 @@ class Timeline(gtk.Table, Loggable, Zoomable):
         self.prevframe_action = actiongroup.get_action("Prevframe")
         self.nextframe_action = actiongroup.get_action("Nextframe")
 
-        self.ui_manager.insert_action_group(actiongroup, -1)
+        #self.ui_manager.insert_action_group(actiongroup, -1)
 
-        self.ui_manager.add_ui_from_string(ui)
+        #self.ui_manager.add_ui_from_string(ui)
 
         # drag and drop
         self.drag_dest_set(gtk.DEST_DEFAULT_MOTION,

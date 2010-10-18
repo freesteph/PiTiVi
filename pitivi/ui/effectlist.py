@@ -48,7 +48,7 @@ INVISIBLE = gtk.gdk.pixbuf_new_from_file(os.path.join(get_pixmap_dir(),
 class EffectList(gtk.VBox, Loggable):
     """ Widget for listing effects """
 
-    def __init__(self, instance, uiman):
+    def __init__(self, instance):
         gtk.VBox.__init__(self)
         Loggable.__init__(self)
 

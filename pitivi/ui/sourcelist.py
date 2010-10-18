@@ -104,7 +104,7 @@ class SourceList(gtk.VBox, Loggable):
                 (gobject.TYPE_PYOBJECT,))
         }
 
-    def __init__(self, instance, uiman):
+    def __init__(self, instance):
         gtk.VBox.__init__(self)
         Loggable.__init__(self)
 
@@ -284,16 +284,16 @@ class SourceList(gtk.VBox, Loggable):
         actiongroup = gtk.ActionGroup("sourcelistpermanent")
         actiongroup.add_actions(actions)
         actiongroup.get_action("ImportSources").props.is_important = True
-        uiman.insert_action_group(actiongroup, 0)
+        #uiman.insert_action_group(actiongroup, 0)
 
         self.selection_actions = gtk.ActionGroup("sourcelistselection")
         self.selection_actions.add_actions(selection_actions)
         self.selection_actions.set_sensitive(False)
-        uiman.insert_action_group(self.selection_actions, 0)
-        uiman.add_ui_from_string(ui)
+        #uiman.insert_action_group(self.selection_actions, 0)
+        #uiman.add_ui_from_string(ui)
 
         # clip view menu items
-        view_menu_item = uiman.get_widget('/MainMenuBar/View')
+        """view_menu_item = uiman.get_widget('/MainMenuBar/View')
         view_menu = view_menu_item.get_submenu()
         seperator = gtk.SeparatorMenuItem()
         self.treeview_menuitem = gtk.RadioMenuItem(None,
@@ -329,7 +329,7 @@ class SourceList(gtk.VBox, Loggable):
         # display the help text
         self.clip_view = self.settings.lastClipView
         self._displayClipView()
-
+        """
     def _importSourcesCb(self, unused_action):
         self.showImportSourcesDialog()
 

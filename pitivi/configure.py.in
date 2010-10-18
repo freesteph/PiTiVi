@@ -55,6 +55,14 @@ def get_pixmap_dir():
         root = PKGDATADIR
     return os.path.join(root, 'data/pixmaps')
 
+def get_ui_dir():
+    """ Returns the directory for UI definition files """
+    if _in_devel():
+        root = _get_root_dir()
+    else:
+        root = PKGDATADIR
+    return os.path.join(root, "data/ui")
+
 def get_global_pixmap_dir():
     """ Returns the directory for global pixmaps (ex : application icon) """
     if _in_devel():
