@@ -731,7 +731,7 @@ class PitiviMainWindow(Loggable):
         if not self.prefsdialog:
             from pitivi.ui.prefs import PreferencesDialog
             self.prefsdialog = PreferencesDialog(self.app)
-            self.prefsdialog.set_transient_for(self)
+            self.prefsdialog.set_transient_for(self.win)
             self.prefsdialog.connect("delete-event", self._hideChildWindow)
         self.prefsdialog.show()
 
