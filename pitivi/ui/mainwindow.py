@@ -265,7 +265,6 @@ class PitiviMainWindow(Loggable):
 
         self.builder.connect_signals(self)
 
-        self.win.show_all()
         self.win.set_title("%s" % (APPNAME))
         """
         # main menu & toolbar
@@ -484,6 +483,12 @@ class PitiviMainWindow(Loggable):
             xml = __file__
         #self.uimanager.add_ui_from_file(os.path.join(os.path.dirname(
         #  os.path.abspath(xml)), "mainwindow.xml"))
+
+    def show(self):
+        self.win.show_all()
+
+    def destroy(self):
+        self.win.destroy()
 
     def _connectToSourceList(self):
         self.sourcelist.connect('play', self._sourceListPlayCb)
