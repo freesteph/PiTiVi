@@ -1069,7 +1069,7 @@ class PitiviMainWindow(Loggable):
     def _showSaveAsDialog(self, project):
         self.log("Save URI requested")
         chooser = gtk.FileChooserDialog(_("Save As..."),
-            self,
+            self.win,
             action=gtk.FILE_CHOOSER_ACTION_SAVE,
             buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
             gtk.STOCK_SAVE, gtk.RESPONSE_OK))
