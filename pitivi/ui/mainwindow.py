@@ -589,7 +589,7 @@ class PitiviMainWindow(Loggable):
     def _openProjectCb(self, unused_action):
 
         chooser = gtk.FileChooserDialog(_("Open File..."),
-            self,
+            self.win,
             action=gtk.FILE_CHOOSER_ACTION_OPEN,
             buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
                 gtk.STOCK_OPEN, gtk.RESPONSE_OK))

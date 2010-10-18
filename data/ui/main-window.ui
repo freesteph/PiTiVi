@@ -291,6 +291,7 @@
             <child>
               <object class="GtkToolButton" id="tool-fullscreen">
                 <property name="visible">True</property>
+                <property name="related_action">FullScreen</property>
                 <property name="label" translatable="yes">toolbutton1</property>
                 <property name="use_underline">True</property>
               </object>
@@ -440,6 +441,8 @@
         <property name="label" translatable="yes">Render project</property>
         <property name="tooltip" translatable="yes">Render project</property>
         <property name="stock_id">pitivi-render</property>
+        <property name="is_important">True</property>
+        <property name="sensitive">False</property>
         <signal name="activate" handler="_recordCb" swapped="no"/>
       </object>
     </child>
