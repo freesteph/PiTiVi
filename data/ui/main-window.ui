@@ -16,7 +16,7 @@
               <object class="GtkMenuItem" id="filemenu">
                 <property name="visible">True</property>
                 <property name="use_action_appearance">False</property>
-                <property name="label" translatable="yes">_Fichier</property>
+                <property name="label" translatable="yes">_File</property>
                 <property name="use_underline">True</property>
                 <child type="submenu">
                   <object class="GtkMenu" id="menu1">
@@ -85,7 +85,7 @@
               <object class="GtkMenuItem" id="editmenu">
                 <property name="visible">True</property>
                 <property name="use_action_appearance">False</property>
-                <property name="label" translatable="yes">É_dition</property>
+                <property name="label" translatable="yes">_Edit</property>
                 <property name="use_underline">True</property>
                 <child type="submenu">
                   <object class="GtkMenu" id="menu2">
@@ -122,7 +122,7 @@
               <object class="GtkMenuItem" id="viewmenu">
                 <property name="visible">True</property>
                 <property name="use_action_appearance">False</property>
-                <property name="label" translatable="yes">_Affichage</property>
+                <property name="label" translatable="yes">_View</property>
                 <property name="use_underline">True</property>
                 <child type="submenu">
                   <object class="GtkMenu" id="menu4">
@@ -183,7 +183,7 @@
               <object class="GtkMenuItem" id="helpmenu">
                 <property name="visible">True</property>
                 <property name="use_action_appearance">False</property>
-                <property name="label" translatable="yes">Aid_e</property>
+                <property name="label" translatable="yes">_Help</property>
                 <property name="use_underline">True</property>
                 <child type="submenu">
                   <object class="GtkMenu" id="menu3">
