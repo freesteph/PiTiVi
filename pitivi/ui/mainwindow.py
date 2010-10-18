@@ -378,45 +378,39 @@ class PitiviMainWindow(Loggable):
 
         """ sets up the GtkActions """
         self.actions = [
-            #DONE
             #("ProjectSettings", gtk.STOCK_PROPERTIES, _("Project Settings"),
             # None, _("Edit the project settings"), self._projectSettingsCb),
-            #DONE
             #("RenderProject", 'pitivi-render' , _("_Render project"),
             # None, _("Render project"), self._recordCb),
             ("PluginManager", gtk.STOCK_PREFERENCES ,
              _("_Plugins..."),
              None, _("Manage plugins"), self._pluginManagerCb),
-            #DONE
             #("Preferences", gtk.STOCK_PREFERENCES, _("_Preferences"),
             #  None, None, self._prefsCb),
-            #DONE
             #("ImportfromCam", gtk.STOCK_ADD ,
             # _("Import from _Webcam..."),
             # None, _("Import Camera stream"), self._importWebcamCb),
-            #DONE
             #("Screencast", gtk.STOCK_ADD ,
             # _("_Make screencast..."),
             # None, _("Capture the desktop"), self._screencastCb),
-            # DONE
             #("NetstreamCapture", gtk.STOCK_ADD ,
             # _("_Capture Network Stream..."),
             # None, _("Capture Network Stream"), self._importNetstreamCb),
-            ("About", gtk.STOCK_ABOUT, None, None,
-             _("Information about %s") % APPNAME, self._aboutCb),
-            ("UserManual", gtk.STOCK_HELP, _("User manual"),
-             None, None, self._userManualCb),
-            ("File", None, _("_File")),
-            ("Edit", None, _("_Edit")),
-            ("View", None, _("_View")),
-            ("Library", None, _("_Project")),
-            ("Timeline", None, _("_Timeline")),
-            ("Viewer", None, _("Previe_w")),
-            ("PlayPause", gtk.STOCK_MEDIA_PLAY, None, "space", PLAY,
-                self.playPause),
-            ("Loop", gtk.STOCK_REFRESH, _("Loop"), None, LOOP,
-                self.loop),
-            ("Help", None, _("_Help")),
+            #("About", gtk.STOCK_ABOUT, None, None,
+            # _("Information about %s") % APPNAME, self._aboutCb),
+            #("UserManual", gtk.STOCK_HELP, _("User manual"),
+            # None, None, self._userManualCb),
+            #("File", None, _("_File")),
+            #("Edit", None, _("_Edit")),
+            #("View", None, _("_View")),
+            #("Library", None, _("_Project")),
+            #("Timeline", None, _("_Timeline")),
+            #("Viewer", None, _("Previe_w")),
+            #("PlayPause", gtk.STOCK_MEDIA_PLAY, None, "space", PLAY,
+            #    self.playPause),
+            #("Loop", gtk.STOCK_REFRESH, _("Loop"), None, LOOP,
+            #    self.loop),
+            #("Help", None, _("_Help")),
         ]
 
         self.toggleactions = [
