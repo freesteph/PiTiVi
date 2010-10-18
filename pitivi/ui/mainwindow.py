@@ -418,7 +418,7 @@ class PitiviMainWindow(Loggable):
             ("FullScreenAlternate", gtk.STOCK_FULLSCREEN, None, "F11", None,
                 self._fullScreenAlternateCb),
             ("ShowHideMainToolbar", None, _("Main Toolbar"), None, None,
-                self._showHideMainToolBar,
+                self._showHideMainToolbar,
                 self.settings.mainWindowShowMainToolbar),
             ("ShowHideTimelineToolbar", None, _("Timeline Toolbar"), None,
                 None, self._showHideTimelineToolbar,
@@ -644,7 +644,7 @@ class PitiviMainWindow(Loggable):
     def _fullScreenAlternateCb(self, unused_action):
         self.actiongroup.get_action("FullScreen").activate()
 
-    def _showHideMainToolBar(self, action):
+    def _showHideMainToolbar(self, action):
         self.uimanager.get_widget("/MainToolBar").props.visible = \
             action.props.active
 
