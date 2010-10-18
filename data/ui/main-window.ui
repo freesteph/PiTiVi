@@ -4,6 +4,14 @@
   <!-- interface-naming-policy project-wide -->
   <object class="GtkActionGroup" id="mainwindowactions">
     <child>
+      <object class="GtkAction" id="FullScreen">
+        <property name="tooltip" translatable="yes">View the main window on the whole screen</property>
+        <property name="stock_id">gtk-fullscreen</property>
+        <signal name="activate" handler="_fullScreenCb" swapped="no"/>
+      </object>
+      <accelerator key="f"/>
+    </child>
+    <child>
       <object class="GtkAction" id="ShowHideTimelineToolbar">
         <property name="label" translatable="yes">Timeline Toolbar</property>
         <signal name="activate" handler="_showHideTimelineToolbar" swapped="no"/>
@@ -237,6 +245,18 @@
                       <object class="GtkCheckMenuItem" id="showtimeline">
                         <property name="visible">True</property>
                         <property name="related_action">ShowHideTimelineToolbar</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkSeparatorMenuItem" id="viewseperator">
+                        <property name="visible">True</property>
+                        <property name="use_action_appearance">False</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkCheckMenuItem" id="fullscreenitem">
+                        <property name="visible">True</property>
+                        <property name="related_action">FullScreen</property>
                       </object>
                     </child>
                   </object>
