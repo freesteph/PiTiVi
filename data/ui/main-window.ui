@@ -403,16 +403,16 @@
     </child>
     <child>
       <object class="GtkAction" id="Quit">
-        <property name="label" translatable="yes">_Quitter</property>
-        <property name="short_label" translatable="yes">_Quitter</property>
+        <property name="label" translatable="yes">_Quit</property>
+        <property name="short_label" translatable="yes">_Quit</property>
         <property name="stock_id">gtk-quit</property>
         <signal name="activate" handler="_quitCb" swapped="no"/>
       </object>
     </child>
     <child>
       <object class="GtkAction" id="SaveProjectAs">
-        <property name="label" translatable="yes">Enregistrer _sous</property>
-        <property name="short_label" translatable="yes">Enregistrer _sous</property>
+        <property name="label" translatable="yes">Save _As</property>
+        <property name="short_label" translatable="yes">Save _As</property>
         <property name="tooltip" translatable="yes">Save the current project with a different name</property>
         <property name="stock_id">gtk-save-as</property>
         <signal name="activate" handler="_saveProjectAsCb" swapped="no"/>
