@@ -4,6 +4,13 @@
   <!-- interface-naming-policy project-wide -->
   <object class="GtkActionGroup" id="mainwindowactions">
     <child>
+      <object class="GtkAction" id="ImportFromCam">
+        <property name="label" translatable="yes">Import from _Webcam</property>
+        <property name="tooltip" translatable="yes">Import Camera stream</property>
+        <property name="stock_id">gtk-add</property>
+      </object>
+    </child>
+    <child>
       <object class="GtkToggleAction" id="ShowHideTimelineToolbar">
         <property name="label" translatable="yes">Timeline Toolbar</property>
         <property name="active">True</property>
@@ -94,6 +101,7 @@
       <object class="GtkToggleAction" id="FullScreen">
         <property name="tooltip" translatable="yes">View the main window on the whole screen</property>
         <property name="stock_id">gtk-fullscreen</property>
+        <signal name="toggled" handler="_fullScreenCb" swapped="no"/>
       </object>
       <accelerator key="f"/>
     </child>
@@ -102,6 +110,7 @@
         <property name="label" translatable="yes">Main Toolbar</property>
         <property name="short_label" translatable="yes">Main Toolbar</property>
         <property name="active">True</property>
+        <signal name="toggled" handler="_showHideMainToolbar" swapped="no"/>
       </object>
     </child>
   </object>
@@ -264,6 +273,59 @@
                 <property name="use_action_appearance">False</property>
                 <property name="label" translatable="yes">_Project</property>
                 <property name="use_underline">True</property>
+                <child type="submenu">
+                  <object class="GtkMenu" id="menu5">
+                    <property name="visible">True</property>
+                    <child>
+                      <object class="GtkMenuItem" id="project-render">
+                        <property name="visible">True</property>
+                        <property name="related_action">RenderProject</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkSeparatorMenuItem" id="project-separator-1">
+                        <property name="visible">True</property>
+                        <property name="use_action_appearance">False</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkMenuItem" id="project-importcam">
+                        <property name="visible">True</property>
+                        <property name="related_action">ImportFromCam</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkMenuItem" id="project-importnet">
+                        <property name="visible">True</property>
+                        <property name="use_action_appearance">False</property>
+                        <property name="label" translatable="yes">menuitem1</property>
+                        <property name="use_underline">True</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkMenuItem" id="project-screencast">
+                        <property name="visible">True</property>
+                        <property name="use_action_appearance">False</property>
+                        <property name="label" translatable="yes">menuitem1</property>
+                        <property name="use_underline">True</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkSeparatorMenuItem" id="project-separator-2">
+                        <property name="visible">True</property>
+                        <property name="use_action_appearance">False</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkMenuItem" id="project-settings">
+                        <property name="visible">True</property>
+                        <property name="use_action_appearance">False</property>
+                        <property name="label" translatable="yes">menuitem1</property>
+                        <property name="use_underline">True</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
               </object>
             </child>
             <child>
