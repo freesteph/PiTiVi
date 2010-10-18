@@ -4,8 +4,16 @@
   <!-- interface-naming-policy project-wide -->
   <object class="GtkActionGroup" id="mainwindowactions">
     <child>
+      <object class="GtkAction" id="NetstreamCapture">
+        <property name="label" translatable="yes">_Capture Network Stream</property>
+        <property name="tooltip" translatable="yes">Capture a network stream</property>
+        <property name="stock_id">gtk-add</property>
+        <signal name="activate" handler="_importNetstreamCb" swapped="no"/>
+      </object>
+    </child>
+    <child>
       <object class="GtkAction" id="Screencast">
-        <property name="label" translatable="yes">_Make a screen_cast</property>
+        <property name="label" translatable="yes">_Make a screencast</property>
         <property name="tooltip" translatable="yes">Record a video of your desktop</property>
         <property name="stock_id">gtk-add</property>
         <signal name="activate" handler="_screencastCb" swapped="no"/>
@@ -24,6 +32,7 @@
         <property name="label" translatable="yes">Import from _Webcam</property>
         <property name="tooltip" translatable="yes">Import Camera stream</property>
         <property name="stock_id">gtk-add</property>
+        <signal name="activate" handler="_importWebcamCb" swapped="no"/>
       </object>
     </child>
     <child>
@@ -313,9 +322,7 @@
                     <child>
                       <object class="GtkMenuItem" id="project-importnet">
                         <property name="visible">True</property>
-                        <property name="use_action_appearance">False</property>
-                        <property name="label" translatable="yes">menuitem1</property>
-                        <property name="use_underline">True</property>
+                        <property name="related_action">NetstreamCapture</property>
                       </object>
                     </child>
                     <child>

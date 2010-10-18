@@ -393,14 +393,15 @@ class PitiviMainWindow(Loggable):
             #DONE
             ("ImportfromCam", gtk.STOCK_ADD ,
              _("Import from _Webcam..."),
-             None, _("Import Camera stream"), self._ImportWebcam),
+             None, _("Import Camera stream"), self._importWebcamCb),
             #DONE
             ("Screencast", gtk.STOCK_ADD ,
              _("_Make screencast..."),
              None, _("Capture the desktop"), self._screencastCb),
+            # DONE
             ("NetstreamCapture", gtk.STOCK_ADD ,
              _("_Capture Network Stream..."),
-             None, _("Capture Network Stream"), self._ImportNetstream),
+             None, _("Capture Network Stream"), self._importNetstreamCb),
             ("About", gtk.STOCK_ABOUT, None, None,
              _("Information about %s") % APPNAME, self._aboutCb),
             ("UserManual", gtk.STOCK_HELP, _("User manual"),
@@ -714,13 +715,13 @@ class PitiviMainWindow(Loggable):
         PluginManagerDialog(self.app.plugin_manager)
 
     # Import from Webcam callback
-    def _ImportWebcam(self,unused_action):
+    def _importWebcamCb(self,unused_action):
         from webcam_managerdialog import WebcamManagerDialog
         w = WebcamManagerDialog(self.app)
         w.show()
 
     # Capture network stream callback
-    def _ImportNetstream(self,unused_action):
+    def _importNetstreamCb(self,unused_action):
         from netstream_managerdialog import NetstreamManagerDialog
         NetstreamManagerDialog()
 
