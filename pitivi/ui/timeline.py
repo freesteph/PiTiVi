@@ -309,8 +309,8 @@ class Timeline(gtk.Table, Loggable, Zoomable):
             #    self.linkSelected),
             #("UngroupObj", "pitivi-ungroup", None, "<Shift><Control>G", UNGROUP,
             #    self.ungroupSelected),
-            ("GroupObj", "pitivi-group", None, "<Control>G", GROUP,
-                self.groupSelected),
+            #("GroupObj", "pitivi-group", None, "<Control>G", GROUP,
+            #    self.groupSelected),
         )
 
         self.playhead_actions = (
@@ -758,7 +758,7 @@ class Timeline(gtk.Table, Loggable, Zoomable):
             self.timeline.ungroupSelection()
             self.app.action_log.commit()
 
-    def groupSelected(self, unused_action):
+    def _groupSelectedCb(self, unused_action):
         if self.timeline:
             self.timeline.groupSelection()
 
