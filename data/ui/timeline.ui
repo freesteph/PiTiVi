@@ -20,7 +20,12 @@
       <accelerator key="l" modifiers="GDK_SHIFT_MASK | GDK_CONTROL_MASK"/>
     </child>
     <child>
-      <object class="GtkAction" id="action3"/>
+      <object class="GtkAction" id="LinkObj">
+        <property name="tooltip" translatable="yes">Link together arbitrary clips</property>
+        <property name="stock_id">pitivi-link</property>
+        <signal name="activate" handler="_linkSelectedCb" swapped="no"/>
+      </object>
+      <accelerator key="l" modifiers="GDK_CONTROL_MASK"/>
     </child>
     <child>
       <object class="GtkAction" id="action2"/>

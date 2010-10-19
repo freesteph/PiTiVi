@@ -748,7 +748,7 @@ class Timeline(gtk.Table, Loggable, Zoomable):
         if self.timeline:
             self.timeline.unlinkSelection()
 
-    def linkSelected(self, unused_action):
+    def _linkSelectedCb(self, unused_action):
         if self.timeline:
             self.timeline.linkSelection()
 
