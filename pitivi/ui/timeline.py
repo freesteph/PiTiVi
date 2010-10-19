@@ -305,8 +305,8 @@ class Timeline(gtk.Table, Loggable, Zoomable):
         )
 
         selection_actions = (
-            ("DeleteObj", gtk.STOCK_DELETE, None, "Delete", DELETE,
-                self.deleteSelected),
+            #("DeleteObj", gtk.STOCK_DELETE, None, "Delete", DELETE,
+            #    self.deleteSelected),
             ("UnlinkObj", "pitivi-unlink", None, "<Shift><Control>L", UNLINK,
                 self.unlinkSelected),
             ("LinkObj", "pitivi-link", None, "<Control>L", LINK,
@@ -328,8 +328,8 @@ class Timeline(gtk.Table, Loggable, Zoomable):
                 self.nextframe),
         )
 
-        actiongroup = gtk.ActionGroup("timelinepermanent")
-        actiongroup.add_actions(actions)
+        #actiongroup = gtk.ActionGroup("timelinepermanent")
+        #actiongroup.add_actions(actions)
         #self.ui_manager.insert_action_group(actiongroup, 0)
 
         actiongroup = gtk.ActionGroup("timelineselection")
@@ -742,7 +742,7 @@ class Timeline(gtk.Table, Loggable, Zoomable):
     def _zoomOutCb(self, unused_action):
         Zoomable.zoomOut()
 
-    def deleteSelected(self, unused_action):
+    def _deleteSelectedCb(self, unused_action):
         if self.timeline:
             self.app.action_log.begin("delete clip")
             self.timeline.deleteSelection()
