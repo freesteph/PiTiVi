@@ -53,14 +53,10 @@ VIDEO_EFFECT_LIST = [dnd.VIDEO_EFFECT_TUPLE[0], dnd.EFFECT_TUPLE[0]],
 AUDIO_EFFECT_LIST = [dnd.AUDIO_EFFECT_TUPLE[0], dnd.EFFECT_TUPLE[0]],
 
 # tooltip text for toolbar
-DELETE = _("Delete Selected")
 SPLIT = _("Split clip at playhead position")
 KEYFRAME = _("Add a keyframe")
 PREVFRAME = _("Move to the previous keyframe")
 NEXTFRAME = _("Move to the next keyframe")
-ZOOM_IN =  _("Zoom In")
-ZOOM_OUT =  _("Zoom Out")
-UNLINK = _("Break links between clips")
 LINK = _("Link together arbitrary clips")
 UNGROUP = _("Ungroup clips")
 GROUP = _("Group clips")
@@ -307,8 +303,8 @@ class Timeline(gtk.Table, Loggable, Zoomable):
         selection_actions = (
             #("DeleteObj", gtk.STOCK_DELETE, None, "Delete", DELETE,
             #    self.deleteSelected),
-            ("UnlinkObj", "pitivi-unlink", None, "<Shift><Control>L", UNLINK,
-                self.unlinkSelected),
+            #("UnlinkObj", "pitivi-unlink", None, "<Shift><Control>L", UNLINK,
+            #    self.unlinkSelected),
             ("LinkObj", "pitivi-link", None, "<Control>L", LINK,
                 self.linkSelected),
             ("UngroupObj", "pitivi-ungroup", None, "<Shift><Control>G", UNGROUP,
@@ -748,7 +744,7 @@ class Timeline(gtk.Table, Loggable, Zoomable):
             self.timeline.deleteSelection()
             self.app.action_log.commit()
 
-    def unlinkSelected(self, unused_action):
+    def _unlinkSelectedCb(self, unused_action):
         if self.timeline:
             self.timeline.unlinkSelection()
 
