@@ -2,6 +2,43 @@
 <interface>
   <requires lib="gtk+" version="2.20"/>
   <!-- interface-naming-policy project-wide -->
+  <object class="GtkActionGroup" id="timelineplayhead">
+    <child>
+      <object class="GtkAction" id="Split">
+        <property name="label" translatable="yes">Split</property>
+        <property name="tooltip" translatable="yes">Split clip at playhead position</property>
+        <property name="stock_id">pitivi-split</property>
+        <signal name="activate" handler="split" swapped="no"/>
+      </object>
+      <accelerator key="s"/>
+    </child>
+    <child>
+      <object class="GtkAction" id="Keyframe">
+        <property name="label" translatable="yes">Add a keyframe</property>
+        <property name="tooltip" translatable="yes">Add a keyframe</property>
+        <property name="stock_id">pitivi-keyframe</property>
+        <signal name="activate" handler="keyframe" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="Prevframe">
+        <property name="label" translatable="yes">_Prevframe</property>
+        <property name="tooltip" translatable="yes">Move to the previous keyframe</property>
+        <property name="stock_id">pitivi-prevframe</property>
+        <signal name="activate" handler="prevframe" swapped="no"/>
+      </object>
+      <accelerator key="e"/>
+    </child>
+    <child>
+      <object class="GtkAction" id="Nextframe">
+        <property name="label" translatable="yes">_Nextframe</property>
+        <property name="tooltip" translatable="yes">Move to the next keyframe</property>
+        <property name="stock_id">pitivi-nextframe</property>
+        <signal name="activate" handler="nextframe" swapped="no"/>
+      </object>
+      <accelerator key="r"/>
+    </child>
+  </object>
   <object class="GtkActionGroup" id="timelineselection">
     <child>
       <object class="GtkAction" id="DeleteObj">

@@ -314,14 +314,14 @@ class Timeline(gtk.Table, Loggable, Zoomable):
         )
 
         self.playhead_actions = (
-            ("Split", "pitivi-split", _("Split"), "S", SPLIT,
-                self.split),
-            ("Keyframe", "pitivi-keyframe", _("Add a keyframe"), "K", KEYFRAME,
-                self.keyframe),
-            ("Prevframe", "pitivi-prevframe", _("_Prevframe"), "E", PREVFRAME,
-                self.prevframe),
-            ("Nextframe", "pitivi-nextframe", _("_Nextframe"), "R", NEXTFRAME,
-                self.nextframe),
+            #("Split", "pitivi-split", _("Split"), "S", SPLIT,
+            #    self.split),
+            #("Keyframe", "pitivi-keyframe", _("Add a keyframe"), "K", KEYFRAME,
+            #    self.keyframe),
+            #("Prevframe", "pitivi-prevframe", _("_Prevframe"), "E", PREVFRAME,
+            #    self.prevframe),
+            #("Nextframe", "pitivi-nextframe", _("_Nextframe"), "R", NEXTFRAME,
+            #    self.nextframe),
         )
 
         #actiongroup = gtk.ActionGroup("timelinepermanent")
