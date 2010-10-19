@@ -53,13 +53,13 @@ VIDEO_EFFECT_LIST = [dnd.VIDEO_EFFECT_TUPLE[0], dnd.EFFECT_TUPLE[0]],
 AUDIO_EFFECT_LIST = [dnd.AUDIO_EFFECT_TUPLE[0], dnd.EFFECT_TUPLE[0]],
 
 # tooltip text for toolbar
-SPLIT = _("Split clip at playhead position")
-KEYFRAME = _("Add a keyframe")
-PREVFRAME = _("Move to the previous keyframe")
-NEXTFRAME = _("Move to the next keyframe")
-LINK = _("Link together arbitrary clips")
-UNGROUP = _("Ungroup clips")
-GROUP = _("Group clips")
+#SPLIT = _("Split clip at playhead position")
+#KEYFRAME = _("Add a keyframe")
+#PREVFRAME = _("Move to the previous keyframe")
+#NEXTFRAME = _("Move to the next keyframe")
+#LINK = _("Link together arbitrary clips")
+#UNGROUP = _("Ungroup clips")
+#GROUP = _("Group clips")
 SELECT_BEFORE = ("Select all sources before selected")
 SELECT_AFTER = ("Select all after selected")
 
@@ -328,18 +328,18 @@ class Timeline(gtk.Table, Loggable, Zoomable):
         #actiongroup.add_actions(actions)
         #self.ui_manager.insert_action_group(actiongroup, 0)
 
-        actiongroup = gtk.ActionGroup("timelineselection")
-        actiongroup.add_actions(selection_actions)
-        actiongroup.add_actions(self.playhead_actions)
-        self.link_action = actiongroup.get_action("LinkObj")
-        self.unlink_action = actiongroup.get_action("UnlinkObj")
-        self.group_action = actiongroup.get_action("GroupObj")
-        self.ungroup_action = actiongroup.get_action("UngroupObj")
-        self.delete_action = actiongroup.get_action("DeleteObj")
-        self.split_action = actiongroup.get_action("Split")
-        self.keyframe_action = actiongroup.get_action("Keyframe")
-        self.prevframe_action = actiongroup.get_action("Prevframe")
-        self.nextframe_action = actiongroup.get_action("Nextframe")
+        selection_actiongroup = self.builder.get_object("timelineselection")
+        self.link_action = selection_actiongroup.get_action("LinkObj")
+        self.unlink_action = selection_actiongroup.get_action("UnlinkObj")
+        self.group_action = selection_actiongroup.get_action("GroupObj")
+        self.ungroup_action = selection_actiongroup.get_action("UngroupObj")
+        self.delete_action = selection_actiongroup.get_action("DeleteObj")
+
+        playhead_actiongroup = self.builder.get_object("timelineplayhead")
+        self.split_action = playhead_actiongroup.get_action("Split")
+        self.keyframe_action = playhead_actiongroup.get_action("Keyframe")
+        self.prevframe_action = playhead_actiongroup.get_action("Prevframe")
+        self.nextframe_action = playhead_actiongroup.get_action("Nextframe")
 
         #self.ui_manager.insert_action_group(actiongroup, -1)
 
