@@ -2,7 +2,7 @@
 <interface>
   <requires lib="gtk+" version="2.20"/>
   <!-- interface-naming-policy project-wide -->
-  <object class="GtkActionGroup" id="timelineactions">
+  <object class="GtkActionGroup" id="timelinepermant">
     <child>
       <object class="GtkAction" id="ControlKPAddAccel">
         <property name="tooltip" translatable="yes">Zoom In</property>
