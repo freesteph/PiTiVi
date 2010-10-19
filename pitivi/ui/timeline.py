@@ -305,10 +305,10 @@ class Timeline(gtk.Table, Loggable, Zoomable):
             #    self.deleteSelected),
             #("UnlinkObj", "pitivi-unlink", None, "<Shift><Control>L", UNLINK,
             #    self.unlinkSelected),
-            ("LinkObj", "pitivi-link", None, "<Control>L", LINK,
-                self.linkSelected),
-            ("UngroupObj", "pitivi-ungroup", None, "<Shift><Control>G", UNGROUP,
-                self.ungroupSelected),
+            #("LinkObj", "pitivi-link", None, "<Control>L", LINK,
+            #    self.linkSelected),
+            #("UngroupObj", "pitivi-ungroup", None, "<Shift><Control>G", UNGROUP,
+            #    self.ungroupSelected),
             ("GroupObj", "pitivi-group", None, "<Control>G", GROUP,
                 self.groupSelected),
         )
@@ -752,7 +752,7 @@ class Timeline(gtk.Table, Loggable, Zoomable):
         if self.timeline:
             self.timeline.linkSelection()
 
-    def ungroupSelected(self, unused_action):
+    def _ungroupSelectedCb(self, unused_action):
         if self.timeline:
             self.app.action_log.begin("ungroup")
             self.timeline.ungroupSelection()
