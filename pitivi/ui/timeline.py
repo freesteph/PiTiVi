@@ -31,6 +31,7 @@ import ruler
 import dnd
 import gst
 import gobject
+import os
 
 from gettext import gettext as _
 from timelinecanvas import TimelineCanvas
@@ -42,6 +43,7 @@ from pitivi.timeline.timeline import MoveContext, SELECT
 from pitivi.utils import Seeker
 from pitivi.ui.filelisterrordialog import FileListErrorDialog
 from pitivi.ui.curve import Curve
+from pitivi.configure import get_ui_dir
 
 from pitivi.factories.operation import EffectFactory
 
@@ -204,12 +206,13 @@ class Timeline(gtk.Table, Loggable, Zoomable):
     # specific levels of zoom, in (multiplier, unit) pairs which
     # from zoomed out to zoomed in
 
-    def __init__(self, instance):
+    def __init__(self, instance, builder):
         gtk.Table.__init__(self, rows=2, columns=1, homogeneous=False)
         Loggable.__init__(self)
         Zoomable.__init__(self)
         self.log("Creating Timeline")
 
+        self.builder = builder
         self._updateZoom = True
         self.project = None
         self.app = instance
@@ -223,6 +226,9 @@ class Timeline(gtk.Table, Loggable, Zoomable):
         self.rate = gst.Fraction(1,1)
 
     def _createUI(self):
+
+        self.builder.add_from_file(os.path.join(get_ui_dir(), "timeline.ui"))
+
         self.leftSizeGroup = gtk.SizeGroup(gtk.SIZE_GROUP_HORIZONTAL)
         self.props.row_spacing = 2
         self.props.column_spacing = 2
@@ -282,18 +288,20 @@ class Timeline(gtk.Table, Loggable, Zoomable):
 
         # toolbar actions
         actions = (
-            ("ZoomIn", gtk.STOCK_ZOOM_IN, None, "<Control>plus", ZOOM_IN,
-                self._zoomInCb),
-            ("ZoomOut", gtk.STOCK_ZOOM_OUT, None, "<Control>minus", ZOOM_OUT,
-                self._zoomOutCb),
+            #("ZoomIn", gtk.STOCK_ZOOM_IN, None, "<Control>plus", ZOOM_IN,
+            #    self._zoomInCb),
+            #("ZoomOut", gtk.STOCK_ZOOM_OUT, None, "<Control>minus", ZOOM_OUT,
+            #    self._zoomOutCb),
 
             # actions for adding additional accelerators
-            ("ControlEqualAccel", gtk.STOCK_ZOOM_IN, None, "<Control>equal", ZOOM_IN,
-                self._zoomInCb),
-            ("ControlKPAddAccel", gtk.STOCK_ZOOM_IN, None, "<Control>KP_Add", ZOOM_IN,
-                self._zoomInCb),
-            ("ControlKPSubtractAccel", gtk.STOCK_ZOOM_OUT, None, "<Control>KP_Subtract", ZOOM_OUT,
-                self._zoomOutCb),
+            # The ControlEqualAccel is wrong to me : if I press Ctrl + =, I expect the timeline
+            # to reset the zoom to its default/optimal value.
+            #("ControlEqualAccel", gtk.STOCK_ZOOM_IN, None, "<Control>equal", ZOOM_IN,
+            #    self._zoomInCb),
+            #("ControlKPAddAccel", gtk.STOCK_ZOOM_IN, None, "<Control>KP_Add", ZOOM_IN,
+            #    self._zoomInCb),
+            #("ControlKPSubtractAccel", gtk.STOCK_ZOOM_OUT, None, "<Control>KP_Subtract", ZOOM_OUT,
+            #    self._zoomOutCb),
         )
 
         selection_actions = (

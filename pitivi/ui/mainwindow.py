@@ -278,7 +278,7 @@ class PitiviMainWindow(Loggable):
         self.toolbar.show()
         # timeline and project tabs
         """
-        self.timeline = Timeline(instance)
+        self.timeline = Timeline(instance, self.builder)
         self.timeline.project = self.project
         self.vpaned.pack2(self.timeline, resize=True, shrink=False)
 
