@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk+" version="2.24"/>
+  <object class="GtkActionGroup" id="mainwindowgroup">
+    <child>
+      <object class="GtkAction" id="About">
+        <property name="tooltip" translatable="yes">Information about PiTiVi</property>
+        <property name="stock_id">gtk-about</property>
+        <signal name="activate" handler="_aboutCb" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="Edit">
+        <property name="label" translatable="yes">_Edit</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="File">
+        <property name="label" translatable="yes">_File</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="Help">
+        <property name="label" translatable="yes">_Help</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="Library">
+        <property name="label" translatable="yes">_Project</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="Loop">
+        <property name="label" translatable="yes">Loop</property>
+        <property name="tooltip" translatable="yes">Loop over selected area</property>
+        <property name="stock_id">gtk-refresh</property>
+        <signal name="activate" handler="loop" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="NewProject">
+        <property name="tooltip" translatable="yes">Creates a new project</property>
+        <property name="stock_id">gtk-new</property>
+        <signal name="activate" handler="_newProjectMenuCb" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="OpenProject">
+        <property name="label" translatable="yes">_Open...</property>
+        <property name="tooltip" translatable="yes">Open an existing project</property>
+        <property name="stock_id">gtk-open</property>
+        <signal name="activate" handler="_saveProjectCb" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="PlayPause">
+        <property name="tooltip" translatable="yes">Start playback</property>
+        <property name="stock_id">gtk-media-play</property>
+        <signal name="activate" handler="playPause" swapped="no"/>
+      </object>
+      <accelerator key="space"/>
+    </child>
+    <child>
+      <object class="GtkAction" id="Preferences">
+        <property name="label" translatable="yes">_Preferences</property>
+        <property name="stock_id">gtk-preferences</property>
+        <signal name="activate" handler="_prefsCb" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="ProjectSettings">
+        <property name="label" translatable="yes">Project Settings</property>
+        <property name="tooltip" translatable="yes">Edit the project settings</property>
+        <property name="stock_id">gtk-properties</property>
+        <signal name="activate" handler="_projectSettingsCb" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="Quit">
+        <property name="stock_id">gtk-quit</property>
+        <signal name="activate" handler="_quitCb" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="Redo">
+        <property name="label" translatable="yes">_Redo</property>
+        <property name="tooltip" translatable="yes">Redo the last operation that was undone</property>
+        <property name="stock_id">gtk-redo</property>
+        <signal name="activate" handler="_redoCb" swapped="no"/>
+      </object>
+      <accelerator key="y" modifiers="GDK_CONTROL_MASK"/>
+    </child>
+    <child>
+      <object class="GtkAction" id="RevertToSavedProject">
+        <property name="tooltip" translatable="yes">Revert to the previous saved version of the project</property>
+        <property name="stock_id">gtk-revert-to-saved</property>
+        <signal name="activate" handler="_revertToSavedProjectCb" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="SaveProject">
+        <property name="tooltip" translatable="yes">Save the current project</property>
+        <property name="stock_id">gtk-save</property>
+        <signal name="activate" handler="_saveProjectCb" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="SaveProjectAs">
+        <property name="label" translatable="yes">Save _As...</property>
+        <property name="tooltip" translatable="yes">Save the current project on a different name</property>
+        <property name="stock_id">gtk-save-as</property>
+        <signal name="activate" handler="_saveProjectAsCb" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="Timeline">
+        <property name="label" translatable="yes">_Timeline</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="Undo">
+        <property name="label" translatable="yes">_Undo</property>
+        <property name="tooltip" translatable="yes">Undo the last operation</property>
+        <property name="stock_id">gtk-undo</property>
+        <signal name="activate" handler="_undoCb" swapped="no"/>
+      </object>
+      <accelerator key="z" modifiers="GDK_CONTROL_MASK"/>
+    </child>
+    <child>
+      <object class="GtkAction" id="UserManual">
+        <property name="label" translatable="yes">User manual</property>
+        <property name="stock_id">gtk-help</property>
+        <signal name="activate" handler="_userManualCb" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="View">
+        <property name="label" translatable="yes">_View</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="Viewer">
+        <property name="label" translatable="yes">Previe_w</property>
+      </object>
+    </child>
+    <child>
+      <object class="GtkAction" id="RenderProject">
+        <property name="label" translatable="yes">_Render project</property>
+        <property name="tooltip" translatable="yes">Render project...</property>
+        <property name="icon_name">pitivi-render</property>
+        <signal name="activate" handler="_recordCb" swapped="no"/>
+      </object>
+    </child>
+  </object>
+  <object class="GtkWindow" id="window1">
+    <property name="can_focus">False</property>
+    <child>
+      <placeholder/>
+    </child>
+  </object>
+</interface>

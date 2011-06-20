@@ -194,6 +194,7 @@ class PitiviMainWindow(gtk.Window, Loggable):
         self.timelinepos = 0
         self.prefsdialog = None
         create_stock_icons()
+        self.builder = gtk.Builder ()
         self._setActions(instance)
         self._createUi(instance)
 
@@ -251,51 +252,9 @@ class PitiviMainWindow(gtk.Window, Loggable):
         self.showEncodingDialog(self.project)
 
     def _setActions(self, instance):
-        PLAY = _("Start Playback")
-        PAUSE = _("Stop Playback")
-        LOOP = _("Loop over selected area")
-
         """ sets up the GtkActions """
-        self.actions = [
-            ("NewProject", gtk.STOCK_NEW, None,
-             None, _("Create a new project"), self._newProjectMenuCb),
-            ("OpenProject", gtk.STOCK_OPEN, _("_Open..."),
-             None, _("Open an existing project"), self._openProjectCb),
-            ("SaveProject", gtk.STOCK_SAVE, None,
-             None, _("Save the current project"), self._saveProjectCb),
-            ("SaveProjectAs", gtk.STOCK_SAVE_AS, _("Save _As..."),
-             None, _("Save the current project"), self._saveProjectAsCb),
-            ("RevertToSavedProject", gtk.STOCK_REVERT_TO_SAVED, None,
-             None, _("Reload the current project"), self._revertToSavedProjectCb),
-            ("ProjectSettings", gtk.STOCK_PROPERTIES, _("Project Settings"),
-             None, _("Edit the project settings"), self._projectSettingsCb),
-            ("RenderProject", 'pitivi-render', _("_Render Project..."),
-             None, _("Export your project as a finished movie"), self._recordCb),
-            ("Undo", gtk.STOCK_UNDO,
-             _("_Undo"),
-             "<Ctrl>Z", _("Undo the last operation"), self._undoCb),
-            ("Redo", gtk.STOCK_REDO,
-             _("_Redo"),
-             "<Ctrl>Y", _("Redo the last operation that was undone"), self._redoCb),
-            ("Preferences", gtk.STOCK_PREFERENCES, _("_Preferences"),
-              None, None, self._prefsCb),
-            ("Quit", gtk.STOCK_QUIT, None, None, None, self._quitCb),
-            ("About", gtk.STOCK_ABOUT, None, None,
-             _("Information about %s") % APPNAME, self._aboutCb),
-            ("UserManual", gtk.STOCK_HELP, _("User Manual"),
-             None, None, self._userManualCb),
-            ("File", None, _("_Project")),
-            ("Edit", None, _("_Edit")),
-            ("View", None, _("_View")),
-            ("Library", None, _("_Library")),
-            ("Timeline", None, _("_Timeline")),
-            ("Viewer", None, _("Previe_w")),
-            ("PlayPause", gtk.STOCK_MEDIA_PLAY, None, "space", PLAY,
-                self.playPause),
-            ("Loop", gtk.STOCK_REFRESH, _("Loop"), None, LOOP,
-                self.loop),
-            ("Help", None, _("_Help")),
-        ]
+        self.builder.add_from_file (os.path.join (get_ui_dir(), "mainwindow.ui"))
+        self.builder.connect_signals(self)
 
         self.toggleactions = [
             ("FullScreen", gtk.STOCK_FULLSCREEN, None, "f",
@@ -311,8 +270,7 @@ class PitiviMainWindow(gtk.Window, Loggable):
                 self.settings.mainWindowShowTimelineToolbar),
         ]
 
-        self.actiongroup = gtk.ActionGroup("mainwindow")
-        self.actiongroup.add_actions(self.actions)
+        self.actiongroup = self.builder.get_object ("mainwindowgroup")
         self.actiongroup.add_toggle_actions(self.toggleactions)
         self.undock_action = gtk.Action("WindowizeViewer", _("Undock Viewer"),
             _("Put the viewer in a separate window"), None)
