@@ -151,6 +151,33 @@
         <signal name="activate" handler="_recordCb" swapped="no"/>
       </object>
     </child>
+    <child>
+      <object class="GtkToggleAction" id="ShowHideMainToolbar">
+        <property name="label" translatable="yes">Main Toolbar</property>
+        <signal name="activate" handler="_showHideMainToolbar" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkToggleAction" id="ShowHideTimelineToolbar">
+        <property name="label" translatable="yes">Timeline Toolbar</property>
+        <signal name="activate" handler="_showHideTimelineToolbar" swapped="no"/>
+      </object>
+    </child>
+    <child>
+      <object class="GtkToggleAction" id="FullScreen">
+        <property name="tooltip" translatable="yes">View the main window on the whole screen</property>
+        <property name="stock_id">gtk-fullscreen</property>
+        <signal name="activate" handler="_fullScreenCb" swapped="no"/>
+      </object>
+      <accelerator key="f"/>
+    </child>
+    <child>
+      <object class="GtkToggleAction" id="FullScreenAlternate">
+        <property name="stock_id">gtk-fullscreen</property>
+        <signal name="activate" handler="_fullScreenAlternateCb" swapped="no"/>
+      </object>
+      <accelerator key="F11"/>
+    </child>
   </object>
   <object class="GtkWindow" id="window1">
     <property name="can_focus">False</property>

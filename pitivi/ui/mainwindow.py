@@ -256,22 +256,13 @@ class PitiviMainWindow(gtk.Window, Loggable):
         self.builder.add_from_file (os.path.join (get_ui_dir(), "mainwindow.ui"))
         self.builder.connect_signals(self)
 
-        self.toggleactions = [
-            ("FullScreen", gtk.STOCK_FULLSCREEN, None, "f",
-             _("View the main window on the whole screen"),
-                 self._fullScreenCb),
-            ("FullScreenAlternate", gtk.STOCK_FULLSCREEN, None, "F11", None,
-                self._fullScreenAlternateCb),
-            ("ShowHideMainToolbar", None, _("Main Toolbar"), None, None,
-                self._showHideMainToolBar,
-                self.settings.mainWindowShowMainToolbar),
-            ("ShowHideTimelineToolbar", None, _("Timeline Toolbar"), None,
-                None, self._showHideTimelineToolbar,
-                self.settings.mainWindowShowTimelineToolbar),
-        ]
+        action = self.builder.get_object("ShowHideMainToolbar")
+        action.set_active (self.settings.mainWindowShowMainToolbar)
+
+        action = self.builder.get_object("ShowHideTimelineToolbar")
+        action.set_active(self.settings.mainWindowShowTimelineToolbar)
 
         self.actiongroup = self.builder.get_object ("mainwindowgroup")
-        self.actiongroup.add_toggle_actions(self.toggleactions)
         self.undock_action = gtk.Action("WindowizeViewer", _("Undock Viewer"),
             _("Put the viewer in a separate window"), None)
         self.actiongroup.add_action(self.undock_action)
@@ -565,7 +556,7 @@ class PitiviMainWindow(gtk.Window, Loggable):
     def _fullScreenAlternateCb(self, unused_action):
         self.actiongroup.get_action("FullScreen").activate()
 
-    def _showHideMainToolBar(self, action):
+    def _showHideMainToolbar(self, action):
         self.uimanager.get_widget("/MainToolBar").props.visible = \
             action.props.active
 
