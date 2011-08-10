@@ -194,7 +194,7 @@ class PitiviMainWindow(gtk.Window, Loggable):
         self.timelinepos = 0
         self.prefsdialog = None
         create_stock_icons()
-        self.builder = gtk.Builder ()
+        self.builder = gtk.Builder()
         self._setActions(instance)
         self._createUi(instance)
 
@@ -253,19 +253,26 @@ class PitiviMainWindow(gtk.Window, Loggable):
 
     def _setActions(self, instance):
         """ sets up the GtkActions """
-        self.builder.add_from_file (os.path.join (get_ui_dir(), "mainwindow.ui"))
+        self.builder.add_from_file(os.path.join(get_ui_dir(), "mainwindow.ui"))
         self.builder.connect_signals(self)
 
         action = self.builder.get_object("ShowHideMainToolbar")
-        action.set_active (self.settings.mainWindowShowMainToolbar)
+        action.set_active(self.settings.mainWindowShowMainToolbar)
 
         action = self.builder.get_object("ShowHideTimelineToolbar")
         action.set_active(self.settings.mainWindowShowTimelineToolbar)
 
-        self.actiongroup = self.builder.get_object ("mainwindowgroup")
+        self.actiongroup = self.builder.get_object("mainwindowgroup")
         self.undock_action = gtk.Action("WindowizeViewer", _("Undock Viewer"),
             _("Put the viewer in a separate window"), None)
         self.actiongroup.add_action(self.undock_action)
+
+        toggles = ["ShowHideMainToolbar", "ShowHideTimelineToolbar",
+                   "FullScreen", "FullScreenAlternate"]
+        self.toggleactions = []
+        for action in self.actiongroup.list_actions():
+            if action.get_name() in toggles:
+                self.toggleactions.append(action)
 
         # deactivating non-functional actions
         # FIXME : reactivate them
@@ -366,7 +373,7 @@ class PitiviMainWindow(gtk.Window, Loggable):
         for action in self.timeline.playhead_actions:
             self.sensitive_actions.append(action[0])
         for action in self.toggleactions:
-            self.sensitive_actions.append(action[0])
+            self.sensitive_actions.append(action)
 
         #Clips properties
         self.propertiestabs = BaseTabs(instance, True)
