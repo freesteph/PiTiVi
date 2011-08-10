@@ -101,6 +101,7 @@
       <object class="GtkAction" id="SaveProject">
         <property name="tooltip" translatable="yes">Save the current project</property>
         <property name="stock_id">gtk-save</property>
+        <property name="is_important">True</property>
         <signal name="activate" handler="_saveProjectCb" swapped="no"/>
       </object>
     </child>
@@ -122,6 +123,7 @@
         <property name="label" translatable="yes">_Undo</property>
         <property name="tooltip" translatable="yes">Undo the last operation</property>
         <property name="stock_id">gtk-undo</property>
+        <property name="is_important">True</property>
         <signal name="activate" handler="_undoCb" swapped="no"/>
       </object>
       <accelerator key="z" modifiers="GDK_CONTROL_MASK"/>
@@ -148,6 +150,8 @@
         <property name="label" translatable="yes">_Render project</property>
         <property name="tooltip" translatable="yes">Render project...</property>
         <property name="icon_name">pitivi-render</property>
+        <property name="is_important">True</property>
+        <property name="sensitive">False</property>
         <signal name="activate" handler="_recordCb" swapped="no"/>
       </object>
     </child>

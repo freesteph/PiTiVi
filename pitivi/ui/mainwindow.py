@@ -284,35 +284,12 @@ class PitiviMainWindow(gtk.Window, Loggable):
             if action_name == "RenderProject":
                 self.render_button = action
                 # this will be set sensitive when the timeline duration changes
-                action.set_sensitive(False)
-                action.props.is_important = True
-            elif action_name == "Screencast":
-                # FIXME : re-enable this action once istanbul integration is complete
-                # and upstream istanbul has applied packages for proper interaction.
-                action.set_sensitive(False)
-                action.set_visible(False)
-            elif action_name in [
-                "ProjectSettings", "Quit", "File", "Edit", "Help", "About",
-                "View", "FullScreen", "FullScreenAlternate", "UserManual",
-                "ImportSourcesFolder", "PlayPause",
-                "Project", "FrameForward", "FrameBackward",
-                "ShowHideMainToolbar", "ShowHideTimelineToolbar", "Library",
-                "Timeline", "Viewer", "FrameForward", "FrameBackward",
-                "SecondForward", "SecondBackward", "EdgeForward",
-                "EdgeBackward", "Preferences", "WindowizeViewer"]:
-                action.set_sensitive(True)
             elif action_name in ["NewProject", "SaveProjectAs", "OpenProject"]:
                 if instance.settings.fileSupportEnabled:
                     action.set_sensitive(True)
             elif action_name == "SaveProject":
                 if instance.settings.fileSupportEnabled:
                     action.set_sensitive(True)
-                action.props.is_important = True
-            elif action_name == "Undo":
-                action.set_sensitive(True)
-                action.props.is_important = True
-            else:
-                action.set_sensitive(False)
 
         self.uimanager = gtk.UIManager()
         self.add_accel_group(self.uimanager.get_accel_group())
