@@ -274,11 +274,6 @@ class PitiviMainWindow(gtk.Window, Loggable):
             if action.get_name() in toggles:
                 self.toggleactions.append(action)
 
-        # deactivating non-functional actions
-        # FIXME : reactivate them
-        save_action = self.actiongroup.get_action("SaveProject")
-        save_action.set_sensitive(False)
-
         for action in self.actiongroup.list_actions():
             action_name = action.get_name()
             if action_name == "RenderProject":

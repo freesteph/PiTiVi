@@ -102,6 +102,7 @@
         <property name="tooltip" translatable="yes">Save the current project</property>
         <property name="stock_id">gtk-save</property>
         <property name="is_important">True</property>
+        <property name="sensitive">False</property>
         <signal name="activate" handler="_saveProjectCb" swapped="no"/>
       </object>
     </child>
