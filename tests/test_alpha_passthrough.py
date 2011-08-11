@@ -24,7 +24,7 @@ from unittest import TestCase
 
 import random
 
-import gobject
+from gi.repository import GObject
 gobject.threads_init()
 import gst
 

@@ -19,7 +19,7 @@
 # Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
 # Boston, MA 02110-1301, USA.
 
-import gtk.gdk
+from gi.repository import Gdk
 from pitivi.receiver import receiver, handler
 from pitivi.ui.point import Point
 
@@ -30,7 +30,7 @@ from pitivi.ui.point import Point
 # that explictly combines the functionality of both when custom behavior is
 # desired.
 
-ARROW = gtk.gdk.Cursor(gtk.gdk.ARROW)
+ARROW = Gdk.Cursor(Gdk.CursorType.ARROW)
 
 
 class Controller(object):
@@ -39,7 +39,7 @@ class Controller(object):
     objects. Subclasses may override the drag_start, drag_end, pos, and
     set_pos methods"""
 
-    # note we SHOULD be using the gtk function for this, but it doesn't appear
+    # note we SHOULD be using the Gtk.function for this, but it doesn't appear
     # to be exposed in pygtk
     __DRAG_THRESHOLD__ = Point(0, 0)
 
@@ -146,9 +146,9 @@ class Controller(object):
     def key_press_event(self, item, target, event):
         self._event_common(item, target, event)
         kv = event.keyval
-        if kv in (gtk.keysyms.Shift_L, gtk.keysyms.Shift_R):
+        if kv in (Gtk.keysyms.Shift_L, gtk.keysyms.Shift_R):
             self._shift_down = True
-        elif kv in (gtk.keysyms.Control_L, gtk.keysyms.Control_R):
+        elif kv in (Gtk.keysyms.Control_L, gtk.keysyms.Control_R):
             self._control_down = True
         return self.key_press(kv)
 
@@ -156,9 +156,9 @@ class Controller(object):
     def key_release_event(self, item, target, event):
         self._event_common(item, target, event)
         kv = event.keyval
-        if kv in (gtk.keysyms.Shift_L, gtk.keysyms.Shift_R):
+        if kv in (Gtk.keysyms.Shift_L, gtk.keysyms.Shift_R):
             self._shift_down = False
-        elif kv in (gtk.keysyms.Control_L, gtk.keysyms.Control_R):
+        elif kv in (Gtk.keysyms.Control_L, gtk.keysyms.Control_R):
             self._control_down = False
         return self.key_release(kv)
 
@@ -172,8 +172,8 @@ class Controller(object):
             self._vadj = self._canvas.app.gui.timeline.vadj
         self._last_event = event
         s = event.get_state()
-        self._shift_down = s & gtk.gdk.SHIFT_MASK
-        self._control_down = s & gtk.gdk.CONTROL_MASK
+        self._shift_down = s & Gtk.gdk.SHIFT_MASK
+        self._control_down = s & Gtk.gdk.CONTROL_MASK
 
     def _drag_start(self, item, target, event):
         self.drag_start(item, target, event)

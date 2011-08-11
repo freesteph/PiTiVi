@@ -22,7 +22,7 @@
 GdkPixbuf thumbnail sink
 """
 
-import gobject
+from gi.repository import GObject
 import gst
 import cairo
 import array
@@ -33,7 +33,7 @@ class CairoSurfaceThumbnailSink(gst.BaseSink):
     """
     GStreamer thumbnailing sink element.
 
-    Can be used in pipelines to generates gtk.gdk.Pixbuf automatically.
+    Can be used in pipelines to generates Gtk.gdk.Pixbuf automatically.
     """
 
     __gsignals__ = {

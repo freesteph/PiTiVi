@@ -96,17 +96,12 @@ def _add_pitivi_path():
 def _init_gobject_gtk_gst():
     global localedir
     try:
-        import pygtk
-        pygtk.require("2.0")
-
-        import gtk
-
-        import gobject
-        gobject.threads_init()
+	from gi.repository import GObject
+        Gobject.threads_init()
     except ImportError, e:
         raise SystemExit("PyGTK couldn't be found !", str(e))
 
-    gobject.threads_init()
+    GObject.threads_init()
 
     try:
         import pygst

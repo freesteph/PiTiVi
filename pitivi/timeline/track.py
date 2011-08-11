@@ -20,7 +20,7 @@
 # Boston, MA 02110-1301, USA.
 
 import gst
-import gobject
+from gi.repository import GObject
 
 from pitivi.signalinterface import Signallable
 from pitivi.utils import get_controllable_properties, getPreviousObject, \

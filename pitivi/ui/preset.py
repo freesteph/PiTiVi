@@ -23,7 +23,7 @@ import ConfigParser
 import os.path
 
 import gst
-import gtk
+from gi.repository import Gtk
 
 from pitivi.settings import xdg_data_home
 
@@ -45,7 +45,7 @@ class PresetManager(object):
         be selected before it can be changed.
     @type cur_preset: str
     @ivar ordered: A list holding (name -> preset_dict) tuples.
-    @type ordered: gtk.ListStore
+    @type ordered: Gtk.ListStore
     @ivar presets: A (name -> preset_dict) map.
     @type presets: dict
     @ivar widget_map: A (propname -> (setter_func, getter_func)) map.
@@ -56,7 +56,7 @@ class PresetManager(object):
     def __init__(self):
         self.presets = {}
         self.widget_map = {}
-        self.ordered = gtk.ListStore(str, object)
+        self.ordered = Gtk.ListStore(str, object)
         self.cur_preset = None
         # Whether to ignore the updateValue calls.
         self._ignore_update_requests = False

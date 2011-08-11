@@ -1,5 +1,5 @@
-import gtk
-import gobject
+from gi.repository import Gtk
+from gi.repository import GObject
 from pitivi.receiver import receiver, handler
 import pitivi.stream as stream
 from gettext import gettext as _
@@ -19,11 +19,11 @@ def track_name(track):
     return "<b>%s</b>" % track_name
 
 
-class TrackControls(gtk.Label):
+class TrackControls(Gtk.Label):
     __gtype_name__ = 'TrackControls'
 
     def __init__(self, track):
-        gtk.Label.__init__(self)
+        Gtk.Label.__init__(self)
         self.set_alignment(0.5, 0.1)
         self.set_markup(track_name(track))
         self.track = track
@@ -42,9 +42,9 @@ class TrackControls(gtk.Label):
             LAYER_SPACING))
 
 
-class TimelineControls(gtk.VBox):
+class TimelineControls(Gtk.VBox):
     def __init__(self):
-        gtk.VBox.__init__(self)
+        Gtk.VBox.__init__(self)
         self._tracks = []
         self.set_spacing(LAYER_SPACING)
         self.set_size_request(TRACK_CONTROL_WIDTH, -1)

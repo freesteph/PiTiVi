@@ -22,10 +22,10 @@
 Stores audio samples in an array for plotting waveforms
 """
 
-import gobject
+from gi.repository import GObject
 gobject.threads_init()
 import gst
-import gtk
+from gi.repository import Gtk
 import array
 from pitivi.utils import native_endianness
 

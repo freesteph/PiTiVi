@@ -25,7 +25,7 @@ Render dialog
 """
 
 import os
-import gtk
+from gi.repository import Gtk
 import gst
 import pango
 from gettext import gettext as _
@@ -92,7 +92,7 @@ def extension_for_muxer(muxer):
 
 
 def factorylist(factories):
-    """Create a gtk.ListStore() of sorted, beautified factory names.
+    """Create a Gtk.ListStore() of sorted, beautified factory names.
 
     @param factories: The factories available for creating the list.
     @type factories: A sequence of gst.ElementFactory instances.
@@ -121,7 +121,7 @@ class EncodingDialog(Renderer, Loggable):
 
         self.app = app
 
-        self.builder = gtk.Builder()
+        self.builder = Gtk.Builder()
         self.builder.add_from_file(os.path.join(configure.get_ui_dir(),
             "encodingdialog.ui"))
         self._setProperties()
@@ -224,7 +224,7 @@ class EncodingDialog(Renderer, Loggable):
         if not path:
             # This happens when the window is initialized.
             return
-        warning_icon = gtk.STOCK_DIALOG_WARNING
+        warning_icon = Gtk.STOCK_DIALOG_WARNING
         filename = self.fileentry.get_text()
         if not filename:
             tooltip_text = _("A file name is required.")

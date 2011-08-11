@@ -19,14 +19,14 @@
 # Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
 # Boston, MA 02110-1301, USA.
 
-import gtk
+from gi.repository import Gtk
 from pitivi.ui.common import SPACING
 
 
-class BaseTabs(gtk.Notebook):
+class BaseTabs(Gtk.Notebook):
     def __init__(self, app, hide_hpaned=False):
         """ initialize """
-        gtk.Notebook.__init__(self)
+        Gtk.Notebook.__init__(self)
         self.set_border_width(SPACING)
 
         self.connect("create-window", self._createWindowCb)
@@ -37,11 +37,11 @@ class BaseTabs(gtk.Notebook):
     def _createUi(self):
         """ set up the gui """
         settings = self.get_settings()
-        settings.props.gtk_dnd_drag_threshold = 1
-        self.set_tab_pos(gtk.POS_TOP)
+        settings.props.Gtk.dnd_drag_threshold = 1
+        self.set_tab_pos(Gtk.POS_TOP)
 
     def append_page(self, child, label):
-        gtk.Notebook.append_page(self, child, label)
+        Gtk.Notebook.append_page(self, child, label)
         self._set_child_properties(child, label)
         child.show()
         label.show()
@@ -57,7 +57,7 @@ class BaseTabs(gtk.Notebook):
         notebook = window.child
         position = notebook.child_get_property(child, "position")
         notebook.remove_page(position)
-        label = gtk.Label(label)
+        label = Gtk.Label(label)
         self.insert_page(child, label, original_position)
         self._set_child_properties(child, label)
         self.child_set_property(child, "detachable", True)
@@ -68,14 +68,14 @@ class BaseTabs(gtk.Notebook):
     def _createWindowCb(self, from_notebook, child, x, y):
         original_position = self.child_get_property(child, "position")
         label = self.child_get_property(child, "tab-label")
-        window = gtk.Window()
-        window.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_UTILITY)
+        window = Gtk.Window()
+        window.set_type_hint(Gtk.gdk.WINDOW_TYPE_HINT_UTILITY)
 
         window.set_title(label)
         window.set_default_size(600, 400)
         window.connect("destroy", self._detachedComponentWindowDestroyCb,
                 child, original_position, label)
-        notebook = gtk.Notebook()
+        notebook = Gtk.Notebook()
         notebook.props.show_tabs = False
         window.add(notebook)
 

@@ -23,8 +23,8 @@
 Widget for gstreamer element properties viewing/setting
 """
 
-import gobject
-import gtk
+from gi.repository import GObject
+from gi.repository import Gtk
 import gst
 import os
 
@@ -73,13 +73,13 @@ def make_property_widget(unused_element, prop, value=None):
     return widget
 
 
-class GstElementSettingsWidget(gtk.VBox, Loggable):
+class GstElementSettingsWidget(Gtk.VBox, Loggable):
     """
     Widget to view/modify properties of a gst.Element
     """
 
     def __init__(self):
-        gtk.VBox.__init__(self)
+        Gtk.VBox.__init__(self)
         Loggable.__init__(self)
         self.element = None
         self.ignore = None
@@ -98,17 +98,17 @@ class GstElementSettingsWidget(gtk.VBox, Loggable):
     def _addWidgets(self, properties, default_btn, use_element_props):
         props = [prop for prop in gobject.list_properties(self.element) if not prop.name in self.ignore]
         if not props:
-            table = gtk.Table(rows=1, columns=1)
-            widget = gtk.Label(_("No properties..."))
-            table.attach(widget, 0, 1, 0, 1, yoptions=gtk.FILL)
-            self.pack_start(table)
+            table = Gtk.Table(rows=1, columns=1)
+            widget = Gtk.Label(_("No properties..."))
+            table.attach(widget, 0, 1, 0, 1, yoptions=Gtk.AttachOptions.FILL)
+            self.pack_start(table, False, False, 0)
             self.show_all()
             return
 
         if default_btn:
-            table = gtk.Table(rows=len(props), columns=3)
+            table = Gtk.Table(rows=len(props), columns=3)
         else:
-            table = gtk.Table(rows=len(props), columns=2)
+            table = Gtk.Table(rows=len(props), columns=2)
 
         table.set_row_spacings(SPACING)
         table.set_col_spacings(SPACING)
@@ -127,12 +127,12 @@ class GstElementSettingsWidget(gtk.VBox, Loggable):
             widget = make_property_widget(self.element, prop, prop_value)
             if isinstance(widget, dynamic.ToggleWidget):
                 widget.set_label(prop.nick)
-                table.attach(widget, 0, 2, y, y + 1, yoptions=gtk.FILL)
+                table.attach(widget, 0, 2, y, y + 1, yoptions=Gtk.AttachOptions.FILL)
             else:
-                label = gtk.Label(prop.nick + ":")
+                label = Gtk.Label(prop.nick + ":")
                 label.set_alignment(0.0, 0.5)
-                table.attach(label, 0, 1, y, y + 1, xoptions=gtk.FILL, yoptions=gtk.FILL)
-                table.attach(widget, 1, 2, y, y + 1, yoptions=gtk.FILL)
+                table.attach(label, 0, 1, y, y + 1, xoptions=Gtk.AttachOptions.FILL, yoptions=gtk.FILL)
+                table.attach(widget, 1, 2, y, y + 1, yoptions=Gtk.AttachOptions.FILL)
 
             if hasattr(prop, 'description'):   # TODO: check that
                 widget.set_tooltip_text(prop.description)
@@ -140,7 +140,7 @@ class GstElementSettingsWidget(gtk.VBox, Loggable):
             self.properties[prop] = widget
             if default_btn:
                 button = self._getResetToDefaultValueButton(prop, widget)
-                table.attach(button, 2, 3, y, y + 1, xoptions=gtk.FILL, yoptions=gtk.FILL)
+                table.attach(button, 2, 3, y, y + 1, xoptions=Gtk.AttachOptions.FILL, yoptions=gtk.FILL)
                 self.buttons[button] = widget
             self.element.connect('notify::' + prop.name,
                                  self._propertyChangedCb,
@@ -148,16 +148,16 @@ class GstElementSettingsWidget(gtk.VBox, Loggable):
 
             y += 1
 
-        self.pack_start(table)
+        self.pack_start(table, False, False, 0)
         self.show_all()
 
     def _propertyChangedCb(self, element, pspec, widget):
         widget.setWidgetValue(self.element.get_property(pspec.name))
 
     def _getResetToDefaultValueButton(self, prop, widget):
-        icon = gtk.Image()
-        icon.set_from_stock('gtk-clear', gtk.ICON_SIZE_MENU)
-        button = gtk.Button()
+        icon = Gtk.Image()
+        icon.set_from_stock('Gtk.clear', Gtk.IconSize.MENU)
+        button = Gtk.Button()
         button.add(icon)
         button.set_tooltip_text(_("Reset to default value"))
         button.connect('clicked', self._defaultBtnClickedCb, widget)
@@ -189,7 +189,7 @@ class GstElementSettingsDialog(Loggable):
         Loggable.__init__(self)
         self.debug("factory:%s, properties:%s", elementfactory, properties)
 
-        self.builder = gtk.Builder()
+        self.builder = Gtk.Builder()
         self.builder.add_from_file(os.path.join(get_ui_dir(),
             "elementsettingsdialog.ui"))
         self.builder.connect_signals(self)
@@ -214,8 +214,8 @@ class GstElementSettingsDialog(Loggable):
             # The height of the content is small enough, disable the scrollbars.
             default_height = -1
             scrolledwindow = self.builder.get_object("scrolledwindow1")
-            scrolledwindow.set_policy(gtk.POLICY_NEVER, gtk.POLICY_NEVER)
-            scrolledwindow.set_shadow_type(gtk.SHADOW_NONE)
+            scrolledwindow.set_policy(Gtk.POLICY_NEVER, gtk.POLICY_NEVER)
+            scrolledwindow.set_shadow_type(Gtk.ShadowType.NONE)
         else:
             # If we need to scroll, set a reasonable height for the window.
             default_height = 600

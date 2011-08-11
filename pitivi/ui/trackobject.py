@@ -1,9 +1,27 @@
-import goocanvas
-import gobject
-import gtk
+# PiTiVi , Non-linear video editor
+#
+#       pitivi/ui/timelinecanvas.py
+#
+# Copyright (c) 2009, Brandon Lewis <brandon_lewis@berkeley.edu>
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this program; if not, write to the
+# Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+# Boston, MA 02110-1301, USA.
+
+from gi.repository import Gtk, GObject, GooCanvas, Pango, cairo, Gdk, GdkPixbuf
+
 import os.path
-import pango
-import cairo
 import pitivi.configure as configure
 from urllib import unquote
 from gettext import gettext as _
@@ -24,12 +42,12 @@ from pitivi.ui.prefs import PreferencesDialog
 from pitivi.settings import GlobalSettings
 from pitivi.stream import AudioStream, VideoStream
 
-LEFT_SIDE = gtk.gdk.Cursor(gtk.gdk.LEFT_SIDE)
-RIGHT_SIDE = gtk.gdk.Cursor(gtk.gdk.RIGHT_SIDE)
-ARROW = gtk.gdk.Cursor(gtk.gdk.ARROW)
-TRIMBAR_PIXBUF = gtk.gdk.pixbuf_new_from_file(
+LEFT_SIDE = Gdk.Cursor(Gdk.CursorType.LEFT_SIDE)
+RIGHT_SIDE = Gdk.Cursor(Gdk.CursorType.RIGHT_SIDE)
+ARROW = Gdk.Cursor(Gdk.CursorType.ARROW)
+TRIMBAR_PIXBUF = GdkPixbuf.Pixbuf.new_from_file(
     os.path.join(configure.get_pixmap_dir(), "trimbar-normal.png"))
-TRIMBAR_PIXBUF_FOCUS = gtk.gdk.pixbuf_new_from_file(
+TRIMBAR_PIXBUF_FOCUS = GdkPixbuf.Pixbuf.new_from_file(
     os.path.join(configure.get_pixmap_dir(), "trimbar-focused.png"))
 NAME_HOFFSET = 10
 NAME_VOFFSET = 5
@@ -145,7 +163,7 @@ class TimelineController(controller.Controller):
             self._context.setMode(self._getMode())
 
 
-class TrimHandle(View, goocanvas.Image, Zoomable):
+class TrimHandle(View, GooCanvas.CanvasImage, Zoomable):
 
     """A component of a TrackObject which manage's the source's edit
     points"""
@@ -156,10 +174,10 @@ class TrimHandle(View, goocanvas.Image, Zoomable):
         self.app = instance
         self.element = element
         self.timeline = timeline
-        goocanvas.Image.__init__(self,
+        GooCanvas.CanvasImage.__init__(self,
             pixbuf=TRIMBAR_PIXBUF,
             line_width=0,
-            pointer_events=goocanvas.EVENTS_FILL,
+            pointer_events=GooCanvas.CanvasEVENTS_FILL,
             **kwargs
         )
         View.__init__(self)
@@ -204,7 +222,7 @@ class EndHandle(TrimHandle):
             self._view.app.action_log.begin("trim object")
 
 
-class TrackObject(View, goocanvas.Group, Zoomable):
+class TrackObject(View, GooCanvas.CanvasGroup, Zoomable):
 
     class Controller(TimelineController):
 
@@ -226,9 +244,9 @@ class TrackObject(View, goocanvas.Group, Zoomable):
             timeline = self._view.timeline
             element = self._view.element
             element_end = element.start + element.duration
-            if self._last_event.get_state() & gtk.gdk.SHIFT_MASK:
+            if self._last_event.get_state() & Gtk.gdk.SHIFT_MASK:
                 timeline.setSelectionToObj(element, SELECT_BETWEEN)
-            elif self._last_event.get_state() & gtk.gdk.CONTROL_MASK:
+            elif self._last_event.get_state() & Gtk.gdk.CONTROL_MASK:
                 if element.selected:
                     mode = UNSELECT
                 else:
@@ -241,7 +259,7 @@ class TrackObject(View, goocanvas.Group, Zoomable):
                 timeline.setSelectionToObj(element, SELECT)
 
     def __init__(self, instance, element, track, timeline):
-        goocanvas.Group.__init__(self)
+        GooCanvas.CanvasGroup.__init__(self)
         View.__init__(self)
         Zoomable.__init__(self)
         self.app = instance
@@ -250,18 +268,18 @@ class TrackObject(View, goocanvas.Group, Zoomable):
         self.namewidth = 0
         self.nameheight = 0
 
-        self.bg = goocanvas.Rect(
+        self.bg = GooCanvas.CanvasRect(
             height=self.height,
             line_width=1)
 
         self.content = Preview(self.app, element)
 
-        self.name = goocanvas.Text(
+        self.name = GooCanvas.CanvasText(
             x=NAME_HOFFSET + NAME_PADDING,
             y=NAME_VOFFSET + NAME_PADDING,
             operator=cairo.OPERATOR_ADD,
             alignment=pango.ALIGN_LEFT)
-        self.namebg = goocanvas.Rect(
+        self.namebg = GooCanvas.CanvasRect(
             radius_x=2,
             radius_y=2,
             x=NAME_HOFFSET,
@@ -273,8 +291,8 @@ class TrackObject(View, goocanvas.Group, Zoomable):
         self.end_handle = EndHandle(self.app, element, timeline,
             height=self.height)
 
-        self.selection_indicator = goocanvas.Rect(
-            visibility=goocanvas.ITEM_INVISIBLE,
+        self.selection_indicator = GooCanvas.CanvasRect(
+            visibility=GooCanvas.CanvasITEM_INVISIBLE,
             line_width=0.0,
             height=self.height)
 
@@ -310,14 +328,14 @@ class TrackObject(View, goocanvas.Group, Zoomable):
         self._expanded = expanded
         if not self._expanded:
             self.height = LAYER_HEIGHT_COLLAPSED
-            self.content.props.visibility = goocanvas.ITEM_INVISIBLE
-            self.namebg.props.visibility = goocanvas.ITEM_INVISIBLE
+            self.content.props.visibility = GooCanvas.CanvasITEM_INVISIBLE
+            self.namebg.props.visibility = GooCanvas.CanvasITEM_INVISIBLE
             self.bg.props.height = LAYER_HEIGHT_COLLAPSED
             self.name.props.y = 0
         else:
             self.height = LAYER_HEIGHT_EXPANDED
-            self.content.props.visibility = goocanvas.ITEM_VISIBLE
-            self.namebg.props.visibility = goocanvas.ITEM_VISIBLE
+            self.content.props.visibility = GooCanvas.CanvasITEM_VISIBLE
+            self.namebg.props.visibility = GooCanvas.CanvasITEM_VISIBLE
             self.bg.props.height = LAYER_HEIGHT_EXPANDED
             self.height = LAYER_HEIGHT_EXPANDED
             self.name.props.y = NAME_VOFFSET + NAME_PADDING
@@ -330,13 +348,13 @@ class TrackObject(View, goocanvas.Group, Zoomable):
 ## Public API
 
     def focus(self):
-        self.start_handle.props.visibility = goocanvas.ITEM_VISIBLE
-        self.end_handle.props.visibility = goocanvas.ITEM_VISIBLE
+        self.start_handle.props.visibility = GooCanvas.CanvasITEM_VISIBLE
+        self.end_handle.props.visibility = GooCanvas.CanvasITEM_VISIBLE
         self.raise_(None)
 
     def unfocus(self):
-        self.start_handle.props.visibility = goocanvas.ITEM_INVISIBLE
-        self.end_handle.props.visibility = goocanvas.ITEM_INVISIBLE
+        self.start_handle.props.visibility = GooCanvas.CanvasITEM_INVISIBLE
+        self.end_handle.props.visibility = GooCanvas.CanvasITEM_INVISIBLE
 
     def zoomChanged(self):
         self._update()
@@ -395,10 +413,10 @@ class TrackObject(View, goocanvas.Group, Zoomable):
     @handler(element, "selected-changed")
     def selected_changed(self, element, state):
         if element.selected:
-            self.selection_indicator.props.visibility = goocanvas.ITEM_VISIBLE
+            self.selection_indicator.props.visibility = GooCanvas.CanvasITEM_VISIBLE
         else:
             self.selection_indicator.props.visibility = \
-                goocanvas.ITEM_INVISIBLE
+                GooCanvas.CanvasITEM_INVISIBLE
 
     @handler(element, "priority-changed")
     def priority_changed(self, element, priority):
@@ -427,6 +445,6 @@ class TrackObject(View, goocanvas.Group, Zoomable):
                 self.namebg.props.height = self.nameheight + NAME_PADDING2X
                 self.namebg.props.width = min(w - NAME_HOFFSET,
                     self.namewidth + NAME_PADDING2X)
-                self.namebg.props.visibility = goocanvas.ITEM_VISIBLE
+                self.namebg.props.visibility = GooCanvas.CanvasITEM_VISIBLE
             else:
-                self.namebg.props.visibility = goocanvas.ITEM_INVISIBLE
+                self.namebg.props.visibility = GooCanvas.CanvasITEM_INVISIBLE

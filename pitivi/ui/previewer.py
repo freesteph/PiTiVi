@@ -23,7 +23,7 @@
 Utility tools and classes for easy generation of previews
 """
 
-import gobject
+from gi.repository import GObject
 import gst
 import cairo
 import os

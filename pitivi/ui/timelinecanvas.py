@@ -19,8 +19,7 @@
 # Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
 # Boston, MA 02110-1301, USA.
 
-import gtk
-import goocanvas
+from gi.repository import Gtk, GooCanvas, Gdk
 from gettext import gettext as _
 
 from pitivi.log.loggable import Loggable
@@ -38,9 +37,9 @@ from pitivi.ui.curve import KW_LABEL_Y_OVERFLOW
 from pitivi.ui.common import SPACING
 
 # cursors to be used for resizing objects
-ARROW = gtk.gdk.Cursor(gtk.gdk.ARROW)
+ARROW = Gdk.Cursor(Gdk.CursorType.ARROW)
 # TODO: replace this with custom cursor
-PLAYHEAD_CURSOR = gtk.gdk.Cursor(gtk.gdk.SB_H_DOUBLE_ARROW)
+PLAYHEAD_CURSOR = Gdk.Cursor(Gdk.CursorType.SB_H_DOUBLE_ARROW)
 
 GlobalSettings.addConfigOption('edgeSnapDeadband',
     section="user-interface",
@@ -69,17 +68,17 @@ class PlayheadController(Controller, Zoomable):
         self._canvas.app.current.seeker.seek(Zoomable.pixelToNs(x))
 
 
-class TimelineCanvas(goocanvas.Canvas, Zoomable, Loggable):
+class TimelineCanvas(GooCanvas.Canvas, Zoomable, Loggable):
 
     __gtype_name__ = 'TimelineCanvas'
-    __gsignals__ = {
-        "expose-event": "override",
-    }
+#    __gsignals__ = {
+#        "expose-event": "override",
+#    }
 
     _tracks = None
 
     def __init__(self, instance, timeline=None):
-        goocanvas.Canvas.__init__(self)
+        GooCanvas.Canvas.__init__(self)
         Zoomable.__init__(self)
         Loggable.__init__(self)
         self.app = instance
@@ -101,15 +100,15 @@ class TimelineCanvas(goocanvas.Canvas, Zoomable, Loggable):
     def _createUI(self):
         self._cursor = ARROW
         root = self.get_root_item()
-        self.tracks = goocanvas.Group()
+        self.tracks = GooCanvas.CanvasGroup()
         self.tracks.set_simple_transform(0, KW_LABEL_Y_OVERFLOW, 1.0, 0)
-        root.add_child(self.tracks)
-        self._marquee = goocanvas.Rect(
+        root.add_child(self.tracks, -1)
+        self._marquee = GooCanvas.CanvasRect(
             parent=root,
             stroke_pattern=unpack_cairo_pattern(0x33CCFF66),
             fill_pattern=unpack_cairo_pattern(0x33CCFF66),
-            visibility=goocanvas.ITEM_INVISIBLE)
-        self._playhead = goocanvas.Rect(
+            visibility=GooCanvas.CanvasItemVisibility.INVISIBLE)
+        self._playhead = GooCanvas.CanvasRect(
             y=-10,
             parent=root,
             line_width=1,
@@ -156,12 +155,12 @@ class TimelineCanvas(goocanvas.Canvas, Zoomable, Loggable):
 
         self.style.apply_default_background(event.window,
             True,
-            gtk.STATE_ACTIVE,
+            Gtk.STATE_ACTIVE,
             event.area,
             event.area.x, event.area.y,
             event.area.width, event.area.height)
 
-        goocanvas.Canvas.do_expose_event(self, event)
+        GooCanvas.Canvasdo_expose_event(self, event)
 
 ## implements selection marquee
 
@@ -187,7 +186,7 @@ class TimelineCanvas(goocanvas.Canvas, Zoomable, Loggable):
 
         @returns: A list of L{Track}, L{TrackObject} tuples
         '''
-        items = self.get_items_in_area(goocanvas.Bounds(x1, y1, x2, y2), True,
+        items = self.get_items_in_area(GooCanvas.Bounds(x1, y1, x2, y2), True,
             True, True)
         if not items:
             return [], []
@@ -229,28 +228,28 @@ class TimelineCanvas(goocanvas.Canvas, Zoomable, Loggable):
 
     def _selectionStart(self, item, target, event):
         self._selecting = True
-        self._marquee.props.visibility = goocanvas.ITEM_VISIBLE
+        self._marquee.props.visibility = GooCanvas.ITEM_VISIBLE
         self._mousedown = self.from_event(event)
         self._marquee.props.width = 0
         self._marquee.props.height = 0
-        self.pointer_grab(self.get_root_item(), gtk.gdk.POINTER_MOTION_MASK |
-            gtk.gdk.BUTTON_RELEASE_MASK, self._cursor, event.time)
+        self.pointer_grab(self.get_root_item(), Gtk.gdk.POINTER_MOTION_MASK |
+            Gtk.gdk.BUTTON_RELEASE_MASK, self._cursor, event.time)
         return True
 
     def _selectionEnd(self, item, target, event):
         seeker = self.app.current.seeker
         self.pointer_ungrab(self.get_root_item(), event.time)
         self._selecting = False
-        self._marquee.props.visibility = goocanvas.ITEM_INVISIBLE
+        self._marquee.props.visibility = GooCanvas.ITEM_INVISIBLE
         if not self._got_motion_notify:
             self.timeline.setSelectionTo(set(), 0)
             seeker.seek(Zoomable.pixelToNs(event.x))
         else:
             self._got_motion_notify = False
             mode = 0
-            if event.get_state() & gtk.gdk.SHIFT_MASK:
+            if event.get_state() & Gtk.gdk.SHIFT_MASK:
                 mode = 1
-            if event.get_state() & gtk.gdk.CONTROL_MASK:
+            if event.get_state() & Gtk.gdk.CONTROL_MASK:
                 mode = 2
             self.timeline.setSelectionTo(self._objectsUnderMarquee(), mode)
         return True

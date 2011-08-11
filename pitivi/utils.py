@@ -23,7 +23,7 @@
 # set of utility functions
 
 import sys
-import gobject
+from gi.repository import GObject
 import gst
 import bisect
 import os

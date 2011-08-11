@@ -24,8 +24,8 @@
 Effects global handling
 """
 import gst
-import gtk
-import gobject
+from gi.repository import Gtk
+from gi.repository import GObject
 import re
 import os
 
@@ -301,13 +301,13 @@ class EffectsHandler(object):
         effect_name = effect_name + ".png"
         icon = None
         try:
-            icon = gtk.gdk.pixbuf_new_from_file(os.path.join(self._pixdir,
+            icon = GdkPixbuf.Pixbuf.new_from_file(os.path.join(self._pixdir,
                 effect_name))
         # empty except clause is bad but load_icon raises gio.Error.
         ## Right, *gio*.
         except:
             try:
-                icon = gtk.gdk.pixbuf_new_from_file(os.path.join(self._pixdir,
+                icon = GdkPixbuf.Pixbuf.new_from_file(os.path.join(self._pixdir,
                     "defaultthumbnail.svg"))
             except:
                 return None

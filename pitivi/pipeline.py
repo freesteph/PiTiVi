@@ -30,7 +30,7 @@ from pitivi.stream import get_src_pads_for_stream, \
      get_sink_pads_for_stream, get_stream_for_caps, \
      match_stream, get_stream_for_pad
 from pitivi.log.loggable import Loggable
-import gobject
+from gi.repository import GObject
 import gst
 
 (STATE_NULL,

@@ -2,7 +2,7 @@
 A collection of objects to use for testing
 """
 
-import gobject
+from gi.repository import GObject
 gobject.threads_init()
 import gst
 import os

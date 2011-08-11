@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 from pitivi.settings import GlobalSettings
-import cairo
 from pitivi.stream import VideoStream, AudioStream, TextStream, \
         MultimediaStream
 from xml.sax.saxutils import escape
@@ -8,7 +7,7 @@ from urllib import unquote
 from gettext import gettext as _
 from gettext import ngettext
 import gst
-import gtk
+from gi.repository import Gtk, cairo
 
 GlobalSettings.addConfigSection("user-interface")
 LAYER_HEIGHT_EXPANDED = 50
@@ -67,7 +66,7 @@ def unpack_color_64(value):
 def unpack_cairo_pattern(value):
     """Transforms the specified RGBA value into a SolidPattern object."""
     red, green, blue, alpha = unpack_color(value)
-    return cairo.SolidPattern(
+    return cairo.Pattern.new_rgb(
         red / 65535.0,
         green / 65535.0,
         blue / 65535.0,
@@ -162,7 +161,7 @@ def roundedrec(context, x, y, w, h, r=10):
 
 
 def model(columns, data):
-    ret = gtk.ListStore(*columns)
+    ret = Gtk.ListStore(*columns)
     for datum in data:
         ret.append(datum)
     return ret

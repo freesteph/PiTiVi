@@ -24,21 +24,18 @@
 """
 Main application
 """
-import gobject
-gobject.threads_init()
-import gtk
+
+from gi.repository import Gtk, GObject
 from optparse import OptionParser
 import os
 import sys
 import urllib
-
 from pitivi.pitivigstutils import patch_gst_python
 patch_gst_python()
 
 from gettext import gettext as _
 
 import pitivi.instance as instance
-
 from pitivi.check import initial_checks
 from pitivi.effects import EffectsHandler
 from pitivi.configure import APPNAME
@@ -211,12 +208,13 @@ class InteractivePitivi(Pitivi):
 
     def __init__(self, debug=False):
         Pitivi.__init__(self)
-        self.mainloop = gobject.MainLoop()
+        self.mainloop = GObject.MainLoop()
         self.actioner = None
         self.gui = None
 
         # Check the dependencies.
         missing_deps = initial_checks()
+        print "checked dependencies"
         if missing_deps:
             message, detail = missing_deps
             self._showStartupError(message, detail)
@@ -266,8 +264,8 @@ class GuiPitivi(InteractivePitivi):
         self._showGui()
 
     def _showStartupError(self, message, detail):
-        dialog = gtk.MessageDialog(type=gtk.MESSAGE_ERROR,
-                                   buttons=gtk.BUTTONS_OK)
+        dialog = Gtk.MessageDialog(type=gtk.MESSAGE_ERROR,
+                                   buttons=Gtk.BUTTONS_OK)
         dialog.set_icon_name("pitivi")
         dialog.set_markup("<b>" + message + "</b>")
         dialog.format_secondary_text(detail)
@@ -277,7 +275,7 @@ class GuiPitivi(InteractivePitivi):
         self.shutdown()
 
     def _createGui(self):
-        """Returns a gtk.Widget which represents the UI."""
+        """Returns a Gtk.Widget which represents the UI."""
         raise NotImplementedError()
 
     def _showGui(self):
@@ -392,7 +390,7 @@ class PreviewGuiPitivi(GuiPitivi):
 
     def _createGui(self):
         self.viewer = PitiviViewer(self)
-        window = gtk.Window()
+        window = Gtk.Window()
         window.connect("delete-event", self._deleteCb)
         window.add(self.viewer)
         return window
@@ -407,7 +405,7 @@ class PreviewGuiPitivi(GuiPitivi):
         # create previewer and set ui
         previewer = Previewer(project, ui=self.viewer)
         self._setActioner(previewer)
-        # hack to make the gtk.HScale seek slider UI behave properly
+        # hack to make the Gtk.HScale seek slider UI behave properly
         self.viewer._durationChangedCb(None, project.timeline.duration)
 
 

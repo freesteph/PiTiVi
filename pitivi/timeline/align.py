@@ -27,7 +27,7 @@ import array
 import time
 import numpy
 
-import gobject
+from gi.repository import GObject
 import gst
 from pitivi.utils import beautify_ETA, call_false
 from pitivi.timeline.extract import Extractee, RandomAccessAudioExtractor

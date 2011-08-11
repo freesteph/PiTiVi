@@ -23,7 +23,7 @@
 Dialog box listing files which had errors, and the reasons.
 """
 
-import gtk
+from gi.repository import Gtk
 import os
 import pango
 
@@ -44,7 +44,7 @@ class FileListErrorDialog(Signallable, Loggable):
 
     def __init__(self, title, headline):
         Loggable.__init__(self)
-        self.builder = gtk.Builder()
+        self.builder = Gtk.Builder()
         self.builder.add_from_file(os.path.join(get_ui_dir(),
             "filelisterrordialog.ui"))
         self.builder.connect_signals(self)
@@ -75,13 +75,13 @@ class FileListErrorDialog(Signallable, Loggable):
                 uri = uri[7:]
             uri = uri.split('/')[-1]
             uri = unquote(uri)
-            exp = gtk.Expander(uri)
+            exp = Gtk.Expander(uri)
         else:
-            exp = gtk.Expander(reason)
+            exp = Gtk.Expander(reason)
 
-        textbuffer = gtk.TextBuffer()
+        textbuffer = Gtk.TextBuffer()
         table = textbuffer.get_tag_table()
-        boldtag = gtk.TextTag()
+        boldtag = Gtk.TextTag()
         boldtag.props.weight = pango.WEIGHT_BOLD
         table.add(boldtag)
 
@@ -98,8 +98,8 @@ class FileListErrorDialog(Signallable, Loggable):
             end = textbuffer.get_end_iter()
             textbuffer.insert(end, "%s\n" % extra)
 
-        textview = gtk.TextView(textbuffer)
-        textview.set_wrap_mode(gtk.WRAP_WORD)
+        textview = Gtk.TextView(textbuffer)
+        textview.set_wrap_mode(Gtk.WRAP_WORD)
 
         exp.add(textview)
 

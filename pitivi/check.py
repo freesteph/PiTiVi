@@ -23,7 +23,7 @@
 Runtime checks.
 """
 
-import gtk
+from gi.repository import Gtk
 import gst
 
 from gettext import gettext as _
@@ -83,9 +83,6 @@ def check_required_version(modulename):
     containing the strings of the required version and the installed version.
     This function does not check for the existence of the given module !
     """
-    if modulename == "gtk":
-        if list(gtk.pygtk_version) < _string_to_list(PYGTK_REQ):
-            return [PYGTK_REQ, _version_to_string(gtk.pygtk_version)]
     if modulename == "pygst":
         if list(gst.get_pygst_version()) < _string_to_list(PYGST_REQ):
             return [PYGST_REQ, _version_to_string(gst.get_pygst_version())]
@@ -114,9 +111,6 @@ def initial_checks():
     if not reg.find_plugin("autodetect"):
         return (_("Could not find the autodetect plugins"),
                 _("Make sure you have installed gst-plugins-good and that it's available in the GStreamer plugin path."))
-    if not hasattr(gtk.gdk.Window, 'cairo_create'):
-        return (_("PyGTK doesn't have cairo support"),
-                _("Please use a version of the GTK+ Python bindings built with cairo support."))
     if not initiate_videosinks():
         return (_("Could not initiate the video output plugins"),
                 _("Make sure you have at least one valid video output sink available (xvimagesink or ximagesink)."))
@@ -126,20 +120,12 @@ def initial_checks():
     if not __try_import__("cairo"):
         return (_("Could not import the cairo Python bindings"),
                 _("Make sure you have the cairo Python bindings installed."))
-    if not __try_import__("goocanvas"):
-        return (_("Could not import the goocanvas Python bindings"),
-                _("Make sure you have the goocanvas Python bindings installed."))
+    # if not __try_import__("GooCanvas.Canvas):
+    #     return (_("Could not import the GooCanvas.CanvasPython bindings"),
+    #             _("Make sure you have the GooCanvas.CanvasPython bindings installed."))
     if not __try_import__("xdg"):
         return (_("Could not import the xdg Python library"),
                 _("Make sure you have the xdg Python library installed."))
-    req, inst = check_required_version("gtk")
-    if req:
-        return (_("You do not have a recent enough version of the GTK+ Python bindings (your version %s)") % inst,
-                _("Install a version of the GTK+ Python bindings greater than or equal to %s.") % req)
-    req, inst = check_required_version("pygst")
-    if req:
-        return (_("You do not have a recent enough version of GStreamer Python bindings (your version %s)") % inst,
-                _("Install a version of the GStreamer Python bindings greater than or equal to %s.") % req)
     req, inst = check_required_version("gst")
     if req:
         return (_("You do not have a recent enough version of GStreamer (your version %s)") % inst,

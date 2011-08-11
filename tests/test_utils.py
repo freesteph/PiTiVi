@@ -22,7 +22,7 @@
 
 from unittest import TestCase
 
-import gobject
+from gi.repository import GObject
 gobject.threads_init()
 import gst
 from pitivi.utils import beautify_length

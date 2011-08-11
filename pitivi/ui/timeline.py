@@ -23,16 +23,17 @@
 Timeline widgets for the complex view
 """
 
-import gtk
+from gi.repository import Gtk
 import urllib
 
 from pitivi.log.loggable import Loggable
 import ruler
 import dnd
 import gst
-import gobject
+from gi.repository import GObject
 
 from gettext import gettext as _
+print "=== IMPORTING SEEKER=="
 from timelinecanvas import TimelineCanvas
 from timelinecontrols import TimelineControls
 from pitivi.receiver import receiver, handler
@@ -124,12 +125,12 @@ ui = '''
 # Tree of contents (ClassName(ParentClass))
 # -----------------------------------------
 #
-# Timeline(gtk.VBox)
+# Timeline(Gtk.VBox)
 # |  Top container
 # |
-# +--ScaleRuler(gtk.Layout)
+# +--ScaleRuler(Gtk.Layout)
 # |
-# +--gtk.ScrolledWindow
+# +--Gtk.ScrolledWindow
 #    |
 #    +--TimelineCanvas(goocanas.Canvas)
 #    |  |
@@ -138,13 +139,13 @@ ui = '''
 #    +--Status Bar ??
 
 
-class InfoStub(gtk.HBox, Loggable):
+class InfoStub(Gtk.HBox, Loggable):
     """
     Box used to display information on the current state of the timeline
     """
 
     def __init__(self):
-        gtk.HBox.__init__(self)
+        Gtk.HBox.__init__(self)
         Loggable.__init__(self)
         self.errors = []
         self.showing = False
@@ -154,17 +155,17 @@ class InfoStub(gtk.HBox, Loggable):
 
     def _makeUI(self):
         self.set_spacing(SPACING)
-        self.erroricon = gtk.image_new_from_stock(gtk.STOCK_DIALOG_WARNING,
-                                                  gtk.ICON_SIZE_SMALL_TOOLBAR)
+        self.erroricon = Gtk.image_new_from_stock(gtk.STOCK_DIALOG_WARNING,
+                                                  Gtk.IconSize.SMALL_TOOLBAR)
 
         self.pack_start(self.erroricon, expand=False)
 
-        self.infolabel = gtk.Label(self._errorsmessage)
+        self.infolabel = Gtk.Label(self._errorsmessage)
         self.infolabel.set_alignment(0, 0.5)
 
-        self.questionbutton = gtk.Button()
-        self.infoicon = gtk.Image()
-        self.infoicon.set_from_stock(gtk.STOCK_INFO, gtk.ICON_SIZE_SMALL_TOOLBAR)
+        self.questionbutton = Gtk.Button()
+        self.infoicon = Gtk.Image()
+        self.infoicon.set_from_stock(Gtk.STOCK_INFO, Gtk.IconSize.SMALL_TOOLBAR)
         self.questionbutton.add(self.infoicon)
         self.questionbutton.connect("clicked", self._questionButtonClickedCb)
         self._questionshowing = False
@@ -203,11 +204,11 @@ class InfoStub(gtk.HBox, Loggable):
 
     def hide(self):
         self.log("hiding")
-        gtk.VBox.hide(self)
+        Gtk.VBox.hide(self)
         self.showing = False
 
 
-class Timeline(gtk.Table, Loggable, Zoomable):
+class Timeline(Gtk.Table, Loggable, Zoomable):
 
     # the screen width of the current unit
     unit_width = 10
@@ -215,7 +216,7 @@ class Timeline(gtk.Table, Loggable, Zoomable):
     # from zoomed out to zoomed in
 
     def __init__(self, instance, ui_manager):
-        gtk.Table.__init__(self, rows=2, columns=1, homogeneous=False)
+        Gtk.Table.__init__(self, rows=2, columns=1, homogeneous=False)
         Loggable.__init__(self)
         Zoomable.__init__(self)
         self.log("Creating Timeline")
@@ -234,47 +235,48 @@ class Timeline(gtk.Table, Loggable, Zoomable):
         self.rate = gst.Fraction(1, 1)
 
     def _createUI(self):
-        self.leftSizeGroup = gtk.SizeGroup(gtk.SIZE_GROUP_HORIZONTAL)
+        self.leftSizeGroup = Gtk.SizeGroup()
+        self.leftSizeGroup.set_mode(Gtk.SizeGroupMode.HORIZONTAL)
         self.props.row_spacing = 2
         self.props.column_spacing = 2
-        self.hadj = gtk.Adjustment()
-        self.vadj = gtk.Adjustment()
+        self.hadj = Gtk.Adjustment()
+        self.vadj = Gtk.Adjustment()
 
         # zooming slider's "zoom fit" button
-        zoom_controls_hbox = gtk.HBox()
-        zoom_fit_btn = gtk.Button()
-        zoom_fit_btn.set_relief(gtk.RELIEF_NONE)
+        zoom_controls_hbox = Gtk.HBox()
+        zoom_fit_btn = Gtk.Button()
+        zoom_fit_btn.set_relief(Gtk.ReliefStyle.NONE)
         zoom_fit_btn.set_tooltip_text(ZOOM_FIT)
-        zoom_fit_icon = gtk.Image()
-        zoom_fit_icon.set_from_stock(gtk.STOCK_ZOOM_FIT, gtk.ICON_SIZE_BUTTON)
-        zoom_fit_btn_hbox = gtk.HBox()
-        zoom_fit_btn_hbox.pack_start(zoom_fit_icon)
-        zoom_fit_btn_hbox.pack_start(gtk.Label(_("Zoom")))
+        zoom_fit_icon = Gtk.Image()
+        zoom_fit_icon.set_from_stock(Gtk.STOCK_ZOOM_FIT, Gtk.IconSize.BUTTON)
+        zoom_fit_btn_hbox = Gtk.HBox()
+        zoom_fit_btn_hbox.pack_start(zoom_fit_icon, False, False, 0)
+        zoom_fit_btn_hbox.pack_start(Gtk.Label(_("Zoom")), False, False, 0)
         zoom_fit_btn.add(zoom_fit_btn_hbox)
         zoom_fit_btn.connect("clicked", self._zoomFitCb)
-        zoom_controls_hbox.pack_start(zoom_fit_btn)
+        zoom_controls_hbox.pack_start(zoom_fit_btn, False, False, 0)
         # zooming slider
-        self._zoomAdjustment = gtk.Adjustment()
+        self._zoomAdjustment = Gtk.Adjustment()
         self._zoomAdjustment.set_value(Zoomable.getCurrentZoomLevel())
         self._zoomAdjustment.connect("value-changed",
             self._zoomAdjustmentChangedCb)
         self._zoomAdjustment.props.lower = 0
         self._zoomAdjustment.props.upper = Zoomable.zoom_steps
-        zoomslider = gtk.HScale(self._zoomAdjustment)
+        zoomslider = Gtk.HScale(adjustment=self._zoomAdjustment)
         zoomslider.props.draw_value = False
         zoomslider.set_tooltip_text(_("Zoom Timeline"))
         zoomslider.connect("scroll-event", self._zoomSliderScrollCb)
         zoomslider.set_size_request(100, 0)  # At least 100px wide for precision
-        zoom_controls_hbox.pack_start(zoomslider)
-        self.attach(zoom_controls_hbox, 0, 1, 0, 1, yoptions=0, xoptions=gtk.FILL)
+        zoom_controls_hbox.pack_start(zoomslider, False, False, 0)
+        self.attach(zoom_controls_hbox, 0, 1, 0, 1, yoptions=0, xoptions=Gtk.AttachOptions.FILL)
 
         # controls for tracks and layers
         self._controls = TimelineControls()
-        controlwindow = gtk.Viewport(None, self.vadj)
+        controlwindow = Gtk.Viewport(hadjustment=None, vadjustment=self.vadj)
         controlwindow.add(self._controls)
         controlwindow.set_size_request(-1, 1)
-        controlwindow.set_shadow_type(gtk.SHADOW_OUT)
-        self.attach(controlwindow, 0, 1, 1, 2, xoptions=gtk.FILL)
+        controlwindow.set_shadow_type(Gtk.ShadowType.OUT)
+        self.attach(controlwindow, 0, 1, 1, 2, xoptions=Gtk.AttachOptions.FILL)
 
         # timeline ruler
         self.ruler = ruler.ScaleRuler(self.app, self.hadj)
@@ -282,8 +284,8 @@ class Timeline(gtk.Table, Loggable, Zoomable):
         #self.ruler.set_border_width(2)
         self.ruler.connect("key-press-event", self._keyPressEventCb)
         self.ruler.connect("size-allocate", self._rulerSizeAllocateCb)
-        rulerframe = gtk.Frame()
-        rulerframe.set_shadow_type(gtk.SHADOW_OUT)
+        rulerframe = Gtk.Frame()
+        rulerframe.set_shadow_type(Gtk.ShadowType.OUT)
         rulerframe.add(self.ruler)
         self.attach(rulerframe, 1, 2, 0, 1, yoptions=0)
 
@@ -294,8 +296,8 @@ class Timeline(gtk.Table, Loggable, Zoomable):
         self.vadj.connect("changed", self._unsureVadjHeightCb)
 
         # scrollbar
-        self._hscrollbar = gtk.HScrollbar(self.hadj)
-        self._vscrollbar = gtk.VScrollbar(self.vadj)
+        self._hscrollbar = Gtk.HScrollbar(self.hadj)
+        self._vscrollbar = Gtk.VScrollbar(self.vadj)
         self.attach(self._hscrollbar, 1, 2, 2, 3, yoptions=0)
         self.attach(self._vscrollbar, 2, 3, 1, 2, xoptions=0)
         self.hadj.connect("value-changed", self._updateScrollPosition)
@@ -310,24 +312,24 @@ class Timeline(gtk.Table, Loggable, Zoomable):
 
         # toolbar actions
         actions = (
-            ("ZoomIn", gtk.STOCK_ZOOM_IN, None, "<Control>plus", ZOOM_IN,
+            ("ZoomIn", Gtk.STOCK_ZOOM_IN, None, "<Control>plus", ZOOM_IN,
                 self._zoomInCb),
-            ("ZoomOut", gtk.STOCK_ZOOM_OUT, None, "<Control>minus", ZOOM_OUT,
+            ("ZoomOut", Gtk.STOCK_ZOOM_OUT, None, "<Control>minus", ZOOM_OUT,
                 self._zoomOutCb),
-            ("ZoomFit", gtk.STOCK_ZOOM_FIT, None, None, ZOOM_FIT,
+            ("ZoomFit", Gtk.STOCK_ZOOM_FIT, None, None, ZOOM_FIT,
                 self._zoomFitCb),
 
             # actions for adding additional accelerators
-            ("ControlEqualAccel", gtk.STOCK_ZOOM_IN, None, "<Control>equal", ZOOM_IN,
+            ("ControlEqualAccel", Gtk.STOCK_ZOOM_IN, None, "<Control>equal", ZOOM_IN,
                 self._zoomInCb),
-            ("ControlKPAddAccel", gtk.STOCK_ZOOM_IN, None, "<Control>KP_Add", ZOOM_IN,
+            ("ControlKPAddAccel", Gtk.STOCK_ZOOM_IN, None, "<Control>KP_Add", ZOOM_IN,
                 self._zoomInCb),
-            ("ControlKPSubtractAccel", gtk.STOCK_ZOOM_OUT, None, "<Control>KP_Subtract", ZOOM_OUT,
+            ("ControlKPSubtractAccel", Gtk.STOCK_ZOOM_OUT, None, "<Control>KP_Subtract", ZOOM_OUT,
                 self._zoomOutCb),
         )
 
         selection_actions = (
-            ("DeleteObj", gtk.STOCK_DELETE, None, "Delete", DELETE,
+            ("DeleteObj", Gtk.STOCK_DELETE, None, "Delete", DELETE,
                 self.deleteSelected),
             ("UnlinkObj", "pitivi-unlink", None, "<Shift><Control>L", UNLINK,
                 self.unlinkSelected),
@@ -352,11 +354,11 @@ class Timeline(gtk.Table, Loggable, Zoomable):
                 self.nextframe),
         )
 
-        actiongroup = gtk.ActionGroup("timelinepermanent")
+        actiongroup = Gtk.ActionGroup("timelinepermanent")
         actiongroup.add_actions(actions)
         self.ui_manager.insert_action_group(actiongroup, 0)
 
-        actiongroup = gtk.ActionGroup("timelineselection")
+        actiongroup = Gtk.ActionGroup("timelineselection")
         actiongroup.add_actions(selection_actions)
         actiongroup.add_actions(self.playhead_actions)
         self.link_action = actiongroup.get_action("LinkObj")
@@ -375,9 +377,9 @@ class Timeline(gtk.Table, Loggable, Zoomable):
         self.ui_manager.add_ui_from_string(ui)
 
         # drag and drop
-        self.drag_dest_set(gtk.DEST_DEFAULT_MOTION,
+        self.drag_dest_set(Gtk.DEST_DEFAULT_MOTION,
             [dnd.FILESOURCE_TUPLE, dnd.EFFECT_TUPLE],
-            gtk.gdk.ACTION_COPY)
+            Gtk.gdk.ACTION_COPY)
 
         self.connect("drag-data-received", self._dragDataReceivedCb)
         self.connect("drag-leave", self._dragLeaveCb)
@@ -390,25 +392,25 @@ class Timeline(gtk.Table, Loggable, Zoomable):
     def _keyPressEventCb(self, unused_widget, event):
         kv = event.keyval
         self.debug("kv:%r", kv)
-        if kv not in [gtk.keysyms.Left, gtk.keysyms.Right]:
+        if kv not in [Gtk.keysyms.Left, gtk.keysyms.Right]:
             return False
         mod = event.get_state()
         try:
-            if mod & gtk.gdk.CONTROL_MASK:
+            if mod & Gtk.gdk.CONTROL_MASK:
                 now = self.project.pipeline.getPosition()
                 ltime, rtime = self.project.timeline.edges.closest(now)
 
-            if kv == gtk.keysyms.Left:
-                if mod & gtk.gdk.SHIFT_MASK:
+            if kv == Gtk.keysyms.Left:
+                if mod & Gtk.gdk.SHIFT_MASK:
                     self._seekRelative(-gst.SECOND)
-                elif mod & gtk.gdk.CONTROL_MASK:
+                elif mod & Gtk.gdk.CONTROL_MASK:
                     self._seeker.seek(ltime + 1)
                 else:
                     self._seekRelative(-long(self.rate * gst.SECOND))
-            elif kv == gtk.keysyms.Right:
-                if mod & gtk.gdk.SHIFT_MASK:
+            elif kv == Gtk.keysyms.Right:
+                if mod & Gtk.gdk.SHIFT_MASK:
                     self._seekRelative(gst.SECOND)
-                elif mod & gtk.gdk.CONTROL_MASK:
+                elif mod & Gtk.gdk.CONTROL_MASK:
                     self._seeker.seek(rtime + 1)
                 else:
                     self._seekRelative(long(self.rate * gst.SECOND))
@@ -430,9 +432,9 @@ class Timeline(gtk.Table, Loggable, Zoomable):
 
         if self._factories is None:
             if  context.targets in DND_EFFECT_LIST:
-                atom = gtk.gdk.atom_intern(dnd.EFFECT_TUPLE[0])
+                atom = Gtk.gdk.atom_intern(dnd.EFFECT_TUPLE[0])
             else:
-                atom = gtk.gdk.atom_intern(dnd.FILESOURCE_TUPLE[0])
+                atom = Gtk.gdk.atom_intern(dnd.FILESOURCE_TUPLE[0])
 
             self.drag_get_data(context, atom, timestamp)
             self.drag_highlight()
@@ -521,7 +523,7 @@ class Timeline(gtk.Table, Loggable, Zoomable):
                 return False
             self._factories = [self.app.effects.getFactoryFromName(selection.data)]
 
-        context.drag_status(gtk.gdk.ACTION_COPY, timestamp)
+        context.drag_status(Gtk.gdk.ACTION_COPY, timestamp)
         return True
 
     def _getTimelineObjectUnderMouse(self, x, y, stream):
@@ -550,26 +552,26 @@ class Timeline(gtk.Table, Loggable, Zoomable):
 ## Zooming and Scrolling
 
     def _scrollEventCb(self, canvas, event):
-        if event.state & gtk.gdk.SHIFT_MASK:
+        if event.state & Gtk.gdk.SHIFT_MASK:
             # shift + scroll => vertical (up/down) scroll
-            if event.direction == gtk.gdk.SCROLL_UP:
+            if event.direction == Gtk.gdk.SCROLL_UP:
                 self.scroll_up()
-            elif event.direction == gtk.gdk.SCROLL_DOWN:
+            elif event.direction == Gtk.gdk.SCROLL_DOWN:
                 self.scroll_down()
-            event.state &= ~gtk.gdk.SHIFT_MASK
-        elif event.state & gtk.gdk.CONTROL_MASK:
+            event.state &= ~Gtk.gdk.SHIFT_MASK
+        elif event.state & Gtk.gdk.CONTROL_MASK:
             # zoom + scroll => zooming (up: zoom in)
-            if event.direction == gtk.gdk.SCROLL_UP:
+            if event.direction == Gtk.gdk.SCROLL_UP:
                 Zoomable.zoomIn()
                 return True
-            elif event.direction == gtk.gdk.SCROLL_DOWN:
+            elif event.direction == Gtk.gdk.SCROLL_DOWN:
                 Zoomable.zoomOut()
                 return True
             return False
         else:
-            if event.direction == gtk.gdk.SCROLL_UP:
+            if event.direction == Gtk.gdk.SCROLL_UP:
                 self.scroll_left()
-            elif event.direction == gtk.gdk.SCROLL_DOWN:
+            elif event.direction == Gtk.gdk.SCROLL_DOWN:
                 self.scroll_right()
         return True
 
@@ -611,9 +613,9 @@ class Timeline(gtk.Table, Loggable, Zoomable):
 
     def _zoomSliderScrollCb(self, unused_widget, event):
         value = self._zoomAdjustment.get_value()
-        if event.direction in [gtk.gdk.SCROLL_UP, gtk.gdk.SCROLL_RIGHT]:
+        if event.direction in [Gtk.gdk.SCROLL_UP, Gdk.SCROLL_RIGHT]:
             self._zoomAdjustment.set_value(value + 1)
-        elif event.direction in [gtk.gdk.SCROLL_DOWN, gtk.gdk.SCROLL_LEFT]:
+        elif event.direction in [Gtk.gdk.SCROLL_DOWN, Gdk.SCROLL_LEFT]:
             self._zoomAdjustment.set_value(value - 1)
 
     def zoomChanged(self):
@@ -771,7 +773,7 @@ class Timeline(gtk.Table, Loggable, Zoomable):
 ## ToolBar callbacks
     def hide(self):
         self.actiongroup.set_visible(False)
-        gtk.Vbox.hide(self)
+        Gtk.Vbox.hide(self)
 
     def _zoomFitCb(self, unused_action):
         self.app.gui.setBestZoomRatio()

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
-import gobject
+from gi.repository import GObject
 import gst
-import gtk
+from gi.repository import Gtk
 import pango
 import os
 
@@ -44,10 +44,10 @@ def get_playbin():
         return gst.element_factory_make("playbin", "preview-player")
 
 
-class PreviewWidget(gtk.VBox, Loggable):
+class PreviewWidget(Gtk.VBox, Loggable):
 
     def __init__(self, instance):
-        gtk.VBox.__init__(self)
+        Gtk.VBox.__init__(self)
         Loggable.__init__(self)
 
         self.log("Init PreviewWidget")
@@ -85,36 +85,36 @@ class PreviewWidget(gtk.VBox, Loggable):
         # Gui elements:
         # Drawing area for video output
         self.preview_video = ViewerWidget()
-        self.preview_video.modify_bg(gtk.STATE_NORMAL, self.preview_video.style.black)
+        self.preview_video.modify_bg(Gtk.STATE_NORMAL, self.preview_video.style.black)
         self.pack_start(self.preview_video, expand=False)
 
         # An image for images and audio
-        self.preview_image = gtk.Image()
+        self.preview_image = Gtk.Image()
         self.preview_image.set_size_request(self.settings.FCpreviewWidth, self.settings.FCpreviewHeight)
         self.preview_image.show()
         self.pack_start(self.preview_image, expand=False)
 
         # Play button
-        self.bbox = gtk.HBox()
-        self.play_button = gtk.ToolButton(gtk.STOCK_MEDIA_PLAY)
+        self.bbox = Gtk.HBox()
+        self.play_button = Gtk.ToolButton(gtk.STOCK_MEDIA_PLAY)
         self.play_button.connect("clicked", self._on_start_stop_clicked_cb)
         self.bbox.pack_start(self.play_button, expand=False)
 
         #Scale for position handling
-        self.pos_adj = gtk.Adjustment()
-        self.seeker = gtk.HScale(self.pos_adj)
-        self.seeker.set_update_policy(gtk.UPDATE_DISCONTINUOUS)
+        self.pos_adj = Gtk.Adjustment()
+        self.seeker = Gtk.HScale(self.pos_adj)
+        self.seeker.set_update_policy(Gtk.UPDATE_DISCONTINUOUS)
         self.seeker.connect('button-press-event', self._on_seeker_press_cb)
         self.seeker.connect('button-release-event', self._on_seeker_press_cb)
         self.seeker.connect('motion-notify-event', self._on_motion_notify_cb)
         self.seeker.set_draw_value(False)
         self.seeker.show()
-        self.bbox.pack_start(self.seeker)
+        self.bbox.pack_start(self.seeker, False, False, 0)
 
         # Zoom buttons
-        self.b_zoom_in = gtk.ToolButton(gtk.STOCK_ZOOM_IN)
+        self.b_zoom_in = Gtk.ToolButton(gtk.STOCK_ZOOM_IN)
         self.b_zoom_in.connect("clicked", self._on_zoom_clicked_cb, 1)
-        self.b_zoom_out = gtk.ToolButton(gtk.STOCK_ZOOM_OUT)
+        self.b_zoom_out = Gtk.ToolButton(gtk.STOCK_ZOOM_OUT)
         self.b_zoom_out.connect("clicked", self._on_zoom_clicked_cb, -1)
         self.bbox.pack_start(self.b_zoom_in, expand=False)
         self.bbox.pack_start(self.b_zoom_out, expand=False)
@@ -122,19 +122,19 @@ class PreviewWidget(gtk.VBox, Loggable):
         self.pack_start(self.bbox, expand=False)
 
         # Label for metadata tags
-        self.l_tags = gtk.Label()
-        self.l_tags.set_justify(gtk.JUSTIFY_LEFT)
+        self.l_tags = Gtk.Label()
+        self.l_tags.set_justify(Gtk.JUSTIFY_LEFT)
         self.l_tags.set_ellipsize(pango.ELLIPSIZE_END)
         self.l_tags.show()
         self.pack_start(self.l_tags, expand=False)
 
         # Error handling
-        vbox = gtk.VBox()
+        vbox = Gtk.VBox(homogeneous=False, spacing=0)
         vbox.set_spacing(SPACING)
-        self.l_error = gtk.Label(_("PiTiVi can not preview this file."))
-        self.b_details = gtk.Button(_("More info"))
+        self.l_error = Gtk.Label(_("PiTiVi can not preview this file."))
+        self.b_details = Gtk.Button(_("More info"))
         self.b_details.connect('clicked', self._on_b_details_clicked_cb)
-        vbox.pack_start(self.l_error)
+        vbox.pack_start(self.l_error, False, False, 0)
         vbox.pack_start(self.b_details, expand=False, fill=False)
         vbox.show()
         self.pack_start(vbox, expand=False, fill=False)
@@ -188,11 +188,11 @@ class PreviewWidget(gtk.VBox, Loggable):
             if type(factory) == PictureFileSourceFactory:
                 self.current_preview_type = 'image'
                 self.preview_video.hide()
-                pixbuf = gtk.gdk.pixbuf_new_from_file(gst.uri_get_location(uri))
+                pixbuf = GdkPixbuf.Pixbuf.new_from_file(gst.uri_get_location(uri))
                 pixbuf_w = pixbuf.get_width()
                 pixbuf_h = pixbuf.get_height()
                 w, h = self.__get_best_size(pixbuf_w, pixbuf_h)
-                pixbuf = pixbuf.scale_simple(w, h, gtk.gdk.INTERP_NEAREST)
+                pixbuf = pixbuf.scale_simple(w, h, Gtk.gdk.INTERP_NEAREST)
                 self.preview_image.set_from_pixbuf(pixbuf)
                 self.preview_image.set_size_request(self.settings.FCpreviewWidth, self.settings.FCpreviewHeight)
                 self.preview_image.show()
@@ -254,7 +254,7 @@ class PreviewWidget(gtk.VBox, Loggable):
         self.b_details.hide()
         self.description = ""
         self.l_tags.set_markup("")
-        self.play_button.set_stock_id(gtk.STOCK_MEDIA_PLAY)
+        self.play_button.set_stock_id(Gtk.STOCK_MEDIA_PLAY)
         self.player.set_state(gst.STATE_NULL)
         self.is_playing = False
         self.tags = {}
@@ -265,11 +265,11 @@ class PreviewWidget(gtk.VBox, Loggable):
 
     def _on_seeker_press_cb(self, widget, event):
         event.button = 2
-        if event.type == gtk.gdk.BUTTON_PRESS:
+        if event.type == Gtk.gdk.BUTTON_PRESS:
             self.countinuous_seek = True
             if self.is_playing:
                 self.player.set_state(gst.STATE_PAUSED)
-        elif event.type == gtk.gdk.BUTTON_RELEASE:
+        elif event.type == Gtk.gdk.BUTTON_RELEASE:
             self.countinuous_seek = False
             value = long(widget.get_value())
             self.player.seek_simple(self.time_format, gst.SEEK_FLAG_FLUSH, value)
@@ -285,7 +285,7 @@ class PreviewWidget(gtk.VBox, Loggable):
         if message.type == gst.MESSAGE_EOS:
             self.player.set_state(gst.STATE_NULL)
             self.is_playing = False
-            self.play_button.set_stock_id(gtk.STOCK_MEDIA_PLAY)
+            self.play_button.set_stock_id(Gtk.STOCK_MEDIA_PLAY)
             self.pos_adj.set_value(0)
         elif message.type == gst.MESSAGE_ERROR:
             self.player.set_state(gst.STATE_NULL)
@@ -300,16 +300,16 @@ class PreviewWidget(gtk.VBox, Loggable):
         return self.is_playing
 
     def _on_start_stop_clicked_cb(self, button):
-        if button.get_stock_id() == gtk.STOCK_MEDIA_PLAY:
+        if button.get_stock_id() == Gtk.STOCK_MEDIA_PLAY:
             self.player.set_state(gst.STATE_PLAYING)
             gobject.timeout_add(1000, self._update_position)
             self.is_playing = True
-            button.set_stock_id(gtk.STOCK_MEDIA_PAUSE)
+            button.set_stock_id(Gtk.STOCK_MEDIA_PAUSE)
             self.log("Preview started")
         else:
             self.player.set_state(gst.STATE_PAUSED)
             self.is_playing = False
-            button.set_stock_id(gtk.STOCK_MEDIA_PLAY)
+            button.set_stock_id(Gtk.STOCK_MEDIA_PLAY)
             self.log("Preview paused")
 
     def _on_zoom_clicked_cb(self, button, increment):
@@ -338,8 +338,8 @@ class PreviewWidget(gtk.VBox, Loggable):
                 h *= 0.8
                 if (w, h) < self.original_dims:
                     (w, h) = self.original_dims
-            pixbuf = gtk.gdk.pixbuf_new_from_file(gst.uri_get_location(self.current_selected_uri))
-            pixbuf = pixbuf.scale_simple(int(w), int(h), gtk.gdk.INTERP_BILINEAR)
+            pixbuf = GdkPixbuf.Pixbuf.new_from_file(gst.uri_get_location(self.current_selected_uri))
+            pixbuf = pixbuf.scale_simple(int(w), int(h), Gtk.gdk.INTERP_BILINEAR)
 
             w = max(w, self.settings.FCpreviewWidth)
             h = max(h, self.settings.FCpreviewHeight)
@@ -355,10 +355,10 @@ class PreviewWidget(gtk.VBox, Loggable):
                 sink = mess.src
                 sink.set_property('force-aspect-ratio', True)
                 sink.set_property("handle-expose", True)
-                gtk.gdk.threads_enter()
+                Gtk.gdk.threads_enter()
                 sink.set_xwindow_id(self.preview_video.window_xid)
                 sink.expose()
-                gtk.gdk.threads_leave()
+                Gtk.gdk.threads_leave()
         return gst.BUS_PASS
 
     def _tag_found_cb(self, abus, mess):
@@ -392,10 +392,10 @@ class PreviewWidget(gtk.VBox, Loggable):
     def _on_b_details_clicked_cb(self, unused_button):
         mess, detail = self.preview_cache_errors.get(self.current_selected_uri, (None, None))
         if mess is not None:
-            dialog = gtk.MessageDialog(None,
-                gtk.DIALOG_MODAL,
-                gtk.MESSAGE_WARNING,
-                gtk.BUTTONS_OK,
+            dialog = Gtk.MessageDialog(None,
+                Gtk.DIALOG_MODAL,
+                Gtk.MESSAGE_WARNING,
+                Gtk.BUTTONS_OK,
                 mess)
             dialog.set_icon_name("pitivi")
             dialog.set_title(_("Error while analyzing a file"))

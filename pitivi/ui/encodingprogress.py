@@ -24,11 +24,11 @@ Encoding dialog
 """
 
 import os
-import gtk
+from gi.repository import Gtk
 import gst
 import pitivi.configure as configure
 from gettext import gettext as _
-import gobject
+from gi.repository import GObject
 from pitivi.signalinterface import Signallable
 
 
@@ -40,7 +40,7 @@ class EncodingProgressDialog(Signallable):
 
     def __init__(self, app, parent):
         self.app = app
-        self.builder = gtk.Builder()
+        self.builder = Gtk.Builder()
         self.builder.add_from_file(os.path.join(configure.get_ui_dir(),
             "encodingprogress.ui"))
         self.builder.connect_signals(self)
@@ -68,7 +68,7 @@ class EncodingProgressDialog(Signallable):
 
     def setState(self, state):
         if state == gst.STATE_PLAYING:
-            self.play_pause_button.props.label = gtk.STOCK_MEDIA_PAUSE
+            self.play_pause_button.props.label = Gtk.STOCK_MEDIA_PAUSE
         else:
             self.play_pause_button.props.label = 'pitivi-render'
 

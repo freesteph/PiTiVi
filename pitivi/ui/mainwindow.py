@@ -26,9 +26,7 @@ Main GTK+ window
 
 import os
 import platform
-import gtk
-import gobject
-gobject.threads_init()
+from gi.repository import Gtk, Gdk, GdkPixbuf
 import gst
 from urllib import unquote
 import webbrowser
@@ -41,13 +39,13 @@ else:
     HAVE_GCONF = True
 
 from gettext import gettext as _
-from gtk import RecentManager
 
 from pitivi.log.loggable import Loggable
 
 from pitivi.ui.timeline import Timeline
-from pitivi.ui.basetabs import BaseTabs
-from pitivi.ui.viewer import PitiviViewer
+print "== IMPORTED TIMELINE"
+#from pitivi.ui.basetabs import BaseTabs
+#from pitivi.ui.viewer import PitiviViewer
 from pitivi.configure import pitivi_version, APPNAME, APPURL, APPMANUALURL, \
      get_pixmap_dir, LIBDIR, get_ui_dir
 from pitivi.ui import dnd
@@ -56,9 +54,12 @@ from pitivi.action import ViewAction
 from pitivi.settings import GlobalSettings
 from pitivi.receiver import receiver, handler
 import pitivi.formatters.format as formatter
-from pitivi.sourcelist import SourceListError
-from pitivi.ui.sourcelist import SourceList
-from pitivi.ui.effectlist import EffectList
+print "=== IMPORT sourcelisterror ==="
+#from pitivi.sourcelist import SourceListError
+print "=== IMPORT sourcelist ===="
+#from pitivi.ui.sourcelist import SourceList
+print "=== IMPORT effectlist  ==="
+#from pitivi.ui.effectlist import EffectList
 from pitivi.ui.clipproperties import ClipProperties
 from pitivi.ui.common import SPACING
 from pitivi.ui.common import factory_name
@@ -141,18 +142,18 @@ def supported(info):
 
 def create_stock_icons():
     """ Creates the pitivi-only stock icons """
-    gtk.stock_add([
-            ('pitivi-render', _('Render'), 0, 0, 'pitivi'),
-            ('pitivi-split', _('Split'), 0, 0, 'pitivi'),
-            ('pitivi-keyframe', _('Keyframe'), 0, 0, 'pitivi'),
-            ('pitivi-unlink', _('Unlink'), 0, 0, 'pitivi'),
-            # Translators: This is an action, the title of a button
-            ('pitivi-link', _('Link'), 0, 0, 'pitivi'),
-            ('pitivi-ungroup', _('Ungroup'), 0, 0, 'pitivi'),
-            # Translators: This is an action, the title of a button
-            ('pitivi-group', _('Group'), 0, 0, 'pitivi'),
-            ('pitivi-align', _('Align'), 0, 0, 'pitivi'),
-            ])
+    # Gtk.stock_add([
+    #         ('pitivi-render', _('Render'), 0, 0, 'pitivi'),
+    #         ('pitivi-split', _('Split'), 0, 0, 'pitivi'),
+    #         ('pitivi-keyframe', _('Keyframe'), 0, 0, 'pitivi'),
+    #         ('pitivi-unlink', _('Unlink'), 0, 0, 'pitivi'),
+    #         # Translators: This is an action, the title of a button
+    #         ('pitivi-link', _('Link'), 0, 0, 'pitivi'),
+    #         ('pitivi-ungroup', _('Ungroup'), 0, 0, 'pitivi'),
+    #         # Translators: This is an action, the title of a button
+    #         ('pitivi-group', _('Group'), 0, 0, 'pitivi'),
+    #         ('pitivi-align', _('Align'), 0, 0, 'pitivi'),
+    #         ])
     pixmaps = {
         "pitivi-render": "pitivi-render-24.png",
         "pitivi-split": "pitivi-split-24.svg",
@@ -163,16 +164,16 @@ def create_stock_icons():
         "pitivi-group": "pitivi-group-24.svg",
         "pitivi-align": "pitivi-align-24.svg",
     }
-    factory = gtk.IconFactory()
+    factory = Gtk.IconFactory()
     pmdir = get_pixmap_dir()
     for stockid, path in pixmaps.iteritems():
-        pixbuf = gtk.gdk.pixbuf_new_from_file(os.path.join(pmdir, path))
-        iconset = gtk.IconSet(pixbuf)
+        pixbuf = GdkPixbuf.Pixbuf.new_from_file(os.path.join(pmdir, path))
+        iconset = Gtk.IconSet.new_from_pixbuf(pixbuf)
         factory.add(stockid, iconset)
         factory.add_default()
 
 
-class PitiviMainWindow(gtk.Window, Loggable):
+class PitiviMainWindow(Gtk.Window, Loggable):
     """
     Pitivi's main window.
 
@@ -183,7 +184,7 @@ class PitiviMainWindow(gtk.Window, Loggable):
     """
     def __init__(self, instance):
         """ initialize with the Pitivi object """
-        gtk.Window.__init__(self)
+        Gtk.Window.__init__(self)
         Loggable.__init__(self)
         self.log("Creating MainWindow")
         self.actions = None
@@ -194,7 +195,7 @@ class PitiviMainWindow(gtk.Window, Loggable):
         self.timelinepos = 0
         self.prefsdialog = None
         create_stock_icons()
-        self.builder = gtk.Builder()
+        self.builder = Gtk.Builder()
         self._setActions(instance)
         self._createUi(instance)
 
@@ -263,7 +264,7 @@ class PitiviMainWindow(gtk.Window, Loggable):
         action.set_active(self.settings.mainWindowShowTimelineToolbar)
 
         self.actiongroup = self.builder.get_object("mainwindowgroup")
-        self.undock_action = gtk.Action("WindowizeViewer", _("Undock Viewer"),
+        self.undock_action = Gtk.Action("WindowizeViewer", _("Undock Viewer"),
             _("Put the viewer in a separate window"), None)
         self.actiongroup.add_action(self.undock_action)
 
@@ -286,7 +287,7 @@ class PitiviMainWindow(gtk.Window, Loggable):
                 if instance.settings.fileSupportEnabled:
                     action.set_sensitive(True)
 
-        self.uimanager = gtk.UIManager()
+        self.uimanager = Gtk.UIManager()
         self.add_accel_group(self.uimanager.get_accel_group())
         self.uimanager.insert_action_group(self.actiongroup, 0)
         self.uimanager.add_ui_from_file(os.path.join(get_ui_dir(), "mainwindow.xml"))
@@ -298,49 +299,49 @@ class PitiviMainWindow(gtk.Window, Loggable):
         self.connect("configure-event", self._configureCb)
 
         # main menu & toolbar
-        vbox = gtk.VBox(False)
+        vbox = Gtk.VBox(homogeneous=False, spacing=0)
         self.add(vbox)
         vbox.show()
         self.menu = self.uimanager.get_widget("/MainMenuBar")
-        vbox.pack_start(self.menu, expand=False)
+        vbox.pack_start(self.menu, False, False, 0)
         self.menu.show()
         self.toolbar = self.uimanager.get_widget("/MainToolBar")
-        vbox.pack_start(self.toolbar, expand=False)
+        vbox.pack_start(self.toolbar, False, False, 0)
         self.toolbar.show()
         # timeline and project tabs
-        vpaned = gtk.VPaned()
-        vbox.pack_start(vpaned)
+        vpaned = Gtk.VPaned()
+        vbox.pack_start(vpaned, False, False, 0)
         vpaned.show()
 
         self.timeline = Timeline(instance, self.uimanager)
         self.timeline.project = self.project
 
-        vpaned.pack2(self.timeline, resize=True, shrink=False)
-        self.timeline.show()
-        self.mainhpaned = gtk.HPaned()
+        #vpaned.pack2(self.timeline, resize=True, shrink=False)
+        #self.timeline.show()
+        self.mainhpaned = Gtk.HPaned()
         vpaned.pack1(self.mainhpaned, resize=True, shrink=False)
 
-        self.secondhpaned = gtk.HPaned()
+        self.secondhpaned = Gtk.HPaned()
         self.mainhpaned.pack1(self.secondhpaned, resize=True, shrink=False)
         self.secondhpaned.show()
         self.mainhpaned.show()
 
-        self.projecttabs = BaseTabs(instance)
+        # self.projecttabs = BaseTabs(instance)
 
-        self.sourcelist = SourceList(instance, self.uimanager)
-        self.projecttabs.append_page(self.sourcelist, gtk.Label(_("Media Library")))
-        self._connectToSourceList()
-        self.sourcelist.show()
+        # self.sourcelist = SourceList(instance, self.uimanager)
+        # self.projecttabs.append_page(self.sourcelist, Gtk.Label(_("Media Library")))
+        # self._connectToSourceList()
+        # self.sourcelist.show()
 
-        self.effectlist = EffectList(instance, self.uimanager)
-        self.projecttabs.append_page(self.effectlist, gtk.Label(_("Effect Library")))
-        self.effectlist.show()
+        # self.effectlist = EffectList(instance, self.uimanager)
+        # self.projecttabs.append_page(self.effectlist, Gtk.Label(_("Effect Library")))
+        # self.effectlist.show()
 
-        self.secondhpaned.pack1(self.projecttabs, resize=True, shrink=False)
-        self.projecttabs.show()
+        # self.secondhpaned.pack1(self.projecttabs, resize=True, shrink=False)
+        # self.projecttabs.show()
 
         # Actions with key accelerators that will be made unsensitive while
-        # a gtk entry box is used to avoid conflicts.
+        # a Gtk.entry box is used to avoid conflicts.
         self.sensitive_actions = []
         for action in self.timeline.playhead_actions:
             self.sensitive_actions.append(action[0])
@@ -352,21 +353,21 @@ class PitiviMainWindow(gtk.Window, Loggable):
         self.clipconfig = ClipProperties(instance, self.uimanager)
         self.clipconfig.project = self.project
         self.propertiestabs.append_page(self.clipconfig,
-                                        gtk.Label(_("Effects configurations")))
+                                        Gtk.Label(_("Effects configurations")))
         self.clipconfig.show()
 
         self.secondhpaned.pack2(self.propertiestabs, resize=True, shrink=False)
         self.propertiestabs.show()
 
         # Viewer
-        self.viewer = PitiviViewer(instance, undock_action=self.undock_action)
-        # drag and drop
-        self.viewer.drag_dest_set(gtk.DEST_DEFAULT_DROP | gtk.DEST_DEFAULT_MOTION,
-                           [dnd.FILESOURCE_TUPLE, dnd.URI_TUPLE],
-                           gtk.gdk.ACTION_COPY)
-        self.viewer.connect("drag_data_received", self._viewerDndDataReceivedCb)
-        self.mainhpaned.pack2(self.viewer, resize=False, shrink=False)
-        self.viewer.connect("expose-event", self._exposeEventCb)
+        # self.viewer = PitiviViewer(instance, undock_action=self.undock_action)
+        # # drag and drop
+        # self.viewer.drag_dest_set(Gtk.DEST_DEFAULT_DROP | Gtk.DEST_DEFAULT_MOTION,
+        #                    [dnd.FILESOURCE_TUPLE, dnd.URI_TUPLE],
+        #                    Gdk.ACTION_COPY)
+        # self.viewer.connect("drag_data_received", self._viewerDndDataReceivedCb)
+        # self.mainhpaned.pack2(self.viewer, resize=False, shrink=False)
+        # self.viewer.connect("expose-event", self._exposeEventCb)
 
         # window and pane position defaults
         self.mainhpaned = self.mainhpaned
@@ -553,10 +554,10 @@ class PitiviMainWindow(gtk.Window, Loggable):
         webbrowser.open_new(uri)
 
     def _aboutCb(self, unused_action):
-        abt = gtk.AboutDialog()
+        abt = Gtk.AboutDialog()
         abt.set_name(APPNAME)
         abt.set_version(pitivi_version)
-        gtk.about_dialog_set_url_hook(self._showWebsiteCb)
+        Gtk.about_dialog_set_url_hook(self._showWebsiteCb)
         abt.set_website(APPURL)
         authors = ["Edward Hervey <bilboed@bilboed.com>",
                    "Alessandro Decina <alessandro.decina@collabora.co.uk>",
@@ -587,29 +588,29 @@ class PitiviMainWindow(gtk.Window, Loggable):
         abt.show()
 
     def openProject(self):
-        chooser = gtk.FileChooserDialog(_("Open File..."),
+        chooser = Gtk.FileChooserDialog(_("Open File..."),
             self,
-            action=gtk.FILE_CHOOSER_ACTION_OPEN,
-            buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
-                gtk.STOCK_OPEN, gtk.RESPONSE_OK))
+            action=Gtk.FILE_CHOOSER_ACTION_OPEN,
+            buttons=(Gtk.STOCK_CANCEL, Gtk.RESPONSE_CANCEL,
+                Gtk.STOCK_OPEN, Gtk.RESPONSE_OK))
         chooser.set_icon_name("pitivi")
         chooser.set_select_multiple(False)
         chooser.set_current_folder(self.settings.lastProjectFolder)
         formats = formatter.list_formats()
         for format in formats:
-            filt = gtk.FileFilter()
+            filt = Gtk.FileFilter()
             filt.set_name(format[1])
             for ext in format[2]:
                 filt.add_pattern("*%s" % ext)
             chooser.add_filter(filt)
-        default = gtk.FileFilter()
+        default = Gtk.FileFilter()
         default.set_name(_("All Supported Formats"))
-        default.add_custom(gtk.FILE_FILTER_URI, supported)
+        default.add_custom(Gtk.FILE_FILTER_URI, supported)
         chooser.add_filter(default)
 
         response = chooser.run()
         self.settings.lastProjectFolder = chooser.get_current_folder()
-        if response == gtk.RESPONSE_OK:
+        if response == Gtk.RESPONSE_OK:
             uri = chooser.get_uri()
             uri = unquote(uri)
             self.app.projectManager.loadProject(uri)
@@ -701,22 +702,22 @@ class PitiviMainWindow(gtk.Window, Loggable):
             return True
 
         if project.uri:
-            save = gtk.STOCK_SAVE
+            save = Gtk.STOCK_SAVE
         else:
-            save = gtk.STOCK_SAVE_AS
+            save = Gtk.STOCK_SAVE_AS
 
-        dialog = gtk.Dialog("",
-            self, gtk.DIALOG_MODAL | gtk.DIALOG_NO_SEPARATOR,
-            (_("Close without saving"), gtk.RESPONSE_REJECT,
-                    gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
-                    save, gtk.RESPONSE_YES))
+        dialog = Gtk.Dialog("",
+            self, Gtk.DIALOG_MODAL | Gtk.DIALOG_NO_SEPARATOR,
+            (_("Close without saving"), Gtk.RESPONSE_REJECT,
+                    Gtk.STOCK_CANCEL, Gtk.RESPONSE_CANCEL,
+                    save, Gtk.RESPONSE_YES))
         dialog.set_icon_name("pitivi")
         dialog.set_resizable(False)
         dialog.set_has_separator(False)
-        dialog.set_default_response(gtk.RESPONSE_YES)
+        dialog.set_default_response(Gtk.RESPONSE_YES)
         dialog.set_transient_for(self)
 
-        primary = gtk.Label()
+        primary = Gtk.Label()
         primary.set_line_wrap(True)
         primary.set_use_markup(True)
         primary.set_alignment(0, 0.5)
@@ -724,7 +725,7 @@ class PitiviMainWindow(gtk.Window, Loggable):
         message = _("Save changes to the current project before closing?")
         primary.set_markup("<span weight=\"bold\">" + message + "</span>")
 
-        secondary = gtk.Label()
+        secondary = Gtk.Label()
         secondary.set_line_wrap(True)
         secondary.set_use_markup(True)
         secondary.set_alignment(0, 0.5)
@@ -732,14 +733,14 @@ class PitiviMainWindow(gtk.Window, Loggable):
                 "changes will be lost")
 
         # put the text in a vbox
-        vbox = gtk.VBox(False, SPACING * 2)
+        vbox = Gtk.VBox(False, SPACING * 2, 0)
         vbox.pack_start(primary, expand=True, fill=True)
         vbox.pack_start(secondary, expand=True, fill=True)
 
         # make the [[image] text] hbox
-        image = gtk.image_new_from_stock(gtk.STOCK_DIALOG_WARNING,
-               gtk.ICON_SIZE_DIALOG)
-        hbox = gtk.HBox(False, SPACING * 2)
+        image = Gtk.image_new_from_stock(Gtk.STOCK_DIALOG_WARNING,
+               Gtk.IconSize.DIALOG)
+        hbox = Gtk.HBox(False, SPACING * 2)
         hbox.pack_start(image, expand=False)
         hbox.pack_start(vbox, expand=True, fill=True)
         action_area = dialog.get_action_area()
@@ -753,12 +754,12 @@ class PitiviMainWindow(gtk.Window, Loggable):
 
         response = dialog.run()
         dialog.destroy()
-        if response == gtk.RESPONSE_YES:
+        if response == Gtk.RESPONSE_YES:
             if project.uri is not None:
                 res = self.app.projectManager.saveProject(project, overwrite=True)
             else:
                 res = self._saveProjectAsCb(None)
-        elif response == gtk.RESPONSE_REJECT:
+        elif response == Gtk.RESPONSE_REJECT:
             res = True
         else:
             res = False
@@ -775,32 +776,32 @@ class PitiviMainWindow(gtk.Window, Loggable):
 
     def _projectManagerRevertingToSavedCb(self, projectManager, project):
         if project.hasUnsavedModifications():
-            dialog = gtk.MessageDialog(self,
-                    gtk.DIALOG_MODAL,
-                    gtk.MESSAGE_WARNING,
-                    gtk.BUTTONS_NONE,
+            dialog = Gtk.MessageDialog(self,
+                    Gtk.DIALOG_MODAL,
+                    Gtk.MESSAGE_WARNING,
+                    Gtk.BUTTONS_NONE,
                     _("Do you want to reload current project?"))
             dialog.set_icon_name("pitivi")
-            dialog.add_buttons(gtk.STOCK_CANCEL, gtk.RESPONSE_NO,
-                    gtk.STOCK_REVERT_TO_SAVED, gtk.RESPONSE_YES)
+            dialog.add_buttons(Gtk.STOCK_CANCEL, Gtk.RESPONSE_NO,
+                    Gtk.STOCK_REVERT_TO_SAVED, Gtk.RESPONSE_YES)
             dialog.set_title(_("Revert to saved project"))
             dialog.set_resizable(False)
             dialog.set_property("secondary-text",
                     _("All unsaved changes will be lost."))
-            dialog.set_default_response(gtk.RESPONSE_NO)
+            dialog.set_default_response(Gtk.RESPONSE_NO)
             dialog.set_transient_for(self)
             response = dialog.run()
             dialog.destroy()
-            if response != gtk.RESPONSE_YES:
+            if response != Gtk.RESPONSE_YES:
                 return False
         return True
 
     def _projectManagerNewProjectFailedCb(self, projectManager, uri, exception):
         project_filename = unquote(uri.split("/")[-1])
-        dialog = gtk.MessageDialog(self,
-            gtk.DIALOG_MODAL,
-            gtk.MESSAGE_ERROR,
-            gtk.BUTTONS_OK,
+        dialog = Gtk.MessageDialog(self,
+            Gtk.DIALOG_MODAL,
+            Gtk.MESSAGE_ERROR,
+            Gtk.BUTTONS_OK,
             _('Unable to load project "%s"') % project_filename)
         dialog.set_icon_name("pitivi")
         dialog.set_title(_("Error Loading Project"))
@@ -811,11 +812,11 @@ class PitiviMainWindow(gtk.Window, Loggable):
         self.set_sensitive(True)
 
     def _projectManagerMissingUriCb(self, instance, formatter, uri, factory):
-        dialog = gtk.Dialog(_("Locate missing file..."),
+        dialog = Gtk.Dialog(_("Locate missing file..."),
             self,
-            gtk.DIALOG_MODAL,
-            buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
-            gtk.STOCK_OPEN, gtk.RESPONSE_OK))
+            Gtk.DIALOG_MODAL,
+            buttons=(Gtk.STOCK_CANCEL, Gtk.RESPONSE_CANCEL,
+            Gtk.STOCK_OPEN, Gtk.RESPONSE_OK))
         dialog.set_icon_name("pitivi")
         dialog.set_border_width(SPACING * 2)
         dialog.get_content_area().set_spacing(SPACING)
@@ -833,12 +834,12 @@ class PitiviMainWindow(gtk.Window, Loggable):
                      '\nPlease specify its new location:'
                      % (factory_name(factory), length))
 
-        label = gtk.Label()
+        label = Gtk.Label()
         label.set_markup(text)
         dialog.get_content_area().pack_start(label, False, False)
         label.show()
 
-        chooser = gtk.FileChooserWidget(action=gtk.FILE_CHOOSER_ACTION_OPEN)
+        chooser = Gtk.FileChooserWidget(action=Gtk.FILE_CHOOSER_ACTION_OPEN)
         chooser.set_select_multiple(False)
         pw = PreviewWidget(self.app)
         chooser.set_preview_widget(pw)
@@ -853,7 +854,7 @@ class PitiviMainWindow(gtk.Window, Loggable):
         dialog.set_default_size(1024, 1000)
         response = dialog.run()
 
-        if response == gtk.RESPONSE_OK:
+        if response == Gtk.RESPONSE_OK:
             self.log("User chose a new URI for the missing file")
             new = chooser.get_uri()
             if new:
@@ -973,11 +974,11 @@ class PitiviMainWindow(gtk.Window, Loggable):
 
     def _showSaveAsDialog(self, project):
         self.log("Save URI requested")
-        chooser = gtk.FileChooserDialog(_("Save As..."),
+        chooser = Gtk.FileChooserDialog(_("Save As..."),
             self,
-            action=gtk.FILE_CHOOSER_ACTION_SAVE,
-            buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
-            gtk.STOCK_SAVE, gtk.RESPONSE_OK))
+            action=Gtk.FILE_CHOOSER_ACTION_SAVE,
+            buttons=(Gtk.STOCK_CANCEL, Gtk.RESPONSE_CANCEL,
+            Gtk.STOCK_SAVE, Gtk.RESPONSE_OK))
 
         chooser.set_icon_name("pitivi")
         chooser.set_select_multiple(False)
@@ -986,12 +987,12 @@ class PitiviMainWindow(gtk.Window, Loggable):
         chooser.props.do_overwrite_confirmation = True
         formats = formatter.list_formats()
         for format in formats:
-            filt = gtk.FileFilter()
+            filt = Gtk.FileFilter()
             filt.set_name(format[1])
             for ext in format[2]:
                 filt.add_pattern("*.%s" % ext)
             chooser.add_filter(filt)
-        default = gtk.FileFilter()
+        default = Gtk.FileFilter()
         default.set_name(_("Detect Automatically"))
         default.add_pattern("*")
         chooser.add_filter(default)
@@ -1001,7 +1002,7 @@ class PitiviMainWindow(gtk.Window, Loggable):
         if current_folder:
             self.settings.lastProjectFolder = current_folder
 
-        if response == gtk.RESPONSE_OK:
+        if response == Gtk.RESPONSE_OK:
             self.log("User chose a URI to save project to")
             # need to do this to work around bug in gst.uri_construct
             # which escapes all /'s in path!

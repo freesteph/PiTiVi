@@ -23,8 +23,7 @@
 Widget for the complex view ruler
 """
 
-import gobject
-import gtk
+from gi.repository import Gtk, GObject, Gdk
 import gst
 import cairo
 from pitivi.ui.zoominterface import Zoomable
@@ -32,16 +31,16 @@ from pitivi.log.loggable import Loggable
 from pitivi.utils import time_to_string
 
 
-class ScaleRuler(gtk.DrawingArea, Zoomable, Loggable):
+class ScaleRuler(Gtk.DrawingArea, Zoomable, Loggable):
 
     __gsignals__ = {
-        "expose-event": "override",
+        #"expose-event": "override",
         "button-press-event": "override",
         "button-release-event": "override",
         "motion-notify-event": "override",
         "scroll-event": "override",
-        "seek": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,
-                [gobject.TYPE_UINT64])
+        "seek": (GObject.SignalFlags.RUN_LAST, GObject.TYPE_NONE,
+                [GObject.TYPE_UINT64])
         }
 
     border = 0
@@ -50,12 +49,12 @@ class ScaleRuler(gtk.DrawingArea, Zoomable, Loggable):
     subdivide = ((1, 1.0), (2, 0.5), (10, .25))
 
     def __init__(self, instance, hadj):
-        gtk.DrawingArea.__init__(self)
+        Gtk.DrawingArea.__init__(self)
         Zoomable.__init__(self)
         Loggable.__init__(self)
         self.log("Creating new ScaleRule")
-        self.add_events(gtk.gdk.POINTER_MOTION_MASK |
-            gtk.gdk.BUTTON_PRESS_MASK | gtk.gdk.BUTTON_RELEASE_MASK)
+        self.add_events(Gdk.EventMask.POINTER_MOTION_MASK |
+            Gdk.EventMask.BUTTON_PRESS_MASK | Gdk.EventMask.BUTTON_RELEASE_MASK)
         self.hadj = hadj
         hadj.connect("value-changed", self._hadjValueChangedCb)
 
@@ -103,7 +102,7 @@ class ScaleRuler(gtk.DrawingArea, Zoomable, Loggable):
         self.window.invalidate_rect((ppos, 0, 2, height), True)
         self.window.invalidate_rect((npos, 0, 2, height), True)
 
-## gtk.Widget overrides
+## Gtk.Widget overrides
 
     def do_expose_event(self, event):
         self.debug("exposing ScaleRuler %s", list(event.area))
@@ -121,7 +120,7 @@ class ScaleRuler(gtk.DrawingArea, Zoomable, Loggable):
 
         # double buffering power !
         self.window.draw_drawable(
-            self.style.fg_gc[gtk.STATE_NORMAL],
+            self.style.fg_gc[Gtk.STATE_NORMAL],
             self.pixmap,
             x, y,
             x, y, width, height)
@@ -154,14 +153,14 @@ class ScaleRuler(gtk.DrawingArea, Zoomable, Loggable):
         return False
 
     def do_scroll_event(self, event):
-        if event.direction == gtk.gdk.SCROLL_UP:
+        if event.direction == Gdk.ScrollDirection.UP:
             Zoomable.zoomIn()
-        elif event.direction == gtk.gdk.SCROLL_DOWN:
+        elif event.direction == Gdk.ScrollDirection.DOWN:
             Zoomable.zoomOut()
         # TODO: seek timeline back/forward
-        elif event.direction == gtk.gdk.SCROLL_LEFT:
+        elif event.direction == Gdk.ScrollDirection.LEFT:
             pass
-        elif event.direction == gtk.gdk.SCROLL_RIGHT:
+        elif event.direction == Gdk.ScrollDirection.RIGHT:
             pass
 
 ## Seeking methods
@@ -188,7 +187,7 @@ class ScaleRuler(gtk.DrawingArea, Zoomable, Loggable):
     def doPixmap(self):
         """ (re)create the buffered drawable for the Widget """
         # we can't create the pixmap if we're not realized
-        if not self.flags() & gtk.REALIZED:
+        if not self.flags() & Gtk.REALIZED:
             return
 
         # We want to benefit from double-buffering (so as not to recreate the
@@ -204,7 +203,7 @@ class ScaleRuler(gtk.DrawingArea, Zoomable, Loggable):
         if (allocation.width != self.pixmap_old_allocated_width):
             if self.pixmap:
                 del self.pixmap
-            self.pixmap = gtk.gdk.Pixmap(self.window, allocation.width,
+            self.pixmap = Gdk.Pixmap(self.window, allocation.width,
                                          allocation.height)
             self.pixmap_old_allocated_width = allocation.width
 
@@ -242,7 +241,7 @@ class ScaleRuler(gtk.DrawingArea, Zoomable, Loggable):
 
     def drawBackground(self, allocation):
         self.pixmap.draw_rectangle(
-            self.style.bg_gc[gtk.STATE_NORMAL],
+            self.style.bg_gc[Gtk.STATE_NORMAL],
             True,
             0, 0,
             allocation.width, allocation.height)
@@ -250,7 +249,7 @@ class ScaleRuler(gtk.DrawingArea, Zoomable, Loggable):
         offset = int(Zoomable.nsToPixel(self.getShadedDuration())) - self.pixmap_offset
         if offset > 0:
             self.pixmap.draw_rectangle(
-                self.style.bg_gc[gtk.STATE_ACTIVE],
+                self.style.bg_gc[Gtk.STATE_ACTIVE],
                 True,
                 0, 0,
                 int(offset),
@@ -276,7 +275,7 @@ class ScaleRuler(gtk.DrawingArea, Zoomable, Loggable):
         paintpos = int(paintpos)
         height = allocation.height - int(allocation.height * height)
         self.pixmap.draw_line(
-            self.style.fg_gc[gtk.STATE_NORMAL],
+            self.style.fg_gc[Gtk.STATE_NORMAL],
             paintpos, height, paintpos,
             allocation.height)
 
@@ -306,9 +305,9 @@ class ScaleRuler(gtk.DrawingArea, Zoomable, Loggable):
             timevalue = time_to_string(long(seconds))
             layout.set_text(timevalue)
             if paintpos < shaded:
-                state = gtk.STATE_ACTIVE
+                state = Gtk.STATE_ACTIVE
             else:
-                state = gtk.STATE_NORMAL
+                state = Gtk.STATE_NORMAL
             self.pixmap.draw_layout(
                 self.style.fg_gc[state],
                 int(paintpos), 0, layout)
@@ -323,7 +322,7 @@ class ScaleRuler(gtk.DrawingArea, Zoomable, Loggable):
             paintpos = -frame_width + 0.5
             height = allocation.height
             y = int(height - self.frame_height)
-            states = [gtk.STATE_ACTIVE, gtk.STATE_PRELIGHT]
+            states = [Gtk.STATE_ACTIVE, gtk.STATE_PRELIGHT]
             paintpos += frame_width - offset
             frame_num = int(paintpos // frame_width) % 2
             while paintpos < allocation.width:

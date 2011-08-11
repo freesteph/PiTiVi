@@ -24,7 +24,7 @@
 Dialog box for project settings
 """
 
-import gtk
+from gi.repository import Gtk
 import gst
 import os
 
@@ -79,7 +79,7 @@ class ProjectSettingsDialog():
         self.project = project
         self.settings = project.getSettings()
 
-        self.builder = gtk.Builder()
+        self.builder = Gtk.Builder()
         self.builder.add_from_file(os.path.join(get_ui_dir(),
             "projectsettings.ui"))
         self._setProperties()
@@ -88,19 +88,19 @@ class ProjectSettingsDialog():
         # add custom display aspect ratio widget
         self.dar_fraction_widget = FractionWidget()
         self.video_properties_table.attach(self.dar_fraction_widget,
-            0, 1, 6, 7, xoptions=gtk.EXPAND | gtk.FILL, yoptions=0)
+            0, 1, 6, 7, xoptions=Gtk.EXPAND | gtk.FILL, yoptions=0)
         self.dar_fraction_widget.show()
 
         # add custom pixel aspect ratio widget
         self.par_fraction_widget = FractionWidget()
         self.video_properties_table.attach(self.par_fraction_widget,
-            1, 2, 6, 7, xoptions=gtk.EXPAND | gtk.FILL, yoptions=0)
+            1, 2, 6, 7, xoptions=Gtk.EXPAND | gtk.FILL, yoptions=0)
         self.par_fraction_widget.show()
 
         # add custom framerate widget
         self.frame_rate_fraction_widget = FractionWidget()
         self.video_properties_table.attach(self.frame_rate_fraction_widget,
-            1, 2, 2, 3, xoptions=gtk.EXPAND | gtk.FILL, yoptions=0)
+            1, 2, 2, 3, xoptions=Gtk.EXPAND | gtk.FILL, yoptions=0)
         self.frame_rate_fraction_widget.show()
 
         # populate coboboxes with appropriate data
@@ -267,9 +267,9 @@ class ProjectSettingsDialog():
         removing and saving a preset, enabling or disabling them accordingly.
         @type update_buttons_func: function
         """
-        renderer = gtk.CellRendererText()
+        renderer = Gtk.CellRendererText()
         renderer.props.editable = True
-        column = gtk.TreeViewColumn("Preset", renderer, text=0)
+        column = Gtk.TreeViewColumn("Preset", renderer, text=0)
         treeview.append_column(column)
         treeview.props.headers_visible = False
         model = mgr.getModel()
@@ -562,7 +562,7 @@ class ProjectSettingsDialog():
         self.project.setSettings(self.settings)
 
     def _responseCb(self, unused_widget, response):
-        if response == gtk.RESPONSE_OK:
+        if response == Gtk.RESPONSE_OK:
             self.updateSettings()
             self.updateMetadata()
         self.audio_presets.save()

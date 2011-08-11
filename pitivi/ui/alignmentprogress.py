@@ -27,8 +27,8 @@ Basic auto-alignment progress dialog, based on the EncodingProgressDialog
 import os
 from gettext import gettext as _
 
-import gobject
-import gtk
+from gi.repository import GObject
+from gi.repository import Gtk
 import gst
 
 import pitivi.configure as configure
@@ -41,7 +41,7 @@ class AlignmentProgressDialog:
         (read-only, no buttons)."""
 
     def __init__(self, app):
-        self.builder = gtk.Builder()
+        self.builder = Gtk.Builder()
         self.builder.add_from_file(os.path.join(configure.get_ui_dir(),
                                    "alignmentprogress.ui"))
         self.builder.connect_signals(self)

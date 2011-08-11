@@ -1,21 +1,43 @@
+# PiTiVi , Non-linear video editor
+#
+#       pitivi/ui/timelinecanvas.py
+#
+# Copyright (c) 2009, Brandon Lewis <brandon_lewis@berkeley.edu>
+#
+# This program is free software; you can redistribute it and/or
+# modify it under the terms of the GNU Lesser General Public
+# License as published by the Free Software Foundation; either
+# version 2.1 of the License, or (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# Lesser General Public License for more details.
+#
+# You should have received a copy of the GNU Lesser General Public
+# License along with this program; if not, write to the
+# Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
+# Boston, MA 02110-1301, USA.
+
+from gi.repository import GooCanvas
+
 from pitivi.ui.zoominterface import Zoomable
 from pitivi.ui.trackobject import TrackObject
 from pitivi.timeline.track import TrackEffect
 from pitivi.receiver import receiver, handler
 from pitivi.ui.common import LAYER_HEIGHT_EXPANDED, LAYER_HEIGHT_COLLAPSED, LAYER_SPACING
-import goocanvas
 
 
-class Transition(goocanvas.Rect, Zoomable):
+class Transition(GooCanvas.CanvasRect, Zoomable):
 
     def __init__(self, transition):
-        goocanvas.Rect.__init__(self)
+        GooCanvas.CanvasRect.__init__(self)
         Zoomable.__init__(self)
         self.props.fill_color_rgba = 0xFFFFFF99
         self.props.stroke_color_rgba = 0x00000099
         self.set_simple_transform(0, -LAYER_SPACING + 3, 1.0, 0)
         self.props.height = LAYER_SPACING - 6
-        self.props.pointer_events = goocanvas.EVENTS_NONE
+        self.props.pointer_events = GooCanvas.EVENTS_NONE
         self.props.radius_x = 2
         self.props.radius_y = 2
         self.transition = transition
@@ -43,9 +65,9 @@ class Transition(goocanvas.Rect, Zoomable):
     def _updateDuration(self, transition, duration):
         width = max(0, self.nsToPixel(duration))
         if width == 0:
-            self.props.visibility = goocanvas.ITEM_INVISIBLE
+            self.props.visibility = GooCanvas.ITEM_INVISIBLE
         else:
-            self.props.visibility = goocanvas.ITEM_VISIBLE
+            self.props.visibility = GooCanvas.ITEM_VISIBLE
         self.props.width = width
 
     @handler(transition, "priority-changed")
@@ -56,11 +78,11 @@ class Transition(goocanvas.Rect, Zoomable):
         self._updateAll()
 
 
-class Track(goocanvas.Group, Zoomable):
+class Track(GooCanvas.CanvasGroup, Zoomable):
     __gtype_name__ = 'Track'
 
     def __init__(self, instance, track, timeline=None):
-        goocanvas.Group.__init__(self)
+        GooCanvas.Group.__init__(self)
         Zoomable.__init__(self)
         self.app = instance
         self.widgets = {}

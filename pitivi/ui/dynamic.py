@@ -23,8 +23,7 @@
 A collection of helper classes and routines for dynamically creating user
 interfaces
 """
-import gobject
-import gtk
+from gi.repository import Gtk, Gdk, GObject
 import re
 import sys
 import gst
@@ -62,12 +61,12 @@ class DynamicWidget(object):
             self.setWidgetValue(self.default)
 
 
-class DefaultWidget(gtk.Label, DynamicWidget):
+class DefaultWidget(Gtk.Label, DynamicWidget):
 
     """When all hope fails...."""
 
     def __init__(self, default=None, *unused, **kw_unused):
-        gtk.Label.__init__(self, _("Implement Me"))
+        Gtk.Label.__init__(self, _("Implement Me"))
         DynamicWidget.__init__(self, default)
 
     def connectValueChanged(self, callback, *args):
@@ -80,40 +79,40 @@ class DefaultWidget(gtk.Label, DynamicWidget):
         return self.get_text()
 
 
-class TextWidget(gtk.HBox, DynamicWidget):
+class TextWidget(Gtk.HBox, DynamicWidget):
 
-    """A gtk.Entry which emits a value-changed signal only when its input is
+    """A Gtk.Entry which emits a value-changed signal only when its input is
     valid (matches the provided regex). If the input is invalid, a warning
     icon is displayed."""
 
     __gtype_name__ = 'TextWidget'
     __gsignals__ = {
         "value-changed": (
-            gobject.SIGNAL_RUN_LAST,
-            gobject.TYPE_NONE,
+            GObject.SignalFlags.RUN_LAST,
+            GObject.TYPE_NONE,
             (),)
     }
 
-    __INVALID__ = gtk.gdk.Color(0xFFFF, 0, 0)
-    __NORMAL__ = gtk.gdk.Color(0, 0, 0)
+    __INVALID__ = Gdk.Color(0xFFFF, 0, 0)
+    __NORMAL__ = Gdk.Color(0, 0, 0)
 
     def __init__(self, matches=None, choices=None, default=None):
-        gtk.HBox.__init__(self)
+        Gtk.HBox.__init__(self)
         DynamicWidget.__init__(self, default)
 
         self.set_border_width(0)
         self.set_spacing(0)
         if choices:
-            self.combo = gtk.combo_box_entry_new_text()
+            self.combo = Gtk.combo_box_entry_new_text()
             self.text = self.combo.child
             self.combo.show()
-            self.pack_start(self.combo)
+            self.pack_start(self.combo, False, False, 0)
             for choice in choices:
                 self.combo.append_text(choice)
         else:
-            self.text = gtk.Entry()
+            self.text = Gtk.Entry()
             self.text.show()
-            self.pack_start(self.text)
+            self.pack_start(self.text, False, False, 0)
         self.matches = None
         self.last_valid = None
         self.valid = False
@@ -154,7 +153,7 @@ class TextWidget(gtk.HBox, DynamicWidget):
                 self.valid = True
             else:
                 if self.valid:
-                    self.text.set_icon_from_stock(1, gtk.STOCK_DIALOG_WARNING)
+                    self.text.set_icon_from_stock(1, Gtk.STOCK_DIALOG_WARNING)
                 self.valid = False
         elif self.send_signal:
             self.emit("value-changed")
@@ -172,36 +171,36 @@ class TextWidget(gtk.HBox, DynamicWidget):
         self.text.set_width_chars(width)
 
 
-class NumericWidget(gtk.HBox, DynamicWidget):
+class NumericWidget(Gtk.HBox, DynamicWidget):
 
-    """A gtk.HScale and a gtk.SpinButton which share an adjustment. The
+    """A Gtk.HScale and a gtk.SpinButton which share an adjustment. The
     SpinButton is always displayed, while the HScale only appears if both
     lower and upper bounds are defined"""
 
     def __init__(self, upper=None, lower=None, default=None):
-        gtk.HBox.__init__(self)
+        Gtk.HBox.__init__(self)
         DynamicWidget.__init__(self, default)
 
         self.spacing = SPACING
-        self.adjustment = gtk.Adjustment()
+        self.adjustment = Gtk.Adjustment()
         self.upper = upper
         self.lower = lower
         self._type = None
         if (upper != None) and (lower != None) and\
             (upper < 5000) and (lower > -5000):
-            self.slider = gtk.HScale(self.adjustment)
+            self.slider = Gtk.HScale(self.adjustment)
             self.pack_start(self.slider, fill=True, expand=True)
             self.slider.show()
             self.slider.props.draw_value = False
 
         if upper is None:
-            upper = gobject.G_MAXDOUBLE
+            upper = GObject.MAXDOUBLE
         if lower is None:
-            lower = gobject.G_MINDOUBLE
+            lower = GObject.MINDOUBLE
         range = upper - lower
         self.adjustment.props.lower = lower
         self.adjustment.props.upper = upper
-        self.spinner = gtk.SpinButton(self.adjustment)
+        self.spinner = Gtk.SpinButton(self.adjustment)
         self.pack_end(self.spinner, expand=not hasattr(self, 'slider'))
         self.spinner.show()
 
@@ -224,7 +223,7 @@ class NumericWidget(gtk.HBox, DynamicWidget):
             step = 1.0
             page = 10.0
         elif type_ == float:
-            minimum, maximum = (gobject.G_MINDOUBLE, gobject.G_MAXDOUBLE)
+            minimum, maximum = (GObject.MINDOUBLE, GObject.MAXDOUBLE)
             step = 0.01
             page = 0.1
             self.spinner.props.digits = 2
@@ -274,7 +273,7 @@ class TimeWidget(TextWidget, DynamicWidget):
 
 class FractionWidget(TextWidget, DynamicWidget):
 
-    """A gtk.ComboBoxEntry """
+    """A Gtk.ComboBoxEntry """
 
     fraction_regex = re.compile(
         "^([0-9]*(\.[0-9]+)?)(([:/][0-9]*(\.[0-9]+)?)|M)?$")
@@ -358,12 +357,12 @@ class FractionWidget(TextWidget, DynamicWidget):
         return gst.Fraction(num, denom)
 
 
-class ToggleWidget(gtk.CheckButton, DynamicWidget):
+class ToggleWidget(Gtk.CheckButton, DynamicWidget):
 
-    """A gtk.CheckButton which supports the DynamicWidget interface."""
+    """A Gtk.CheckButton which supports the DynamicWidget interface."""
 
     def __init__(self, default=None):
-        gtk.CheckButton.__init__(self)
+        Gtk.CheckButton.__init__(self)
         DynamicWidget.__init__(self, default)
 
     def connectValueChanged(self, callback, *args):
@@ -376,19 +375,19 @@ class ToggleWidget(gtk.CheckButton, DynamicWidget):
         return self.get_active()
 
 
-class ChoiceWidget(gtk.HBox, DynamicWidget):
+class ChoiceWidget(Gtk.HBox, DynamicWidget):
 
     """Abstractly, represents a choice between a list of named values. The
     association between value names and values is arbitrary. The current
-    implementation uses a gtk.ComboBox."""
+    implementation uses a Gtk.ComboBox."""
 
     def __init__(self, choices, default=None):
-        gtk.HBox.__init__(self)
+        Gtk.HBox.__init__(self)
         DynamicWidget.__init__(self, default)
         self.choices = None
         self.values = None
-        self.contents = gtk.combo_box_new_text()
-        self.pack_start(self.contents)
+        self.contents = Gtk.combo_box_new_text()
+        self.pack_start(self.contents, False, False, 0)
         self.setChoices(choices)
         self.contents.show()
         cell = self.contents.get_cells()[0]
@@ -409,7 +408,7 @@ class ChoiceWidget(gtk.HBox, DynamicWidget):
     def setChoices(self, choices):
         self.choices = [choice[0] for choice in choices]
         self.values = [choice[1] for choice in choices]
-        m = gtk.ListStore(str)
+        m = Gtk.ListStore(str)
         self.contents.set_model(m)
         for choice, value in choices:
             self.contents.append_text(_(choice))
@@ -419,7 +418,7 @@ class ChoiceWidget(gtk.HBox, DynamicWidget):
             self.contents.set_sensitive(True)
 
 
-class PresetChoiceWidget(gtk.HBox, DynamicWidget):
+class PresetChoiceWidget(Gtk.HBox, DynamicWidget):
 
     """A popup which manages preset settings on a group of widgets supporting
     the dynamic interface"""
@@ -458,7 +457,7 @@ class PresetChoiceWidget(gtk.HBox, DynamicWidget):
             return [w.getWidgetValue() for w in self.widgets if w]
 
     def __init__(self, presets, default=None):
-        gtk.HBox.__init__(self)
+        Gtk.HBox.__init__(self)
         DynamicWidget.__init__(self, default)
         self._block_update = False
         self._widget_map = None
@@ -467,16 +466,16 @@ class PresetChoiceWidget(gtk.HBox, DynamicWidget):
         presets.connect("preset-added", self._presetAdded)
         presets.connect("preset-removed", self._presetRemoved)
 
-        self.combo = gtk.combo_box_new_text()
+        self.combo = Gtk.combo_box_new_text()
         self.combo.set_row_separator_func(self._sep_func)
         for preset in presets:
             self.combo.append_text(preset[0])
         self.combo.append_text("-")
         self.combo.append_text(_("Custom"))
-        self.pack_start(self.combo)
+        self.pack_start(self.combo, False, False, 0)
         self._custom_row = len(presets) + 1
 
-        save_button = gtk.Button(stock=gtk.STOCK_SAVE)
+        save_button = Gtk.Button(stock=gtk.STOCK_SAVE)
         self._save_button = save_button
         self.pack_start(save_button, False, False)
         save_button.connect("clicked", self._savePreset)
@@ -496,16 +495,16 @@ class PresetChoiceWidget(gtk.HBox, DynamicWidget):
         self._custom_row -= 1
 
     def _savePreset(self, unused_button):
-        d = gtk.Dialog(_("Save Preset"), None, gtk.DIALOG_MODAL,
-            buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL, gtk.STOCK_SAVE,
-                gtk.RESPONSE_OK))
-        input = gtk.Entry()
+        d = Gtk.Dialog(_("Save Preset"), None, gtk.DIALOG_MODAL,
+            buttons=(Gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL, gtk.STOCK_SAVE,
+                Gtk.RESPONSE_OK))
+        input = Gtk.Entry()
         ca = d.get_content_area()
-        ca.pack_start(input)
+        ca.pack_start(input, False, False, 0)
         input.show()
         response = d.run()
 
-        if response == gtk.RESPONSE_OK:
+        if response == Gtk.RESPONSE_OK:
             name = input.get_text()
             values = self._widget_map.unmap()
             self.presets.addPreset(name, values)
@@ -521,7 +520,7 @@ class PresetChoiceWidget(gtk.HBox, DynamicWidget):
         self.setWidgetMap(self.SeqWidgetMap(*args))
 
     def _slaveWidgetValueChanged(self, unused_widget):
-        # gtk isn't very friendly to this sort of thing
+        # Gtk.isn't very friendly to this sort of thing
         if not self._block_update:
             self.combo.set_active(self._custom_row)
 
@@ -545,26 +544,26 @@ class PresetChoiceWidget(gtk.HBox, DynamicWidget):
         self.combo.set_active(preset_index)
 
 
-class PathWidget(gtk.FileChooserButton, DynamicWidget):
+class PathWidget(Gtk.FileChooserButton, DynamicWidget):
 
-    """A gtk.FileChooserButton which supports the DynamicWidget interface."""
+    """A Gtk.FileChooserButton which supports the DynamicWidget interface."""
 
     __gtype_name__ = 'PathWidget'
 
     __gsignals__ = {
-        "value-changed": (gobject.SIGNAL_RUN_LAST,
-            gobject.TYPE_NONE,
-            ()),
+        "value-changed": (GObject.SignalFlags.RUN_LAST,
+                          GObject.TYPE_NONE,
+                          ()),
     }
 
-    def __init__(self, action=gtk.FILE_CHOOSER_ACTION_OPEN, default=None):
+    def __init__(self, action=Gtk.FileChooserAction.OPEN, default=None):
         DynamicWidget.__init__(self, default)
-        self.dialog = gtk.FileChooserDialog(
+        self.dialog = Gtk.FileChooserDialog(
             action=action,
-            buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL, gtk.STOCK_CLOSE,
-             gtk.RESPONSE_CLOSE))
-        self.dialog.set_default_response(gtk.RESPONSE_OK)
-        gtk.FileChooserButton.__init__(self, self.dialog)
+            buttons=(Gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL, gtk.STOCK_CLOSE,
+             Gtk.RESPONSE_CLOSE))
+        self.dialog.set_default_response(Gtk.RESPONSE_OK)
+        Gtk.FileChooserButton.__init__(self, self.dialog)
         self.set_title(_("Choose..."))
         self.dialog.connect("response", self._responseCb)
         self.uri = ""
@@ -580,16 +579,16 @@ class PathWidget(gtk.FileChooserButton, DynamicWidget):
         return self.uri
 
     def _responseCb(self, unused_dialog, response):
-        if response == gtk.RESPONSE_CLOSE:
+        if response == Gtk.RESPONSE_CLOSE:
             self.uri = self.get_uri()
             self.emit("value-changed")
             self.dialog.hide()
 
 
-class ColorWidget(gtk.ColorButton, DynamicWidget):
+class ColorWidget(Gtk.ColorButton, DynamicWidget):
 
     def __init__(self, value_type=str, default=None):
-        gtk.ColorButton.__init__(self)
+        Gtk.ColorButton.__init__(self)
         DynamicWidget.__init__(self, default)
         self.value_type = value_type
         self.set_use_alpha(True)
@@ -602,11 +601,11 @@ class ColorWidget(gtk.ColorButton, DynamicWidget):
         alpha = 0xFFFF
 
         if type_ is str:
-            color = gtk.gdk.Color(value)
+            color = Gtk.gdk.Color(value)
         elif (type_ is int) or (type_ is long):
             red, green, blue, alpha = unpack_color(value)
-            color = gtk.gdk.Color(red, green, blue)
-        elif type_ is gtk.gdk.Color:
+            color = Gtk.gdk.Color(red, green, blue)
+        elif type_ is Gtk.gdk.Color:
             color = value
         else:
             raise TypeError("%r is not something we can convert to a color" %
@@ -621,15 +620,15 @@ class ColorWidget(gtk.ColorButton, DynamicWidget):
             return pack_color_32(color.red, color.green, color.blue, alpha)
         if self.value_type is long:
             return pack_color_64(color.red, color.green, color.blue, alpha)
-        elif self.value_type is gtk.gdk.Color:
+        elif self.value_type is Gtk.gdk.Color:
             return color
         return color.to_string()
 
 
-class FontWidget(gtk.FontButton, DynamicWidget):
+class FontWidget(Gtk.FontButton, DynamicWidget):
 
     def __init__(self, default=None):
-        gtk.FontButton.__init__(self)
+        Gtk.FontButton.__init__(self)
         DynamicWidget.__init__(self, default)
         self.set_use_font(True)
 
@@ -643,10 +642,10 @@ class FontWidget(gtk.FontButton, DynamicWidget):
         return self.get_font_name()
 
 
-class ResolutionWidget(gtk.HBox, DynamicWidget):
+class ResolutionWidget(Gtk.HBox, DynamicWidget):
 
     def __init__(self, default=None):
-        gtk.HBox.__init__(self)
+        Gtk.HBox.__init__(self)
         DynamicWidget.__init__(self, default)
         self.props.spacing = SPACING
 
@@ -654,9 +653,9 @@ class ResolutionWidget(gtk.HBox, DynamicWidget):
         self.dheight = 0
         self.dwidthWidget = NumericWidget(lower=0)
         self.dheightWidget = NumericWidget(lower=0)
-        self.pack_start(self.dwidthWidget)
-        self.pack_start(gtk.Label("x"))
-        self.pack_start(self.dheightWidget)
+        self.pack_start(self.dwidthWidget, False, False, 0)
+        self.pack_start(Gtk.Label("x"), False, False, 0)
+        self.pack_start(self.dheightWidget, False, False, 0)
         self.setWidgetValue((320, 240))
         self.show_all()
 
@@ -708,14 +707,14 @@ if __name__ == '__main__':
         ),
     )
 
-    W = gtk.Window()
-    v = gtk.VBox()
-    t = gtk.Table()
+    W = Gtk.Window()
+    v = Gtk.VBox(homogeneous=False, spacing=0)
+    t = Gtk.Table()
 
     for y, (klass, default, args) in enumerate(widgets):
         w = klass(*args)
         w.setWidgetValue(default)
-        l = gtk.Label(str(w.getWidgetValue()))
+        l = Gtk.Label(str(w.getWidgetValue()))
         w.connectValueChanged(valueChanged, w, l)
         w.show()
         l.show()
@@ -725,4 +724,4 @@ if __name__ == '__main__':
 
     W.add(t)
     W.show()
-    gtk.main()
+    Gtk.main()

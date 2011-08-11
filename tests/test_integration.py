@@ -30,7 +30,7 @@ from pitivi.timeline.timeline import MoveContext, TrimStartContext,\
 from pitivi.signalinterface import Signallable
 from pitivi.stream import AudioStream, VideoStream
 import pitivi.instance
-import gobject
+from gi.repository import GObject
 import os.path
 import gst
 import random

@@ -22,7 +22,7 @@
 """
 Class handling the midle pane
 """
-import gtk
+from gi.repository import Gtk
 import pango
 import dnd
 
@@ -49,19 +49,19 @@ class ClipPropertiesError(Exception):
     pass
 
 
-class ClipProperties(gtk.VBox, Loggable):
+class ClipProperties(Gtk.VBox, Loggable):
     """
     Widget for configuring clips properties
     """
 
     def __init__(self, instance, uiman):
-        gtk.VBox.__init__(self)
+        Gtk.VBox.__init__(self)
         Loggable.__init__(self)
 
         self.app = instance
         self.settings = instance.settings
         self._project = None
-        self.info_bar_box = gtk.VBox()
+        self.info_bar_box = Gtk.VBox(homogeneous=False, spacing=0)
 
         self.effect_properties_handling = EffectsPropertiesHandling(instance.action_log)
         self.effect_expander = EffectProperties(instance,
@@ -86,13 +86,13 @@ class ClipProperties(gtk.VBox, Loggable):
     project = property(_getProject, _setProject)
 
     def addInfoBar(self, text):
-        info_bar = gtk.InfoBar()
+        info_bar = Gtk.InfoBar()
 
-        label = gtk.Label()
+        label = Gtk.Label()
         label.set_padding(PADDING, PADDING)
         label.set_line_wrap(True)
         label.set_line_wrap_mode(pango.WRAP_WORD)
-        label.set_justify(gtk.JUSTIFY_CENTER)
+        label.set_justify(Gtk.JUSTIFY_CENTER)
         label.set_text(text)
 
         info_bar.add(label)
@@ -101,15 +101,15 @@ class ClipProperties(gtk.VBox, Loggable):
         return label, info_bar
 
 
-class EffectProperties(gtk.HBox):
+class EffectProperties(Gtk.HBox):
     """
     Widget for viewing and configuring effects
     """
-    # Note: This should be inherited from gtk.Expander when we get other things
+    # Note: This should be inherited from Gtk.Expander when we get other things
     # to put in ClipProperties, that is why this is done this way
 
     def __init__(self, instance, effect_properties_handling, clip_properties):
-        gtk.HBox.__init__(self)
+        Gtk.HBox.__init__(self)
         #self.set_expanded(True)
 
         self.selected_effects = []
@@ -125,38 +125,38 @@ class EffectProperties(gtk.HBox):
         self._config_ui_h_pos = None
         self._timeline = None
 
-        self._vcontent = gtk.VPaned()
+        self._vcontent = Gtk.VPaned()
         self.add(self._vcontent)
 
-        self._table = gtk.Table(3, 1, False)
+        self._table = Gtk.Table(3, 1, False)
 
-        self._toolbar = gtk.Toolbar()
-        self._removeEffectBt = gtk.ToolButton("gtk-delete")
+        self._toolbar = Gtk.Toolbar()
+        self._removeEffectBt = Gtk.ToolButton("gtk-delete")
         self._removeEffectBt.set_label(_("Remove effect"))
         self._removeEffectBt.set_use_underline(True)
         self._removeEffectBt.set_is_important(True)
         self._removeEffectBt.set_sensitive(False)
         self._toolbar.insert(self._removeEffectBt, 0)
-        self._table.attach(self._toolbar, 0, 1, 0, 1, yoptions=gtk.FILL)
+        self._table.attach(self._toolbar, 0, 1, 0, 1, yoptions=Gtk.AttachOptions.FILL)
 
-        self.storemodel = gtk.ListStore(bool, str, str, str, object)
+        self.storemodel = Gtk.ListStore(bool, str, str, str, object)
 
         #Treeview
-        self.treeview_scrollwin = gtk.ScrolledWindow()
-        self.treeview_scrollwin.set_policy(gtk.POLICY_NEVER,
-                                           gtk.POLICY_AUTOMATIC)
-        self.treeview_scrollwin.set_shadow_type(gtk.SHADOW_ETCHED_IN)
+        self.treeview_scrollwin = Gtk.ScrolledWindow()
+        self.treeview_scrollwin.set_policy(Gtk.POLICY_NEVER,
+                                           Gtk.POLICY_AUTOMATIC)
+        self.treeview_scrollwin.set_shadow_type(Gtk.ShadowType.ETCHED_IN)
 
         # TreeView
         # Displays name, description
-        self.treeview = gtk.TreeView(self.storemodel)
+        self.treeview = Gtk.TreeView(self.storemodel)
         self.treeview_scrollwin.add(self.treeview)
         self.treeview.set_property("rules_hint", True)
         self.treeview.set_property("has_tooltip", True)
         tsel = self.treeview.get_selection()
-        tsel.set_mode(gtk.SELECTION_SINGLE)
+        tsel.set_mode(Gtk.SELECTION_SINGLE)
 
-        activatedcell = gtk.CellRendererToggle()
+        activatedcell = Gtk.CellRendererToggle()
         activatedcell.props.xpad = PADDING
         activatedcol = self.treeview.insert_column_with_attributes(-1,
                                                         _("Activated"),
@@ -164,31 +164,31 @@ class EffectProperties(gtk.HBox):
                                                         active=COL_ACTIVATED)
         activatedcell.connect("toggled", self._effectActiveToggleCb)
 
-        typecol = gtk.TreeViewColumn(_("Type"))
+        typecol = Gtk.TreeViewColumn(_("Type"))
         typecol.set_sort_column_id(COL_TYPE)
         self.treeview.append_column(typecol)
         typecol.set_spacing(SPACING)
-        typecol.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
+        typecol.set_sizing(Gtk.TREE_VIEW_COLUMN_AUTOSIZE)
         typecol.set_min_width(50)
-        typecell = gtk.CellRendererText()
+        typecell = Gtk.CellRendererText()
         typecell.props.xpad = PADDING
         typecell.set_property("ellipsize", pango.ELLIPSIZE_END)
-        typecol.pack_start(typecell)
+        typecol.pack_start(typecell, False, False, 0)
         typecol.add_attribute(typecell, "text", COL_TYPE)
 
-        namecol = gtk.TreeViewColumn(_("Effect name"))
+        namecol = Gtk.TreeViewColumn(_("Effect name"))
         namecol.set_sort_column_id(COL_NAME_TEXT)
         self.treeview.append_column(namecol)
         namecol.set_spacing(SPACING)
-        namecell = gtk.CellRendererText()
+        namecell = Gtk.CellRendererText()
         namecell.props.xpad = PADDING
         namecell.set_property("ellipsize", pango.ELLIPSIZE_END)
-        namecol.pack_start(namecell)
+        namecol.pack_start(namecell, False, False, 0)
         namecol.add_attribute(namecell, "text", COL_NAME_TEXT)
 
-        self.treeview.drag_dest_set(gtk.DEST_DEFAULT_MOTION,
+        self.treeview.drag_dest_set(Gtk.DEST_DEFAULT_MOTION,
             [dnd.EFFECT_TUPLE],
-            gtk.gdk.ACTION_COPY)
+            Gtk.gdk.ACTION_COPY)
 
         self.selection = self.treeview.get_selection()
 
@@ -308,7 +308,7 @@ class EffectProperties(gtk.HBox):
         self.drag_unhighlight()
 
     def _dragMotionCb(self, unused, context, x, y, timestamp):
-        atom = gtk.gdk.atom_intern(dnd.EFFECT_TUPLE[0])
+        atom = Gtk.gdk.atom_intern(dnd.EFFECT_TUPLE[0])
         if not self._factory:
             self.drag_get_data(context, atom, timestamp)
         self.drag_highlight()
@@ -409,7 +409,7 @@ class EffectProperties(gtk.HBox):
                                                COL_TRACK_EFFECT)
 
             for widget in self._vcontent.get_children():
-                if type(widget) in [gtk.ScrolledWindow, GstElementSettingsWidget]:
+                if type(widget) in [Gtk.ScrolledWindow, GstElementSettingsWidget]:
                     self._vcontent.remove(widget)
 
             element = track_effect.getElement()

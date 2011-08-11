@@ -19,7 +19,7 @@
 # Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
 # Boston, MA 02110-1301, USA.
 
-import gtk
+from gi.repository import Gtk
 import pango
 import os
 import time
@@ -54,15 +54,15 @@ GlobalSettings.addConfigOption('lastEffectView',
  COL_ELEMENT_NAME,
  COL_ICON) = range(7)
 
-INVISIBLE = gtk.gdk.pixbuf_new_from_file(os.path.join(get_pixmap_dir(),
+INVISIBLE = GdkPixbuf.Pixbuf.new_from_file(os.path.join(get_pixmap_dir(),
     "invisible.png"))
 
 
-class EffectList(gtk.VBox, Loggable):
+class EffectList(Gtk.VBox, Loggable):
     """ Widget for listing effects """
 
     def __init__(self, instance, uiman):
-        gtk.VBox.__init__(self)
+        Gtk.VBox.__init__(self)
         Loggable.__init__(self)
 
         self.app = instance
@@ -79,75 +79,75 @@ class EffectList(gtk.VBox, Loggable):
         self._current_tooltip_icon = None
 
         #Searchbox and combobox
-        hfilters = gtk.HBox()
+        hfilters = Gtk.HBox()
         hfilters.set_spacing(SPACING)
         hfilters.set_border_width(3)  # Prevents being flush against the notebook
-        self.effectType = gtk.combo_box_new_text()
+        self.effectType = Gtk.combo_box_new_text()
         self.effectType.append_text(_("Video effects"))
         self.effectType.append_text(_("Audio effects"))
-        self.effectCategory = gtk.combo_box_new_text()
+        self.effectCategory = Gtk.combo_box_new_text()
         self.effectType.set_active(VIDEO_EFFECT)
 
         hfilters.pack_start(self.effectType, expand=True)
         hfilters.pack_end(self.effectCategory, expand=True)
 
-        hsearch = gtk.HBox()
+        hsearch = Gtk.HBox()
         hsearch.set_spacing(SPACING)
         hsearch.set_border_width(3)  # Prevents being flush against the notebook
-        searchStr = gtk.Label(_("Search:"))
-        self.searchEntry = gtk.Entry()
-        self.searchEntry.set_icon_from_stock(gtk.ENTRY_ICON_SECONDARY, "gtk-clear")
+        searchStr = Gtk.Label(_("Search:"))
+        self.searchEntry = Gtk.Entry()
+        self.searchEntry.set_icon_from_stock(Gtk.ENTRY_ICON_SECONDARY, "gtk-clear")
         hsearch.pack_start(searchStr, expand=False)
         hsearch.pack_end(self.searchEntry, expand=True)
 
         # Store
-        self.storemodel = gtk.ListStore(str, str, int, object, object, str, gtk.gdk.Pixbuf)
+        self.storemodel = Gtk.ListStore(str, str, int, object, object, str, Gdk.Pixbuf)
 
         # Scrolled Windows
-        self.treeview_scrollwin = gtk.ScrolledWindow()
-        self.treeview_scrollwin.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
-        self.treeview_scrollwin.set_shadow_type(gtk.SHADOW_ETCHED_IN)
+        self.treeview_scrollwin = Gtk.ScrolledWindow()
+        self.treeview_scrollwin.set_policy(Gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
+        self.treeview_scrollwin.set_shadow_type(Gtk.ShadowType.ETCHED_IN)
 
-        self.iconview_scrollwin = gtk.ScrolledWindow()
-        self.iconview_scrollwin.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        self.iconview_scrollwin.set_shadow_type(gtk.SHADOW_ETCHED_IN)
+        self.iconview_scrollwin = Gtk.ScrolledWindow()
+        self.iconview_scrollwin.set_policy(Gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        self.iconview_scrollwin.set_shadow_type(Gtk.ShadowType.ETCHED_IN)
 
         # TreeView
         # Displays name, description
-        self.treeview = gtk.TreeView(self.storemodel)
+        self.treeview = Gtk.TreeView(self.storemodel)
         self.treeview_scrollwin.add(self.treeview)
         self.treeview.set_property("rules_hint", True)
         self.treeview.set_property("has_tooltip", True)
         self.treeview.set_property("headers-clickable", False)
         tsel = self.treeview.get_selection()
-        tsel.set_mode(gtk.SELECTION_SINGLE)
+        tsel.set_mode(Gtk.SELECTION_SINGLE)
 
-        namecol = gtk.TreeViewColumn(_("Name"))
+        namecol = Gtk.TreeViewColumn(_("Name"))
         namecol.set_sort_column_id(COL_NAME_TEXT)
         self.treeview.append_column(namecol)
         namecol.set_spacing(SPACING)
-        namecol.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
+        namecol.set_sizing(Gtk.TREE_VIEW_COLUMN_FIXED)
         namecol.set_fixed_width(150)
-        namecell = gtk.CellRendererText()
+        namecell = Gtk.CellRendererText()
         namecell.props.xpad = 6
         namecell.set_property("ellipsize", pango.ELLIPSIZE_END)
-        namecol.pack_start(namecell)
+        namecol.pack_start(namecell, False, False, 0)
         namecol.add_attribute(namecell, "text", COL_NAME_TEXT)
 
-        desccol = gtk.TreeViewColumn(_("Description"))
+        desccol = Gtk.TreeViewColumn(_("Description"))
         desccol.set_sort_column_id(COL_DESC_TEXT)
         self.treeview.append_column(desccol)
         desccol.set_expand(True)
         desccol.set_spacing(SPACING)
-        desccol.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
+        desccol.set_sizing(Gtk.TREE_VIEW_COLUMN_AUTOSIZE)
         desccol.set_min_width(150)
-        desccell = gtk.CellRendererText()
+        desccell = Gtk.CellRendererText()
         desccell.props.xpad = 6
         desccell.set_property("ellipsize", pango.ELLIPSIZE_END)
-        desccol.pack_start(desccell)
+        desccol.pack_start(desccell, False, False, 0)
         desccol.add_attribute(desccell, "text", COL_DESC_TEXT)
 
-        self.iconview = gtk.IconView(self.storemodel)
+        self.iconview = Gtk.IconView(self.storemodel)
         self.iconview.set_pixbuf_column(COL_ICON)
         self.iconview.set_text_column(COL_NAME_TEXT)
         self.iconview.set_item_width(102)
@@ -168,14 +168,14 @@ class EffectList(gtk.VBox, Loggable):
         self.treeview.connect("motion-notify-event", self._motionNotifyEventCb)
         self.treeview.connect("query-tooltip", self._queryTooltipCb)
         self.treeview.connect("button-release-event", self._buttonReleaseCb)
-        self.treeview.drag_source_set(0, [], gtk.gdk.ACTION_COPY)
+        self.treeview.drag_source_set(0, [], Gtk.gdk.ACTION_COPY)
         self.treeview.connect("drag_begin", self._dndDragBeginCb)
         self.treeview.connect("drag_data_get", self._dndDataGetCb)
 
         self.iconview.connect("button-press-event", self._buttonPressEventCb)
         self.iconview.connect("activate-cursor-item", self._enterPressEventCb)
         self.iconview.connect("query-tooltip", self._queryTooltipCb)
-        self.iconview.drag_source_set(0, [], gtk.gdk.ACTION_COPY)
+        self.iconview.drag_source_set(0, [], Gtk.gdk.ACTION_COPY)
         self.iconview.connect("motion-notify-event", self._motionNotifyEventCb)
         self.iconview.connect("button-release-event", self._buttonReleaseCb)
         self.iconview.connect("drag_begin", self._dndDragBeginCb)
@@ -205,10 +205,10 @@ class EffectList(gtk.VBox, Loggable):
     def _addMenuItems(self, uiman):
         view_menu_item = uiman.get_widget('/MainMenuBar/View')
         view_menu = view_menu_item.get_submenu()
-        seperator = gtk.SeparatorMenuItem()
-        self.treeview_menuitem = gtk.RadioMenuItem(None,
+        seperator = Gtk.SeparatorMenuItem()
+        self.treeview_menuitem = Gtk.RadioMenuItem(None,
                 _("Show Video Effects as a List"))
-        self.iconview_menuitem = gtk.RadioMenuItem(self.treeview_menuitem,
+        self.iconview_menuitem = Gtk.RadioMenuItem(self.treeview_menuitem,
                 _("Show Video Effects as Icons"))
 
         if self.settings.lastEffectView == SHOW_TREEVIEW:
@@ -237,7 +237,7 @@ class EffectList(gtk.VBox, Loggable):
                                      effect.getCategories(),
                                      effect, name,
                                      self.app.effects.getEffectIcon(name)])
-            self.storemodel.set_sort_column_id(COL_NAME_TEXT, gtk.SORT_ASCENDING)
+            self.storemodel.set_sort_column_id(COL_NAME_TEXT, Gtk.SORT_ASCENDING)
 
     def show_categories(self, effectType):
         self.effectCategory.get_model().clear()
@@ -305,7 +305,7 @@ class EffectList(gtk.VBox, Loggable):
 
         if event.button == 3:
             chain_up = False
-        elif event.type is gtk.gdk._2BUTTON_PRESS:
+        elif event.type is Gtk.gdk._2BUTTON_PRESS:
             factory_name = self.getSelectedItems()
             self.app.gui.clipconfig.effect_expander.addEffectToCurrentSelection(factory_name)
         else:
@@ -318,9 +318,9 @@ class EffectList(gtk.VBox, Loggable):
             self._dragY = int(event.y)
 
         if chain_up and self.effect_view is SHOW_TREEVIEW:
-            gtk.TreeView.do_button_press_event(view, event)
+            Gtk.TreeView.do_button_press_event(view, event)
         elif chain_up and self.effect_view is SHOW_ICONVIEW:
-            gtk.IconView.do_button_press_event(view, event)
+            Gtk.IconView.do_button_press_event(view, event)
         else:
             view.grab_focus()
 
@@ -349,21 +349,21 @@ class EffectList(gtk.VBox, Loggable):
         if self._nothingUnderMouse(view, event):
             return True
 
-        if not event.state & (gtk.gdk.CONTROL_MASK | gtk.gdk.SHIFT_MASK):
+        if not event.state & (Gtk.gdk.CONTROL_MASK | Gdk.SHIFT_MASK):
             chain_up = not self._rowUnderMouseSelected(view, event)
 
         if view.drag_check_threshold(self._dragX, self._dragY,
             int(event.x), int(event.y)):
             context = view.drag_begin(
                 self._getDndTuple(),
-                gtk.gdk.ACTION_COPY,
+                Gtk.gdk.ACTION_COPY,
                 self._dragButton,
                 event)
             self._dragStarted = True
 
         if self.effect_view is SHOW_TREEVIEW:
             if chain_up:
-                gtk.TreeView.do_button_press_event(view, event)
+                Gtk.TreeView.do_button_press_event(view, event)
             else:
                 view.grab_focus()
 

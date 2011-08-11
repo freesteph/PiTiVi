@@ -19,8 +19,8 @@
 # Boston, MA 02110-1301, USA.
 
 import gst
-import gtk
-import gobject
+from gi.repository import Gtk
+from gi.repository import GObject
 
 from pitivi.ui.gstwidget import GstElementSettingsWidget
 from pitivi.ui.dynamic import FractionWidget
@@ -47,10 +47,10 @@ class EffectsPropertiesHandling:
             effect_set_ui.setElement(effect, ignore=PROPS_TO_IGNORE,
                                      default_btn=True, use_element_props=True)
             nb_rows = effect_set_ui.get_children()[0].get_property('n-rows')
-            effect_configuration_ui = gtk.ScrolledWindow()
+            effect_configuration_ui = Gtk.ScrolledWindow()
             effect_configuration_ui.add_with_viewport(effect_set_ui)
-            effect_configuration_ui.set_policy(gtk.POLICY_AUTOMATIC,
-                                               gtk.POLICY_AUTOMATIC)
+            effect_configuration_ui.set_policy(Gtk.POLICY_AUTOMATIC,
+                                               Gtk.POLICY_AUTOMATIC)
             self.cache_dict[effect] = effect_configuration_ui
             self._connectAllWidgetCbs(effect_set_ui, effect)
             self._postConfiguration(effect, effect_set_ui)
@@ -79,7 +79,7 @@ class EffectsPropertiesHandling:
 
     def _getUiToSetEffect(self, effect):
         """ Permit to get the widget to set the effect and not its container """
-        if type(self.cache_dict[effect]) is gtk.ScrolledWindow:
+        if type(self.cache_dict[effect]) is Gtk.ScrolledWindow:
             effect_set_ui = self.cache_dict[effect].get_children()[0].get_children()[0]
         else:
             effect_set_ui = self.cache_dict[effect]
