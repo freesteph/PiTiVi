@@ -20,8 +20,9 @@
 # Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
 # Boston, MA 02110-1301, USA.
 
-import gtk
 import os
+
+from gi.repository import Gtk
 from gettext import gettext as _
 
 from pitivi.configure import get_ui_dir
@@ -35,7 +36,7 @@ class DepsManager(object):
 
     def __init__(self, app):
         self.app = app
-        self.builder = gtk.Builder()
+        self.builder = Gtk.Builder()
         self.builder.add_from_file(os.path.join(get_ui_dir(), "depsmanager.ui"))
         self.builder.connect_signals(self)
         self.window = self.builder.get_object("window1")
@@ -52,7 +53,7 @@ class DepsManager(object):
         self.hide()
         """
         # FIXME: this is not implemented properly. Here is some partially working code:
-        
+
         self.session_bus = dbus.SessionBus()
         self.dbus_path = "/org/freedesktop/PackageKit"
         self.dbus_name = "org.freedesktop.PackageKit"

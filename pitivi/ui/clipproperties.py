@@ -64,11 +64,11 @@ class ClipProperties(gtk.ScrolledWindow, Loggable):
         gtk.ScrolledWindow.__init__(self)
         Loggable.__init__(self)
 
-        self.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
-        self.set_shadow_type(gtk.SHADOW_NONE)
+        self.set_policy(gtk.PolicyType.NEVER, gtk.PolicyType.AUTOMATIC)
+        self.set_shadow_type(gtk.ShadowType.NONE)
 
         vp = gtk.Viewport()
-        vp.set_shadow_type(gtk.SHADOW_NONE)
+        vp.set_shadow_type(gtk.ShadowType.NONE)
         self.add(vp)
 
         self.app = instance

@@ -24,8 +24,8 @@
 
 import sys
 from gi.repository import GObject as gobject
+from gi.repository import Gtk
 import gst
-import gtk
 import bisect
 import os
 import struct
@@ -587,7 +587,7 @@ def show_user_manual():
     time_now = int(time.time())
     for uri in (APPMANUALURL_OFFLINE, APPMANUALURL_ONLINE):
         try:
-            gtk.show_uri(None, uri, time_now)
+            Gtk.show_uri(None, uri, time_now)
             return
         except Exception, e:
             log.debug("utils", "Failed loading URI %s: %s", uri, e)

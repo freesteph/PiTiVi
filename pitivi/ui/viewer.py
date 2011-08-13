@@ -283,7 +283,7 @@ class PitiviViewer(Gtk.VBox, Loggable):
 
         self.internal.show()
         self.aframe.add(self.internal)
-        self.pack_start(self.aframe, expand=True)
+        self.pack_start(self.aframe, True, False, 0)
 
         self.external_window = Gtk.Window()
         vbox = Gtk.VBox()
@@ -502,9 +502,9 @@ class PitiviViewer(Gtk.VBox, Loggable):
             maxSize = self.target.area
             width = int(float(maxSize.width) * zoom)
             height = int(float(maxSize.height) * zoom)
-            area = gtk.gdk.Rectangle((maxSize.width - width) / 2,
-                                     (maxSize.height - height) / 2,
-                                     width, height)
+            area = Gdk.Rectangle((maxSize.width - width) / 2,
+                                 (maxSize.height - height) / 2,
+                                 width, height)
             self.sink.set_render_rectangle(*area)
             self.target.box.update_size(area)
             self.target.zoom = zoom
@@ -640,7 +640,6 @@ class PitiviViewer(Gtk.VBox, Loggable):
         Gdk.threads_leave()
 
 
-<<<<<<< HEAD
 class Point():
     def __init__(self, x, y, settings):
         self.x = x
@@ -973,10 +972,10 @@ class ViewerWidget(Gtk.DrawingArea, Loggable):
         #     self.modify_bg(state, self.style.black)
 
     def init_transformation_events(self):
-        self.set_events(gtk.gdk.BUTTON_PRESS_MASK
-                        | gtk.gdk.BUTTON_RELEASE_MASK
-                        | gtk.gdk.POINTER_MOTION_MASK
-                        | gtk.gdk.POINTER_MOTION_HINT_MASK)
+        self.set_events(Gdk.EventMask.BUTTON_PRESS_MASK
+                        | Gdk.EventMask.BUTTON_RELEASE_MASK
+                        | Gdk.EventMask.POINTER_MOTION_MASK
+                        | Gdk.EventMask.POINTER_MOTION_HINT_MASK)
 
     def show_box(self):
         if not self.box:
@@ -1013,13 +1012,13 @@ class ViewerWidget(Gtk.DrawingArea, Loggable):
         colormap = self.window.get_colormap()
         if self.box and self.zoom != 1.0:
             # crop away 1 pixel border to avoid artefacts on the pixbuf
-            pixbuf = gtk.gdk.Pixbuf(gtk.gdk.COLORSPACE_RGB, 0, 8, self.box.area.width - 2, self.box.area.height - 2)
+            pixbuf = Gdk.Pixbuf(Gdk.COLORSPACE_RGB, 0, 8, self.box.area.width - 2, self.box.area.height - 2)
             self.pixbuf = pixbuf.get_from_drawable(self.window, colormap,
                                                    self.box.area.x + 1, self.box.area.y + 1,
                                                    0, 0,
                                                    self.box.area.width - 2, self.box.area.height - 2)
         else:
-            pixbuf = gtk.gdk.Pixbuf(gtk.gdk.COLORSPACE_RGB, 0, 8, *self.window.get_size())
+            pixbuf = Gdk.Pixbuf(Gdk.COLORSPACE_RGB, 0, 8, *self.window.get_size())
             self.pixbuf = pixbuf.get_from_drawable(self.window, colormap, 0, 0, 0, 0, *self.window.get_size())
         self.stored = True
 
@@ -1050,7 +1049,7 @@ class ViewerWidget(Gtk.DrawingArea, Loggable):
         self.renderbox()
 
     def motion_notify_event(self, widget, event):
-        if event.get_state() & gtk.gdk.BUTTON1_MASK:
+        if event.get_state() & Gdk.EventMask.BUTTON1_MASK:
             if self.box.transform(event):
                 if self.stored:
                     self.renderbox()
@@ -1063,7 +1062,7 @@ class ViewerWidget(Gtk.DrawingArea, Loggable):
             if self.zoom != 1.0:
                 width = int(float(self.area.width) * self.zoom)
                 height = int(float(self.area.height) * self.zoom)
-                area = gtk.gdk.Rectangle((self.area.width - width) / 2,
+                area = Gdk.Rectangle((self.area.width - width) / 2,
                                      (self.area.height - height) / 2,
                                      width, height)
                 self.sink.set_render_rectangle(*area)
