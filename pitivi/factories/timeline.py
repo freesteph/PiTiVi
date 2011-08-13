@@ -63,7 +63,7 @@ class FixSeekStart(gst.BaseTransform):
 
         return gst.BaseTransform.do_src_event(self, event)
 
-gobject.type_register(FixSeekStart)
+#gobject.type_register(FixSeekStart)
 
 
 class TimelineSourceFactory(SourceFactory):

@@ -98,4 +98,4 @@ class VideoFade(gst.Bin):
                               self.startposition + self.duration,
                               stop)
 
-gobject.type_register(VideoFade)
+#gobject.type_register(VideoFade)

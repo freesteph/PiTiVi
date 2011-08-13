@@ -531,7 +531,7 @@ class CachedFactoryList(object):
         self._factoryFilter = factoryFilter
         self._factories = None
         self._registry = gst.registry_get_default()
-        self._registry.connect("feature-added", self._registryFeatureAddedCb)
+        #self._registry.connect("feature-added", self._registryFeatureAddedCb)
 
     def get(self):
         if self._factories is None:

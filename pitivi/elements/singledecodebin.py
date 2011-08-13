@@ -411,4 +411,4 @@ class SingleDecodeBin(gst.Bin):
     def _dynamicNoMorePadsCb(self, element):
         self.log("element:%s" % element.get_name())
 
-gobject.type_register(SingleDecodeBin)
+##gobject.type_register(SingleDecodeBin)

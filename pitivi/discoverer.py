@@ -77,7 +77,7 @@ class EOSSir(gst.Element):
             self.srcpad.push_event(gst.event_new_eos())
 
         return ret
-gobject.type_register(EOSSir)
+#gobject.type_register(EOSSir)
 
 
 class Discoverer(Signallable, Loggable):

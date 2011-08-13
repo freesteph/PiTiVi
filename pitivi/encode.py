@@ -233,7 +233,7 @@ class NewsegmentEater(gst.BaseTransform):
 
         return res
 
-gobject.type_register(NewsegmentEater)
+#gobject.type_register(NewsegmentEater)
 
 
 def get_compatible_sink_pad(factoryname, caps):
@@ -319,7 +319,7 @@ class CachedEncoderList(object):
     def __init__(self):
         self._factories = None
         self._registry = gst.registry_get_default()
-        self._registry.connect("feature-added", self._registryFeatureAddedCb)
+        #self._registry.connect("feature-added", self._registryFeatureAddedCb)
 
     def _ensure_factories(self):
         if self._factories is None:

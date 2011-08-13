@@ -91,4 +91,4 @@ class ExtractionSink(gst.BaseSink):
                 gobject.idle_add(call_false, self._cb)
         return gst.FLOW_OK
 
-gobject.type_register(ExtractionSink)
+#gobject.type_register(ExtractionSink)

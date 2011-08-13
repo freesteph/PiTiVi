@@ -78,4 +78,4 @@ class ArraySink(gst.BaseSink):
     def do_preroll(self, buf):
         return self.do_render(buf)
 
-gobject.type_register(ArraySink)
+#gobject.type_register(ArraySink)

@@ -1095,4 +1095,4 @@ class SourceList(gtk.VBox, Loggable):
         selection.set(selection.target, 8, '\n'.join(uris))
         context.set_icon_pixbuf(INVISIBLE, 0, 0)
 
-gobject.type_register(SourceList)
+#gobject.type_register(SourceList)

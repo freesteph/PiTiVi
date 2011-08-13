@@ -105,7 +105,7 @@ class SmartAdderBin(gst.Bin):
         self.debug("done")
 
 
-gobject.type_register(SmartAdderBin)
+#gobject.type_register(SmartAdderBin)
 gst.element_register(SmartAdderBin, 'smart-adder-bin')
 
 
@@ -340,5 +340,5 @@ class SmartVideomixerBinPropertyHelper(Signallable):
 
         self._mixer.change_mixer(has_alpha)
 
-gobject.type_register(SmartVideomixerBin)
+#gobject.type_register(SmartVideomixerBin)
 gst.element_register(SmartVideomixerBin, 'smart-videomixer-bin')
