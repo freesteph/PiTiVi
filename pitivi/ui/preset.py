@@ -23,7 +23,7 @@ import ConfigParser
 import os.path
 
 import gst
-import gtk
+from gi.repository import Gtk as gtk
 
 from pitivi.settings import xdg_data_home
 

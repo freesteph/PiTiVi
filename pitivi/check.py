@@ -23,7 +23,7 @@
 Runtime checks.
 """
 
-import gtk
+from gi.repository import Gtk as gtk
 import gst
 
 from gettext import gettext as _

@@ -21,7 +21,7 @@
 
 import platform
 import gobject
-import gtk
+from gi.repository import Gtk as gtk
 from gtk import gdk
 import gst
 from math import pi

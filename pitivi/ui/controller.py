@@ -19,7 +19,7 @@
 # Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
 # Boston, MA 02110-1301, USA.
 
-import gtk.gdk
+from gi.repository import Gtk as gtk.gdk
 from pitivi.receiver import receiver, handler
 from pitivi.ui.point import Point
 

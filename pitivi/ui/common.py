@@ -8,7 +8,7 @@ from urllib import unquote
 from gettext import gettext as _
 from gettext import ngettext
 import gst
-import gtk
+from gi.repository import Gtk as gtk
 
 GlobalSettings.addConfigSection("user-interface")
 LAYER_HEIGHT_EXPANDED = 50

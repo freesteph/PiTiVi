@@ -19,7 +19,7 @@
 # Boston, MA 02110-1301, USA.
 
 import gst
-import gtk
+from gi.repository import Gtk as gtk
 import gobject
 
 from pitivi.ui.gstwidget import GstElementSettingsWidget

@@ -25,7 +25,7 @@ Render dialog
 """
 
 import os
-import gtk
+from gi.repository import Gtk as gtk
 import gst
 import pango
 from gettext import gettext as _

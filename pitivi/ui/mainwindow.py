@@ -26,7 +26,7 @@ Main GTK+ window
 
 import os
 import platform
-import gtk
+from gi.repository import Gtk as gtk
 import gobject
 gobject.threads_init()
 import gst

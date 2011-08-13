@@ -1,6 +1,6 @@
 import goocanvas
 import gobject
-import gtk
+from gi.repository import Gtk as gtk
 import os.path
 import pango
 import cairo

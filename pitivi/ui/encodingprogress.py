@@ -24,7 +24,7 @@ Encoding dialog
 """
 
 import os
-import gtk
+from gi.repository import Gtk as gtk
 import gst
 import pitivi.configure as configure
 from gettext import gettext as _

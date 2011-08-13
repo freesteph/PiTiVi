@@ -23,7 +23,7 @@
 Timeline widgets for the complex view
 """
 
-import gtk
+from gi.repository import Gtk as gtk
 import urllib
 
 from pitivi.log.loggable import Loggable

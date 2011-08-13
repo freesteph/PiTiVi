@@ -28,7 +28,7 @@ import os
 from gettext import gettext as _
 
 import gobject
-import gtk
+from gi.repository import Gtk as gtk
 import gst
 
 import pitivi.configure as configure

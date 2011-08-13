@@ -22,7 +22,7 @@
 """
 Class handling the midle pane
 """
-import gtk
+from gi.repository import Gtk as gtk
 import pango
 import dnd
 import gst

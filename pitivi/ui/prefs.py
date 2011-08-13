@@ -23,7 +23,7 @@
 Dialog box for user preferences.
 """
 
-import gtk
+from gi.repository import Gtk as gtk
 import os
 
 import pitivi.ui.dynamic as dynamic

@@ -1,4 +1,4 @@
-import gtk
+from gi.repository import Gtk as gtk
 import gobject
 from pitivi.receiver import receiver, handler
 import pitivi.stream as stream

@@ -23,7 +23,7 @@
 Dialog box listing files which had errors, and the reasons.
 """
 
-import gtk
+from gi.repository import Gtk as gtk
 import os
 import pango
 

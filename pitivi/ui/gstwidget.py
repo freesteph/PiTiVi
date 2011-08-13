@@ -24,7 +24,7 @@ Widget for gstreamer element properties viewing/setting
 """
 
 import gobject
-import gtk
+from gi.repository import Gtk as gtk
 import gst
 import os
 

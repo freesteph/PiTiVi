@@ -20,7 +20,7 @@
 # Boston, MA 02110-1301, USA.
 
 import os
-import gtk
+from gi.repository import Gtk as gtk
 import webbrowser
 
 from gettext import gettext as _

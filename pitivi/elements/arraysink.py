@@ -25,7 +25,7 @@ Stores audio samples in an array for plotting waveforms
 import gobject
 gobject.threads_init()
 import gst
-import gtk
+from gi.repository import Gtk as gtk
 import array
 from pitivi.utils import native_endianness
 

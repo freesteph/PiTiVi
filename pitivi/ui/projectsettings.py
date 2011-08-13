@@ -24,7 +24,7 @@
 Dialog box for project settings
 """
 
-import gtk
+from gi.repository import Gtk as gtk
 import gst
 import os
 

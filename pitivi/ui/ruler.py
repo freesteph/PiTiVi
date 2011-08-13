@@ -24,7 +24,7 @@ Widget for the complex view ruler
 """
 
 import gobject
-import gtk
+from gi.repository import Gtk as gtk
 import gst
 import cairo
 from pitivi.ui.zoominterface import Zoomable
