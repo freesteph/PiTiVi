@@ -514,7 +514,7 @@ class SourceList(gtk.VBox, Loggable):
             chooser_action = gtk.FileChooserAction.SELECT_FOLDER
             dialogtitle = _("Select One or More Folders")
         else:
-            chooser_action = gtk.FILE_CHOOSER_DragAction.OPEN
+            chooser_action = gtk.FileChooserAction.OPEN
             dialogtitle = _("Select One or More Files")
         close_after = gtk.CheckButton(_("Close after importing files"))
         close_after.set_active(self.app.settings.closeImportDialog)
