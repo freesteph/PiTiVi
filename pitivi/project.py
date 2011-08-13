@@ -23,6 +23,7 @@
 Project class
 """
 
+from logging import warning as w
 from pitivi.log.loggable import Loggable
 from pitivi.timeline.timeline import Timeline
 from pitivi.pipeline import Pipeline
@@ -90,12 +91,18 @@ class Project(Signallable, Loggable):
 
         self._dirty = False
 
+        w("Creating a timeline")
         self.timeline = Timeline()
 
+        w("Creating a new TimelineSourceFactory")
         self.factory = TimelineSourceFactory(self.timeline)
+        w("pipeline")
         self.pipeline = Pipeline()
+        w("viewaction")
         self.view_action = ViewAction()
+        w("adding producers")
         self.view_action.addProducers(self.factory)
+        w("seeker!")
         self.seeker = Seeker(80)
 
         self.settings = ExportSettings()

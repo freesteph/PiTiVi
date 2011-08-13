@@ -19,9 +19,10 @@
 # Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
 # Boston, MA 02110-1301, USA.
 
-import gst
+from logging import warning as w
 from gi.repository import GObject as gobject
-
+from gi.repository import Gst as gst
+from gi.repository import GstController
 from pitivi.signalinterface import Signallable
 from pitivi.utils import get_controllable_properties, getPreviousObject, \
         getNextObject, start_insort_right, between
@@ -52,7 +53,7 @@ class Keyframe(Signallable):
 
 ## Properties
 
-    _mode = gst.INTERPOLATE_LINEAR
+    _mode = GstController.InterpolateMode.LINEAR
 
     def setMode(self, mode):
         if self.parent:
@@ -182,7 +183,7 @@ class Interpolator(Signallable, Loggable):
         self.debug("Creating a GstController for element %r and property %s",
             self._element, prop.name)
         self._controller = gst.Controller(self._element, prop.name)
-        self._controller.set_interpolation_mode(prop.name, gst.INTERPOLATE_LINEAR)
+        self._controller.set_interpolation_mode(prop.name, GstController.InterpolateMode.LINEAR)
 
     def newKeyframe(self, time_or_keyframe, value=None, mode=None):
         """add a new keyframe at the specified time, optionally with specified
@@ -207,7 +208,7 @@ class Interpolator(Signallable, Loggable):
                 # Use the following code to get the current mode when this method becomes
                 # available.
                 # mode = self._controller.get_interpolation_mode()
-                mode = gst.INTERPOLATE_LINEAR
+                mode = GstController.InterpolateMode.LINEAR
 
             keyframe = Keyframe(self)
             keyframe._time = time_or_keyframe
@@ -884,7 +885,7 @@ class VideoTransition(Transition):
     def _makeGnlObject(self):
         trans = gst.element_factory_make("alpha")
         self.controller = gst.Controller(trans, "alpha")
-        self.controller.set_interpolation_mode("alpha", gst.INTERPOLATE_LINEAR)
+        self.controller.set_interpolation_mode("alpha", GstController.InterpolateMode.LINEAR)
 
         self.operation = gst.element_factory_make("gnloperation")
         self.operation.add(trans)
@@ -928,14 +929,14 @@ class AudioTransition(Transition):
     def _makeGnlObject(self):
         trans = gst.element_factory_make("volume")
         self.a_controller = gst.Controller(trans, "volume")
-        self.a_controller.set_interpolation_mode("volume", gst.INTERPOLATE_LINEAR)
+        self.a_controller.set_interpolation_mode("volume", GstController.InterpolateMode.LINEAR)
 
         self.a_operation = gst.element_factory_make("gnloperation")
         self.a_operation.add(trans)
 
         trans = gst.element_factory_make("volume")
         self.b_controller = gst.Controller(trans, "volume")
-        self.b_controller.set_interpolation_mode("volume", gst.INTERPOLATE_LINEAR)
+        self.b_controller.set_interpolation_mode("volume", GstController.InterpolateMode.LINEAR)
 
         self.b_operation = gst.element_factory_make("gnloperation")
         self.b_operation.add(trans)
@@ -991,19 +992,24 @@ class Track(Signallable, Loggable):
     }
 
     def __init__(self, stream):
+        w("Here we are.")
         self.stream = stream
         if type(self.stream) is VideoStream:
             self.TransitionClass = VideoTransition
         elif type(self.stream) is AudioStream:
             self.TransitionClass = AudioTransition
         self.composition = gst.element_factory_make('gnlcomposition')
+        w("made composition")
         self.composition.connect('notify::start', self._compositionStartChangedCb)
+        w("composition start changed")
         self.composition.connect('notify::duration', self._compositionDurationChangedCb)
+        w("composition duration")
         self.track_objects = []
         self.transitions = {}
         self._update_transitions = True
         self._max_priority = 0
 
+        w("going to get mixer")
         self.mixer = self._getMixerForStream(stream)
         if self.mixer:
             self.composition.add(self.mixer)

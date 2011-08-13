@@ -23,48 +23,33 @@
 Timeline widgets for the complex view
 """
 from logging import warning as w
-w("from gi.repository import Gtk as gtk")
+
 from gi.repository import Gtk as gtk
 from gi.repository import Gdk
 import urllib
 
-w("from pitivi.log.loggable import Loggable")
 from pitivi.log.loggable import Loggable
 import ruler
 import dnd
 import gst
-w("from gi.repository import GObject as gobject")
 from gi.repository import GObject as gobject
 
-w("from gettext import gettext as _")
 from gettext import gettext as _
-w("from timelinecanvas import TimelineCanvas")
 from timelinecanvas import TimelineCanvas
-w("from timelinecontrols import TimelineControls")
 from timelinecontrols import TimelineControls
-w("from pitivi.receiver import receiver, handler")
 from pitivi.receiver import receiver, handler
-w("from zoominterface import Zoomable")
 from zoominterface import Zoomable
-w("from pitivi.ui.common import LAYER_HEIGHT_EXPANDED, LAYER_SPACING, TRACK_SPACING")
 from pitivi.ui.common import LAYER_HEIGHT_EXPANDED, LAYER_SPACING, TRACK_SPACING
-w("from pitivi.timeline.timeline import MoveContext, SELECT")
 from pitivi.timeline.timeline import MoveContext, SELECT
-w("from pitivi.utils import Seeker")
 from pitivi.utils import Seeker
-w("from pitivi.ui.filelisterrordialog import FileListErrorDialog")
 from pitivi.ui.filelisterrordialog import FileListErrorDialog
-w("from pitivi.ui.curve import Curve")
 from pitivi.ui.curve import Curve
-w("from pitivi.ui.common import SPACING")
 from pitivi.ui.common import SPACING
-w("from pitivi.ui.alignmentprogress import AlignmentProgressDialog")
 from pitivi.ui.alignmentprogress import AlignmentProgressDialog
 from pitivi.ui.depsmanager import DepsManager
 from pitivi.timeline.align import AutoAligner
 from pitivi.check import soft_deps
 
-w("from pitivi.factories.operation import EffectFactory")
 from pitivi.factories.operation import EffectFactory
 
 DND_EFFECT_LIST = [[dnd.VIDEO_EFFECT_TUPLE[0], dnd.EFFECT_TUPLE[0]],\

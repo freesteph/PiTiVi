@@ -39,45 +39,36 @@ import webbrowser
 
 from gettext import gettext as _
 
-w("from pitivi.log.loggable import Loggable")
 from pitivi.log.loggable import Loggable
-
-w("from pitivi.ui.timeline import Timeline")
 from pitivi.ui.timeline import Timeline
-w("from pitivi.ui.basetabs import BaseTabs")
 from pitivi.ui.basetabs import BaseTabs
-w("from pitivi.ui.viewer import PitiviViewer")
 from pitivi.ui.viewer import PitiviViewer
 from pitivi.configure import pitivi_version, APPNAME, APPURL, \
      get_pixmap_dir, LIBDIR, get_ui_dir
-w("from pitivi.ui import dnd")
 from pitivi.ui import dnd
-w("from pitivi.pipeline import Pipeline")
 from pitivi.pipeline import Pipeline
-w("from pitivi.action import ViewAction")
 from pitivi.action import ViewAction
-w("from pitivi.settings import GlobalSettings")
 from pitivi.settings import GlobalSettings
-w("from pitivi.receiver import receiver, handler")
 from pitivi.receiver import receiver, handler
-import pitivi.formatters.format as formatter
-w("from pitivi.sourcelist import SourceListError")
 from pitivi.sourcelist import SourceListError
-w("from pitivi.ui.sourcelist import SourceList")
 from pitivi.ui.sourcelist import SourceList
-w("from pitivi.ui.effectlist import EffectList")
 from pitivi.ui.effectlist import EffectList
-w("from pitivi.ui.clipproperties import ClipProperties")
 from pitivi.ui.clipproperties import ClipProperties
-w("from pitivi.ui.common import SPACING")
 from pitivi.ui.common import SPACING
-w("from pitivi.ui.common import factory_name")
 from pitivi.ui.common import factory_name
 from pitivi.utils import beautify_length, show_user_manual
 from pitivi.ui.zoominterface import Zoomable
-w("from pitivi.ui.filechooserpreview import PreviewWidget")
 from pitivi.ui.filechooserpreview import PreviewWidget
 
+<<<<<<< HEAD
+=======
+import pitivi.formatters.format as formatter
+if HAVE_GCONF:
+    D_G_INTERFACE = "/desktop/gnome/interface"
+
+    for gconf_dir in (D_G_INTERFACE, ):
+        gconf.client_get_default().add_dir(gconf_dir, gconf.CLIENT_PRELOAD_NONE)
+>>>>>>> remove warnings, correct a couple callbacks and enums
 
 GlobalSettings.addConfigOption("fileSupportEnabled",
     environment="PITIVI_FILE_SUPPORT",
@@ -252,12 +243,12 @@ class PitiviMainWindow(gtk.Window, Loggable):
         dialog = EncodingDialog(self, project)
         dialog.window.connect("destroy", self._encodingDialogDestroyCb)
         self.set_sensitive(False)
-#        dialog.window.show()
+        dialog.window.show()
 
-    def _encodingDialogDestroyCb(self, unused_dialog):
+    def _encodingDialogDestroyCb(self, widget, data):
         self.set_sensitive(True)
 
-    def _recordCb(self, unused_button):
+    def _recordCb(self, widget, data):
         self.showEncodingDialog(self.project)
 
     def _setActions(self, instance):
@@ -317,6 +308,7 @@ class PitiviMainWindow(gtk.Window, Loggable):
         self.timeline.show()
         self.mainhpaned = gtk.HPaned()
         vpaned.pack1(self.mainhpaned, resize=True, shrink=False)
+        vpaned.show()
 
         self.secondhpaned = gtk.HPaned()
         self.mainhpaned.pack1(self.secondhpaned, resize=True, shrink=False)
@@ -492,30 +484,30 @@ class PitiviMainWindow(gtk.Window, Loggable):
 
 ## Toolbar/Menu actions callback
 
-    def _newProjectMenuCb(self, unused_action):
+    def _newProjectMenuCb(self, widget, data):
         self.app.projectManager.newBlankProject()
         self.app.gui.showProjectSettingsDialog()
 
-    def _openProjectCb(self, unused_action):
+    def _openProjectCb(self, widget, data):
         self.openProject()
 
-    def _saveProjectCb(self, unused_action):
+    def _saveProjectCb(self, widget, data):
         if not self.project.uri:
             self._saveProjectAsCb(unused_action)
         else:
             self.app.projectManager.saveProject(self.project, overwrite=True)
 
-    def _saveProjectAsCb(self, unused_action):
+    def _saveProjectAsCb(self, widget, data):
         uri = self._showSaveAsDialog(self.app.current)
         if uri is not None:
             return self.app.projectManager.saveProject(self.project, uri, overwrite=True)
 
         return False
 
-    def _revertToSavedProjectCb(self, unused_action):
+    def _revertToSavedProjectCb(self, widget, data):
         return self.app.projectManager.revertToSavedProject()
 
-    def _projectSettingsCb(self, unused_action):
+    def _projectSettingsCb(self, widget, data):
         self.showProjectSettingsDialog()
 
     def showProjectSettingsDialog(self):
@@ -524,11 +516,11 @@ class PitiviMainWindow(gtk.Window, Loggable):
         ProjectSettingsDialog(self, self.app.current).window.run()
         self.updateTitle()
 
-    def _quitCb(self, unused_action):
+    def _quitCb(self, widget, data):
         self._saveWindowSettings()
         self.app.shutdown()
 
-    def _fullScreenCb(self, unused_action):
+    def _fullScreenCb(self, widget, data):
         self.toggleFullScreen()
 
     def _fullScreenAlternateCb(self, unused_action):
@@ -545,17 +537,16 @@ class PitiviMainWindow(gtk.Window, Loggable):
     def _userManualCb(self, unused_action):
         show_user_manual()
 
-    def _aboutResponseCb(self, dialog, unused_response):
+    def _aboutResponseCb(self, dialog, data):
         dialog.destroy()
 
     def _showWebsiteCb(self, dialog, uri):
         webbrowser.open_new(uri)
 
-    def _aboutCb(self, unused_action):
+    def _aboutCb(self, widget, data):
         abt = gtk.AboutDialog()
         abt.set_name(APPNAME)
         abt.set_version(pitivi_version)
-        gtk.about_dialog_set_url_hook(self._showWebsiteCb)
         abt.set_website(APPURL)
         authors = ["Edward Hervey <bilboed@bilboed.com>",
                    "Alessandro Decina <alessandro.decina@collabora.co.uk>",
@@ -622,7 +613,7 @@ class PitiviMainWindow(gtk.Window, Loggable):
     def _redoCb(self, action):
         self.app.action_log.redo()
 
-    def _prefsCb(self, unused_action):
+    def _prefsCb(self, widget, data):
         if not self.prefsdialog:
             w("from pitivi.ui.prefs import PreferencesDialog")
             from pitivi.ui.prefs import PreferencesDialog

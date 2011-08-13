@@ -524,7 +524,7 @@ class TestFormatterLoad(TestCase):
         curves = SubElement(element, "curves")
         curve = SubElement(curves, "curve", property="volume",
             version="1")
-        expected = dict((long(t * gst.SECOND), (float(t % 2), gst.INTERPOLATE_LINEAR))
+        expected = dict((long(t * gst.SECOND), (float(t % 2), gst.InterpolateMode.LINEAR))
             for t in xrange(1, 10))
         start = SubElement(curve, "start", value="0.0", mode="2")
         for time, (value, mode) in expected.iteritems():
@@ -579,7 +579,7 @@ class TestFormatterLoad(TestCase):
         # add a volume curve
         curves = SubElement(element, "curves")
         curve = SubElement(curves, "curve", property="volume")
-        expected = dict((long(t * gst.SECOND), (float(t % 2), gst.INTERPOLATE_LINEAR))
+        expected = dict((long(t * gst.SECOND), (float(t % 2), gst.InterpolateMode.LINEAR))
             for t in xrange(6, 15))
         start = SubElement(curve, "start", value="1.0", mode="2")
         for time, (value, mode) in expected.iteritems():

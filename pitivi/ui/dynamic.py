@@ -202,7 +202,7 @@ class NumericWidget(gtk.HBox, DynamicWidget):
         range = upper - lower
         self.adjustment.props.lower = lower
         self.adjustment.props.upper = upper
-        self.spinner = gtk.SpinButton(self.adjustment)
+        self.spinner = gtk.SpinButton(adjustment=self.adjustment)
         self.pack_end(self.spinner, not hasattr(self, 'slider'), False, 0)
         self.spinner.show()
 
@@ -233,7 +233,7 @@ class NumericWidget(gtk.HBox, DynamicWidget):
             minimum = self.lower
         if self.upper is not None:
             maximum = self.upper
-        self.adjustment.set_all(value, minimum, maximum, step, page, 0)
+        self.adjustment.configure(value, minimum, maximum, step, page, 0)
         self.spinner.set_adjustment(self.adjustment)
 
 
@@ -388,7 +388,7 @@ class ChoiceWidget(gtk.HBox, DynamicWidget):
         DynamicWidget.__init__(self, default)
         self.choices = None
         self.values = None
-        self.contents = gtk.combo_box_new_text()
+        self.contents = gtk.ComboBoxText()
         self.pack_start(self.contents, False, False, 0)
         self.setChoices(choices)
         self.contents.show()
@@ -468,7 +468,7 @@ class PresetChoiceWidget(gtk.HBox, DynamicWidget):
         presets.connect("preset-added", self._presetAdded)
         presets.connect("preset-removed", self._presetRemoved)
 
-        self.combo = gtk.combo_box_new_text()
+        self.combo = gtk.ComboBoxText()
         self.combo.set_row_separator_func(self._sep_func)
         for preset in presets:
             self.combo.append_text(preset[0])

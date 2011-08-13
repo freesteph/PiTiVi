@@ -19,6 +19,7 @@
 # Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
 # Boston, MA 02110-1301, USA.
 
+from logging import warning as w
 from gi.repository import GObject as gobject
 import gst
 from gi.repository import Gtk as gtk, Gdk, GdkPixbuf
@@ -379,19 +380,19 @@ class SourceList(gtk.VBox, Loggable):
         self.clip_view = self.settings.lastClipView
         self._displayClipView()
 
-    def _importSourcesCb(self, unused_action):
+    def _importSourcesCb(self, widget, data):
         self.showImportSourcesDialog()
 
-    def _importSourcesFolderCb(self, unused_action):
+    def _importSourcesFolderCb(self, widget, data):
         self.showImportSourcesDialog(True)
 
-    def _removeSourcesCb(self, unused_action):
+    def _removeSourcesCb(self, widget, data):
         self._removeSources()
 
-    def _selectUnusedSourcesCb(self, widget):
+    def _selectUnusedSourcesCb(self, widget, data):
         self._selectUnusedSources()
 
-    def _insertEndCb(self, unused_action):
+    def _insertEndCb(self, widget, data):
         self.app.action_log.begin("add clip")
         timeline = self.app.current.timeline
         sources = self.app.current.sources
@@ -528,10 +529,10 @@ class SourceList(gtk.VBox, Loggable):
         self._importDialog.set_default_response(gtk.ResponseType.OK)
         self._importDialog.set_select_multiple(True)
         self._importDialog.set_modal(False)
-        pw = PreviewWidget(self.app)
-        self._importDialog.set_preview_widget(pw)
-        self._importDialog.set_use_preview_label(False)
-        self._importDialog.connect('update-preview', pw.add_preview_request)
+        #pw = PreviewWidget(self.app)
+        #self._importDialog.set_preview_widget(pw)
+        #self._importDialog.set_use_preview_label(False)
+        #self._importDialog.connect('update-preview', pw.add_preview_request)
         self._importDialog.set_current_folder(self.app.settings.lastImportFolder)
 
         self._importDialog.connect('response', self._dialogBoxResponseCb, select_folders)

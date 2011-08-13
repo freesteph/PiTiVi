@@ -46,7 +46,6 @@ class StartUpWizard(object):
     """
 
     def __init__(self, app):
-        w("Initate SW")
         self.app = app
         self.builder = gtk.Builder()
         self.builder.add_from_file(os.path.join(get_ui_dir(), "startupwizard.ui"))
@@ -74,8 +73,11 @@ class StartUpWizard(object):
 
     def _newProjectCb(self, unused_button):
         """Handle a click on the New (Project) button."""
+        w("creating blank")
         self.app.projectManager.newBlankProject()
+        w("showing proj settings")
         self.app.gui.showProjectSettingsDialog()
+        w("done")
 
     def _loadCb(self, unused_recent_chooser):
         """Handle a double-click on the recent chooser."""

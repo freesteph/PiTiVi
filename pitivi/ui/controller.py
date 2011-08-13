@@ -172,8 +172,8 @@ class Controller(object):
             self._vadj = self._canvas.app.gui.timeline.vadj
         self._last_event = event
         s = event.get_state()
-        self._shift_down = s & Gdk.ModifierMask.SHIFT_MASK
-        self._control_down = s & Gdk.ModifierMask.CONTROL_MASK
+        self._shift_down = s & Gdk.ModifierType.SHIFT_MASK
+        self._control_down = s & Gdk.ModifierType.CONTROL_MASK
 
     def _drag_start(self, item, target, event):
         self.drag_start(item, target, event)

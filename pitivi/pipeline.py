@@ -145,7 +145,7 @@ class Pipeline(Signallable, Loggable):
         self._pipeline = gst.Pipeline()
         self._bus = self._pipeline.get_bus()
         self._bus.add_signal_watch()
-        self._bus.connect("message", self._busMessageCb)
+        #self._bus.connect("message", self._busMessageCb)
         self._bus.set_sync_handler(self._busSyncMessageHandler)
         self.factories = {}
         self.actions = []

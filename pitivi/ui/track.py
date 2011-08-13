@@ -1,14 +1,9 @@
 from logging import warning as w
 
-w("from pitivi.ui.zoominterface import Zoomable ")
 from pitivi.ui.zoominterface import Zoomable
-w("from pitivi.ui.trackobject import TrackObject ")
 from pitivi.ui.trackobject import TrackObject
-w("from pitivi.timeline.track import TrackEffect ")
 from pitivi.timeline.track import TrackEffect
-w("from pitivi.receiver import receiver, handler ")
 from pitivi.receiver import receiver, handler
-w("from pitivi.ui.common import LAYER_HEIGHT_EXPANDED, LAYER_HEIGHT_COLLAPSED, LAYER_SPACING ")
 from pitivi.ui.common import LAYER_HEIGHT_EXPANDED, LAYER_HEIGHT_COLLAPSED, LAYER_SPACING
 from gi.repository import GooCanvas
 
@@ -64,11 +59,13 @@ class Transition(GooCanvas.CanvasRect, Zoomable):
 
 
 class Track(GooCanvas.CanvasGroup, Zoomable):
-    __gtype_name__ = 'Track'
+    #__gtype_name__ = 'Track'
 
     def __init__(self, instance, track, timeline=None):
+        w("About to init shit")
         GooCanvas.CanvasGroup.__init__(self)
         Zoomable.__init__(self)
+        w("Creating a track")
         self.app = instance
         self.widgets = {}
         self.timeline = timeline

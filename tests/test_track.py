@@ -270,7 +270,7 @@ class TestTrackObject(TestCase):
 
         # create a zig-zag volume curve
         interpolator = obj.getInterpolator("volume")
-        expected = dict(((t * gst.SECOND, (t % 2, gst.INTERPOLATE_LINEAR))
+        expected = dict(((t * gst.SECOND, (t % 2, gst.InterpolateMode.LINEAR))
             for t in xrange(3, 10, 3)))
         for time, (value, mode) in expected.iteritems():
             interpolator.newKeyframe(time, value, mode)
@@ -341,7 +341,7 @@ class TestTrackObject(TestCase):
 
         # create a three keyframes at: 3, 6 and 9 seconds
         interpolator = obj.getInterpolator("volume")
-        keyframes = dict(((t * gst.SECOND, (t % 2, gst.INTERPOLATE_LINEAR))
+        keyframes = dict(((t * gst.SECOND, (t % 2, gst.InterpolateMode.LINEAR))
             for t in xrange(3, 10, 3)))
         expected = []
         expected2 = []

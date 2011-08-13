@@ -19,6 +19,7 @@
 # Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
 # Boston, MA 02110-1301, USA.
 
+from logging import warning as w
 from gettext import gettext as _
 from gi.repository import GObject as gobject
 gobject.threads_init()
@@ -178,21 +179,31 @@ class ProjectManager(Signallable, Loggable):
             return False
 
         # we don't have an URI here, None means we're loading a new project
+        w("Emiting new-porject")
         self.emit("new-project-loading", None)
+
+        w("Creating new project for good")
         project = Project(_("New Project"))
 
+        w("setting up metadata")
         # setting default values for project metadata
         project.author = getpwuid(os.getuid()).pw_gecos.split(",")[0]
 
+        w("emitting created")
         self.emit("new-project-created", project)
         self.current = project
 
         # FIXME: this should not be hard-coded
         # add default tracks for a new project
+        w("going to update shit")
         settings = project.getSettings()
+        w("got settings")
         video = VideoStream(gst.Caps(settings.getVideoCaps()))
+        w("videostream")
         track = Track(video)
+        w("track")
         project.timeline.addTrack(track)
+        w("timeline track")
         audio = AudioStream(gst.Caps(settings.getAudioCaps()))
         track = Track(audio)
         project.timeline.addTrack(track)

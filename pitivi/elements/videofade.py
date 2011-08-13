@@ -55,7 +55,7 @@ class VideoFade(gst.Bin):
         self.fadefromblack = fadefromblack
 
         self.alphacontrol = gst.Controller(self.alpha, "alpha")
-        self.alphacontrol.set_interpolation_mode("alpha", gst.INTERPOLATE_LINEAR)
+        self.alphacontrol.set_interpolation_mode("alpha", gst.InterpolateMode.LINEAR)
 
         self._resetControllerValues()
 
