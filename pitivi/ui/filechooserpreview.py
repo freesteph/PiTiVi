@@ -123,7 +123,7 @@ class PreviewWidget(gtk.VBox, Loggable):
 
         # Label for metadata tags
         self.l_tags = gtk.Label()
-        self.l_tags.set_justify(gtk.JUSTIFY_LEFT)
+        self.l_tags.set_justify(gtk.Justification.LEFT)
         self.l_tags.set_ellipsize(pango.ELLIPSIZE_END)
         self.l_tags.show()
         self.pack_start(self.l_tags, False, False, 0)
@@ -394,7 +394,7 @@ class PreviewWidget(gtk.VBox, Loggable):
         if mess is not None:
             dialog = gtk.MessageDialog(None,
                 gtk.DIALOG_MODAL,
-                gtk.MESSAGE_WARNING,
+                gtk.MessageType.WARNING,
                 gtk.BUTTONS_OK,
                 mess)
             dialog.set_icon_name("pitivi")

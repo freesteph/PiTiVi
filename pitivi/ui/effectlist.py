@@ -19,7 +19,7 @@
 # Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
 # Boston, MA 02110-1301, USA.
 
-from gi.repository import Gtk as gtk, GdkPixbuf
+from gi.repository import Gtk as gtk, GdkPixbuf, Gdk
 import pango
 import os
 import time
@@ -84,10 +84,10 @@ class EffectList(gtk.VBox, Loggable):
         hfilters = gtk.HBox(homogeneous=0, spacing=0)
         hfilters.set_spacing(SPACING)
         hfilters.set_border_width(3)  # Prevents being flush against the notebook
-        self.effectType = gtk.combo_box_new_text()
+        self.effectType = gtk.ComboBoxText()
         self.effectType.append_text(_("Video effects"))
         self.effectType.append_text(_("Audio effects"))
-        self.effectCategory = gtk.combo_box_new_text()
+        self.effectCategory = gtk.ComboBoxText()
         self.effectType.set_active(VIDEO_EFFECT)
 
         hfilters.pack_start(self.effectType, True, False, 0)
@@ -102,8 +102,8 @@ class EffectList(gtk.VBox, Loggable):
         hsearch.pack_start(searchStr, False, False, 0)
         hsearch.pack_end(self.searchEntry, True, False, 0)
 
-        # Store
-        self.storemodel = gtk.ListStore(str, str, int, object, object, str, GdkPixbuf)
+        # Store FIXME (str, str, int, object, object, str , GdkPixbuf)
+        self.storemodel = gtk.ListStore(str, str, int, object, object, str)
 
         # Scrolled Windows
         self.treeview_scrollwin = gtk.ScrolledWindow()
@@ -116,7 +116,7 @@ class EffectList(gtk.VBox, Loggable):
 
         # TreeView
         # Displays name, description
-        self.treeview = gtk.TreeView(self.storemodel)
+        self.treeview = gtk.TreeView(model=self.storemodel)
         self.treeview_scrollwin.add(self.treeview)
         self.treeview.set_property("rules_hint", True)
         self.treeview.set_property("has_tooltip", True)
@@ -128,12 +128,12 @@ class EffectList(gtk.VBox, Loggable):
         namecol.set_sort_column_id(COL_NAME_TEXT)
         self.treeview.append_column(namecol)
         namecol.set_spacing(SPACING)
-        namecol.set_sizing(gtk.TREE_VIEW_COLUMN_FIXED)
+        namecol.set_sizing(gtk.TreeViewColumnSizing.FIXED)
         namecol.set_fixed_width(150)
         namecell = gtk.CellRendererText()
         namecell.props.xpad = 6
         namecell.set_property("ellipsize", pango.ELLIPSIZE_END)
-        namecol.pack_start(namecell, False, False, 0)
+        namecol.pack_start(namecell, False)
         namecol.add_attribute(namecell, "text", COL_NAME_TEXT)
 
         desccol = gtk.TreeViewColumn(_("Description"))
@@ -141,15 +141,15 @@ class EffectList(gtk.VBox, Loggable):
         self.treeview.append_column(desccol)
         desccol.set_expand(True)
         desccol.set_spacing(SPACING)
-        desccol.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
+        desccol.set_sizing(gtk.TreeViewColumnSizing.AUTOSIZE)
         desccol.set_min_width(150)
         desccell = gtk.CellRendererText()
         desccell.props.xpad = 6
         desccell.set_property("ellipsize", pango.ELLIPSIZE_END)
-        desccol.pack_start(desccell, False, False, 0)
+        desccol.pack_start(desccell, False)
         desccol.add_attribute(desccell, "text", COL_DESC_TEXT)
 
-        self.iconview = gtk.IconView(self.storemodel)
+        self.iconview = gtk.IconView(model=self.storemodel)
         self.iconview.set_pixbuf_column(COL_ICON)
         self.iconview.set_text_column(COL_NAME_TEXT)
         self.iconview.set_item_width(102)
@@ -189,8 +189,8 @@ class EffectList(gtk.VBox, Loggable):
         self.pack_end(self.iconview_scrollwin, True, False, 0)
 
         #create the filterModel
-        self.modelFilter = self.storemodel.filter_new()
-        self.modelFilter.set_visible_func(self._setRowVisible, data=None)
+        self.modelFilter = self.storemodel.filter_new(None)
+        self.modelFilter.set_visible_func(self._setRowVisible, None)
         self.treeview.set_model(self.modelFilter)
         self.iconview.set_model(self.modelFilter)
 
@@ -208,9 +208,10 @@ class EffectList(gtk.VBox, Loggable):
         view_menu_item = uiman.get_widget('/MainMenuBar/View')
         view_menu = view_menu_item.get_submenu()
         seperator = gtk.SeparatorMenuItem()
-        self.treeview_menuitem = gtk.RadioMenuItem(None,
+        group = []
+        self.treeview_menuitem = gtk.RadioMenuItem.new_with_label(group,
                 _("Show Video Effects as a List"))
-        self.iconview_menuitem = gtk.RadioMenuItem(self.treeview_menuitem,
+        self.iconview_menuitem = gtk.RadioMenuItem.new_with_label(group,
                 _("Show Video Effects as Icons"))
 
         if self.settings.lastEffectView == SHOW_TREEVIEW:

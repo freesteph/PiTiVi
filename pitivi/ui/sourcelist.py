@@ -197,18 +197,18 @@ class SourceList(gtk.VBox, Loggable):
         self.treeview.append_column(pixbufcol)
         pixcell = gtk.CellRendererPixbuf()
         pixcell.props.xpad = 6
-        pixbufcol.pack_start(pixcell, False, False, 0)
+        pixbufcol.pack_start(pixcell, False)
         pixbufcol.add_attribute(pixcell, 'pixbuf', COL_ICON)
 
         namecol = gtk.TreeViewColumn(_("Information"))
         self.treeview.append_column(namecol)
         namecol.set_expand(True)
         namecol.set_spacing(SPACING)
-        namecol.set_sizing(gtk.TREE_VIEW_COLUMN_GROW_ONLY)
+        namecol.set_sizing(gtk.TreeViewColumnSizing.GROW_ONLY)
         namecol.set_min_width(150)
         txtcell = gtk.CellRendererText()
-        txtcell.set_property("ellipsize", pango.ELLIPSIZE_END)
-        namecol.pack_start(txtcell, False, False, 0)
+        #txtcell.set_property("ellipsize", pango.ELLIPSIZE_END)
+        namecol.pack_start(txtcell, False)
         namecol.add_attribute(txtcell, "markup", COL_INFOTEXT)
 
         namecol = gtk.TreeViewColumn(_("Duration"))
@@ -216,15 +216,14 @@ class SourceList(gtk.VBox, Loggable):
         self.treeview.append_column(namecol)
         txtcell = gtk.CellRendererText()
         txtcell.set_property("yalign", 0.0)
-        namecol.pack_start(txtcell, False, False, 0)
+        namecol.pack_start(txtcell, False)
         namecol.add_attribute(txtcell, "markup", COL_LENGTH)
 
         # IconView
-        self.iconview = gtk.IconView(self.modelFilter)
+        self.iconview = gtk.IconView(model=self.modelFilter)
         self.iconview_scrollwin.add(self.iconview)
         self.iconview.connect("button-press-event", self._iconViewButtonPressEventCb)
         self.iconview.connect("selection-changed", self._viewSelectionChangedCb)
-        self.iconview.set_orientation(gtk.ORIENTATION_VERTICAL)
         self.iconview.set_property("has_tooltip", True)
         self.iconview.set_tooltip_column(COL_INFOTEXT)
         self.iconview.set_text_column(COL_SHORT_TEXT)
@@ -237,9 +236,9 @@ class SourceList(gtk.VBox, Loggable):
 
         txtlabel = gtk.Label()
         txtlabel.set_padding(PADDING, PADDING)
-        txtlabel.set_line_wrap(True)
-        txtlabel.set_line_wrap_mode(pango.WRAP_WORD)
-        txtlabel.set_justify(gtk.JUSTIFY_CENTER)
+        #txtlabel.set_line_wrap(True)
+        #txtlabel.set_line_wrap_mode(pango.WRAP_WORD)
+        txtlabel.set_justify(gtk.Justification.CENTER)
         txtlabel.set_text(
             _('Add media to your project by dragging files and folders here or '
               'by using the "Import Files..." button.'))
@@ -248,13 +247,13 @@ class SourceList(gtk.VBox, Loggable):
 
         # The infobar that shows up if there are _errors when importing clips
         self._import_warning_infobar = gtk.InfoBar()
-        self._import_warning_infobar.set_message_type(gtk.MESSAGE_WARNING)
+        self._import_warning_infobar.set_message_type(gtk.MessageType.WARNING)
         content_area = self._import_warning_infobar.get_content_area()
         actions_area = self._import_warning_infobar.get_action_area()
         self._warning_label = gtk.Label()
         self._warning_label.set_line_wrap(True)
-        self._warning_label.set_line_wrap_mode(pango.WRAP_WORD)
-        self._warning_label.set_justify(gtk.JUSTIFY_CENTER)
+        #self._warning_label.set_line_wrap_mode(pango.WRAP_WORD)
+        self._warning_label.set_justify(gtk.Justification.CENTER)
         self._view_error_btn = gtk.Button()
         self._hide_infobar_btn = gtk.Button()
         self._hide_infobar_btn.set_label(_("Hide"))
@@ -279,10 +278,10 @@ class SourceList(gtk.VBox, Loggable):
         self.videofilepixbuf = self._getIcon("video-x-generic", "pitivi-video.png")
 
         # Drag and Drop
-        self.drag_dest_set(gtk.DestDefaults.DROP | gtk.DestDefaults.MOTION,
-                           [dnd.URI_TUPLE, dnd.FILE_TUPLE],
-                           Gdk.DragAction.COPY)
-        self.connect("drag_data_received", self._dndDataReceivedCb)
+        # self.drag_dest_set(gtk.DestDefaults.DROP | gtk.DestDefaults.MOTION,
+        #                    [dnd.URI_TUPLE, dnd.FILE_TUPLE],
+        #                    Gdk.DragAction.COPY)
+        # self.connect("drag_data_received", self._dndDataReceivedCb)
 
         self.treeview.drag_source_set(0, [], Gdk.DragAction.COPY)
         self.treeview.connect("motion-notify-event",
@@ -342,9 +341,10 @@ class SourceList(gtk.VBox, Loggable):
         view_menu_item = uiman.get_widget('/MainMenuBar/View')
         view_menu = view_menu_item.get_submenu()
         seperator = gtk.SeparatorMenuItem()
-        self.treeview_menuitem = gtk.RadioMenuItem(None,
+        group = []
+        self.treeview_menuitem = gtk.RadioMenuItem.new_with_label(group,
                 _("Show Clips as a List"))
-        self.iconview_menuitem = gtk.RadioMenuItem(self.treeview_menuitem,
+        self.iconview_menuitem = gtk.RadioMenuItem.new_with_label(group,
                 _("Show Clips as Icons"))
 
         # update menu items with current clip view before we connect to item
@@ -428,7 +428,7 @@ class SourceList(gtk.VBox, Loggable):
             return text in model.get_value(iter, COL_INFOTEXT).lower()
 
     def _getIcon(self, iconname, alternate):
-        icontheme = gtk.icon_theme_get_default()
+        icontheme = gtk.IconTheme.get_default()
         pixdir = get_pixmap_dir()
         icon = None
         try:
@@ -501,7 +501,7 @@ class SourceList(gtk.VBox, Loggable):
 
     def _displayHelpText(self):
         """Display the InfoBar help message"""
-        self.infobar.hide_all()
+        self.infobar.hide()
         self.txtlabel.show()
         self.infobar.show()
 
@@ -511,7 +511,7 @@ class SourceList(gtk.VBox, Loggable):
             return
 
         if select_folders:
-            chooser_action = gtk.FILE_CHOOSER_DragAction.SELECT_FOLDER
+            chooser_action = gtk.FileChooserAction.SELECT_FOLDER
             dialogtitle = _("Select One or More Folders")
         else:
             chooser_action = gtk.FILE_CHOOSER_DragAction.OPEN
@@ -910,11 +910,11 @@ class SourceList(gtk.VBox, Loggable):
 
         if treeview.drag_check_threshold(self._dragX, self._dragY,
             int(event.x), int(event.y)):
-            context = treeview.drag_begin(
-                [dnd.URI_TUPLE, dnd.FILESOURCE_TUPLE],
-                Gdk.DragAction.COPY,
-                self._dragButton,
-                event)
+            # context = treeview.drag_begin(
+            #     [dnd.URI_TUPLE, dnd.FILESOURCE_TUPLE],
+            #     Gdk.DragAction.COPY,
+            #     self._dragButton,
+            #     event)
             self._dragStarted = True
         return False
 
@@ -951,11 +951,11 @@ class SourceList(gtk.VBox, Loggable):
 
         if iconview.drag_check_threshold(self._dragX, self._dragY,
             int(event.x), int(event.y)):
-            context = iconview.drag_begin(
-                [dnd.URI_TUPLE, dnd.FILESOURCE_TUPLE],
-                Gdk.DragAction.COPY,
-                self._dragButton,
-                event)
+            # context = iconview.drag_begin(
+            #     [dnd.URI_TUPLE, dnd.FILESOURCE_TUPLE],
+            #     Gdk.DragAction.COPY,
+            #     self._dragButton,
+            #     event)
             self._dragStarted = True
         return False
 

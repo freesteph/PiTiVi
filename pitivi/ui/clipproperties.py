@@ -119,7 +119,7 @@ class ClipProperties(gtk.ScrolledWindow, Loggable):
         label.set_padding(PADDING, PADDING)
         label.set_line_wrap(True)
         label.set_line_wrap_mode(pango.WRAP_WORD)
-        label.set_justify(gtk.JUSTIFY_CENTER)
+        label.set_justify(gtk.Justification.CENTER)
         label.set_text(text)
 
         info_bar.add(label)
@@ -159,7 +159,7 @@ class EffectProperties(gtk.Expander, gtk.HBox):
         self._table = gtk.Table(3, 1, False)
 
         self._toolbar = gtk.Toolbar()
-        self._removeEffectBt = gtk.ToolButton("gtk-delete")
+        self._removeEffectBt = gtk.ToolButton.new_from_stock("gtk-delete")
         self._removeEffectBt.set_label(_("Remove effect"))
         self._removeEffectBt.set_use_underline(True)
         self._removeEffectBt.set_is_important(True)
@@ -177,7 +177,7 @@ class EffectProperties(gtk.Expander, gtk.HBox):
 
         # TreeView
         # Displays name, description
-        self.treeview = gtk.TreeView(self.storemodel)
+        self.treeview = gtk.TreeView(model=self.storemodel)
         self.treeview_scrollwin.add(self.treeview)
         self.treeview.set_property("rules_hint", True)
         self.treeview.set_property("has_tooltip", True)
@@ -196,7 +196,7 @@ class EffectProperties(gtk.Expander, gtk.HBox):
         typecol.set_sort_column_id(COL_TYPE)
         self.treeview.append_column(typecol)
         typecol.set_spacing(SPACING)
-        typecol.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
+        typecol.set_sizing(gtk.TreeViewColumnSizing.AUTOSIZE)
         typecol.set_min_width(50)
         typecell = gtk.CellRendererText()
         typecell.props.xpad = PADDING

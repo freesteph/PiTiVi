@@ -775,7 +775,7 @@ class PitiviMainWindow(gtk.Window, Loggable):
         if project.hasUnsavedModifications():
             dialog = gtk.MessageDialog(self,
                     gtk.DIALOG_MODAL,
-                    gtk.MESSAGE_WARNING,
+                    gtk.MessageType.WARNING,
                     gtk.BUTTONS_NONE,
                     _("Do you want to reload current project?"))
             dialog.set_icon_name("pitivi")
@@ -797,7 +797,7 @@ class PitiviMainWindow(gtk.Window, Loggable):
         project_filename = unquote(uri.split("/")[-1])
         dialog = gtk.MessageDialog(self,
             gtk.DIALOG_MODAL,
-            gtk.MESSAGE_ERROR,
+            gtk.MessageType.ERROR,
             gtk.BUTTONS_OK,
             _('Unable to load project "%s"') % project_filename)
         dialog.set_icon_name("pitivi")
