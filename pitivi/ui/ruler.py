@@ -122,7 +122,7 @@ class ScaleRuler(gtk.DrawingArea, Zoomable, Loggable):
 
         # double buffering power !
         self.window.draw_drawable(
-            self.style.fg_gc[gtk.STATE_NORMAL],
+            self.style.fg_gc[gtk.StateType.NORMAL],
             self.pixmap,
             x, y,
             x, y, width, height)
@@ -243,7 +243,7 @@ class ScaleRuler(gtk.DrawingArea, Zoomable, Loggable):
 
     def drawBackground(self, allocation):
         self.pixmap.draw_rectangle(
-            self.style.bg_gc[gtk.STATE_NORMAL],
+            self.style.bg_gc[gtk.StateType.NORMAL],
             True,
             0, 0,
             allocation.width, allocation.height)
@@ -251,7 +251,7 @@ class ScaleRuler(gtk.DrawingArea, Zoomable, Loggable):
         offset = int(Zoomable.nsToPixel(self.getShadedDuration())) - self.pixmap_offset
         if offset > 0:
             self.pixmap.draw_rectangle(
-                self.style.bg_gc[gtk.STATE_ACTIVE],
+                self.style.bg_gc[gtk.StateType.ACTIVE],
                 True,
                 0, 0,
                 int(offset),
@@ -277,7 +277,7 @@ class ScaleRuler(gtk.DrawingArea, Zoomable, Loggable):
         paintpos = int(paintpos)
         height = allocation.height - int(allocation.height * height)
         self.pixmap.draw_line(
-            self.style.fg_gc[gtk.STATE_NORMAL],
+            self.style.fg_gc[gtk.StateType.NORMAL],
             paintpos, height, paintpos,
             allocation.height)
 
@@ -307,9 +307,9 @@ class ScaleRuler(gtk.DrawingArea, Zoomable, Loggable):
             timevalue = time_to_string(long(seconds))
             layout.set_text(timevalue)
             if paintpos < shaded:
-                state = gtk.STATE_ACTIVE
+                state = gtk.StateType.ACTIVE
             else:
-                state = gtk.STATE_NORMAL
+                state = gtk.StateType.NORMAL
             self.pixmap.draw_layout(
                 self.style.fg_gc[state],
                 int(paintpos), 0, layout)
@@ -324,7 +324,7 @@ class ScaleRuler(gtk.DrawingArea, Zoomable, Loggable):
             paintpos = -frame_width + 0.5
             height = allocation.height
             y = int(height - self.frame_height)
-            states = [gtk.STATE_ACTIVE, gtk.STATE_PRELIGHT]
+            states = [gtk.StateType.ACTIVE, gtk.StateType.PRELIGHT]
             paintpos += frame_width - offset
             frame_num = int(paintpos // frame_width) % 2
             while paintpos < allocation.width:

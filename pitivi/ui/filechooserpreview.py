@@ -85,7 +85,7 @@ class PreviewWidget(gtk.VBox, Loggable):
         # Gui elements:
         # Drawing area for video output
         self.preview_video = ViewerWidget()
-        self.preview_video.modify_bg(gtk.STATE_NORMAL, self.preview_video.style.black)
+        self.preview_video.modify_bg(gtk.StateType.NORMAL, self.preview_video.style.black)
         self.pack_start(self.preview_video, False, False, 0)
 
         # An image for images and audio

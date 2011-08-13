@@ -300,7 +300,7 @@ class PitiviViewer(Gtk.VBox, Loggable):
 
         # Slider
         self.posadjust = Gtk.Adjustment()
-        self.slider = Gtk.HScale(self.posadjust)
+        self.slider = Gtk.HScale(adjustment=self.posadjust)
         self.slider.set_draw_value(False)
         self.slider.connect("button-press-event", self._sliderButtonPressCb)
         self.slider.connect("button-release-event", self._sliderButtonReleaseCb)
@@ -967,8 +967,10 @@ class ViewerWidget(Gtk.DrawingArea, Loggable):
         self.zoom = 1.0
         self.sink = None
         self.transformation_properties = None
-        for state in range(gtk.STATE_INSENSITIVE + 1):
-            self.modify_bg(state, self.style.black)
+        self.set_sensitive(False)
+        # FIXME: deprecated
+        # for state in range(Gtk.StateType.INSENSITIVE + 1):
+        #     self.modify_bg(state, self.style.black)
 
     def init_transformation_events(self):
         self.set_events(gtk.gdk.BUTTON_PRESS_MASK

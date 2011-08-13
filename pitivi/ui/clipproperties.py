@@ -23,6 +23,7 @@
 Class handling the midle pane
 """
 from gi.repository import Gtk as gtk
+from gi.repository import Gdk
 import pango
 import dnd
 import gst
@@ -118,7 +119,7 @@ class ClipProperties(gtk.ScrolledWindow, Loggable):
         label = gtk.Label()
         label.set_padding(PADDING, PADDING)
         label.set_line_wrap(True)
-        label.set_line_wrap_mode(pango.WRAP_WORD)
+        #label.set_line_wrap_mode(pango.WRAP_WORD)
         label.set_justify(gtk.Justification.CENTER)
         label.set_text(text)
 
@@ -186,11 +187,11 @@ class EffectProperties(gtk.Expander, gtk.HBox):
 
         activatedcell = gtk.CellRendererToggle()
         activatedcell.props.xpad = PADDING
-        activatedcol = self.treeview.insert_column_with_attributes(-1,
-                                                        _("Activated"),
-                                                        activatedcell,
-                                                        active=COL_ACTIVATED)
-        activatedcell.connect("toggled", self._effectActiveToggleCb)
+        #activatedcol = self.treeview.insert_column_with_attributes(-1,
+        #_("Activated"),
+        #                                               activatedcell,
+        #                                                active=COL_ACTIVATED)
+        #activatedcell.connect("toggled", self._effectActiveToggleCb)
 
         typecol = gtk.TreeViewColumn(_("Type"))
         typecol.set_sort_column_id(COL_TYPE)
@@ -200,8 +201,8 @@ class EffectProperties(gtk.Expander, gtk.HBox):
         typecol.set_min_width(50)
         typecell = gtk.CellRendererText()
         typecell.props.xpad = PADDING
-        typecell.set_property("ellipsize", pango.ELLIPSIZE_END)
-        typecol.pack_start(typecell, False, False, 0)
+        #typecell.set_property("ellipsize", pango.ELLIPSIZE_END)
+        typecol.pack_start(typecell, False)
         typecol.add_attribute(typecell, "text", COL_TYPE)
 
         namecol = gtk.TreeViewColumn(_("Effect name"))
@@ -210,13 +211,13 @@ class EffectProperties(gtk.Expander, gtk.HBox):
         namecol.set_spacing(SPACING)
         namecell = gtk.CellRendererText()
         namecell.props.xpad = PADDING
-        namecell.set_property("ellipsize", pango.ELLIPSIZE_END)
-        namecol.pack_start(namecell, False, False, 0)
+        #namecell.set_property("ellipsize", pango.ELLIPSIZE_END)
+        namecol.pack_start(namecell, False)
         namecol.add_attribute(namecell, "text", COL_NAME_TEXT)
 
-        self.treeview.drag_dest_set(gtk.DestDefaults.MOTION,
-            [dnd.EFFECT_TUPLE],
-            Gdk.DragAction.COPY)
+        #self.treeview.drag_dest_set(gtk.DestDefaults.MOTION,
+        #    [dnd.EFFECT_TUPLE],
+        #    Gdk.DragAction.COPY)
 
         self.selection = self.treeview.get_selection()
 
@@ -407,7 +408,7 @@ class EffectProperties(gtk.Expander, gtk.HBox):
             self.txtlabel, self._info_bar = self.clip_properties.addInfoBar(
                                 _("Select a clip on the timeline "
                                   "to configure its associated effects"))
-        self._info_bar.hide_all()
+        self._info_bar.hide()
         self.txtlabel.show()
         self._info_bar.show()
 
@@ -417,7 +418,7 @@ class EffectProperties(gtk.Expander, gtk.HBox):
     def _setEffectDragable(self):
         self.set_sensitive(True)
         self._table.show_all()
-        self._info_bar.hide_all()
+        self._info_bar.hide()
 
     def _treeviewSelectionChangedCb(self, treeview):
         if self.selection.count_selected_rows() == 0 and self.timeline_objects:

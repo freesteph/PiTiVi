@@ -172,7 +172,7 @@ class TimelineCanvas(GooCanvas.Canvas, Zoomable, Loggable):
 
         self.style.apply_default_background(event.window,
             True,
-            gtk.STATE_ACTIVE,
+            gtk.StateType.ACTIVE,
             event.area,
             event.area.x, event.area.y,
             event.area.width, event.area.height)

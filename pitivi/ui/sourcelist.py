@@ -617,7 +617,7 @@ class SourceList(gtk.VBox, Loggable):
         self._updateProgressbar()
         self._addFactory(factory)
         if len(self.storemodel):
-            self.infobar.hide_all()
+            self.infobar.hide()
             self.search_hbox.show_all()
 
     def _sourceRemovedCb(self, sourcelist, uri, factory):
