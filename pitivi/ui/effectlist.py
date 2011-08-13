@@ -102,8 +102,8 @@ class EffectList(gtk.VBox, Loggable):
         hsearch.pack_start(searchStr, False, False, 0)
         hsearch.pack_end(self.searchEntry, True, False, 0)
 
-        # Store FIXME (str, str, int, object, object, str , GdkPixbuf)
-        self.storemodel = gtk.ListStore(str, str, int, object, object, str)
+        self.storemodel = gtk.ListStore(str, str, int,
+                                        object, object, str, GdkPixbuf.Pixbuf)
 
         # Scrolled Windows
         self.treeview_scrollwin = gtk.ScrolledWindow()

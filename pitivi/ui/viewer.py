@@ -315,13 +315,13 @@ class PitiviViewer(Gtk.VBox, Loggable):
         boxalign.add(bbox)
         self.pack_start(boxalign, False, False, 0)
 
-        self.goToStart_button = Gtk.ToolButton(Gtk.STOCK_MEDIA_PREVIOUS)
+        self.goToStart_button = Gtk.ToolButton.new_from_stock(Gtk.STOCK_MEDIA_PREVIOUS)
         self.goToStart_button.connect("clicked", self._goToStartCb)
         self.goToStart_button.set_tooltip_text(_("Go to the beginning of the timeline"))
         self.goToStart_button.set_sensitive(False)
         bbox.pack_start(self.goToStart_button, False, False, 0)
 
-        self.back_button = Gtk.ToolButton(Gtk.STOCK_MEDIA_REWIND)
+        self.back_button = Gtk.ToolButton.new_from_stock(Gtk.STOCK_MEDIA_REWIND)
         self.back_button.connect("clicked", self._backCb)
         self.back_button.set_tooltip_text(_("Go back one second"))
         self.back_button.set_sensitive(False)
@@ -332,13 +332,13 @@ class PitiviViewer(Gtk.VBox, Loggable):
         bbox.pack_start(self.playpause_button, False, False, 0)
         self.playpause_button.set_sensitive(False)
 
-        self.forward_button = Gtk.ToolButton(Gtk.STOCK_MEDIA_FORWARD)
+        self.forward_button = Gtk.ToolButton.new_from_stock(Gtk.STOCK_MEDIA_FORWARD)
         self.forward_button.connect("clicked", self._forwardCb)
         self.forward_button.set_tooltip_text(_("Go forward one second"))
         self.forward_button.set_sensitive(False)
         bbox.pack_start(self.forward_button, False, False, 0)
 
-        self.goToEnd_button = Gtk.ToolButton(Gtk.STOCK_MEDIA_NEXT)
+        self.goToEnd_button = Gtk.ToolButton.new_from_stock(Gtk.STOCK_MEDIA_NEXT)
         self.goToEnd_button.connect("clicked", self._goToEndCb)
         self.goToEnd_button.set_tooltip_text(_("Go to the end of the timeline"))
         self.goToEnd_button.set_sensitive(False)
@@ -352,7 +352,7 @@ class PitiviViewer(Gtk.VBox, Loggable):
         bbox.pack_start(self.timecode_entry, False, 10, 0)
         self._haveUI = True
 
-        screen = gdk.screen_get_default()
+        screen = Gdk.Screen.get_default()
         height = screen.get_height()
         if height >= 800:
             # show the controls and force the aspect frame to have at least the same
@@ -451,7 +451,7 @@ class PitiviViewer(Gtk.VBox, Loggable):
             self.seek(value)
 
     def _sliderScrollCb(self, unused_slider, event):
-        if event.direction == Gtk.gdk.SCROLL_LEFT:
+        if event.direction == Gdk.SCROLL_LEFT:
             amount = -gst.SECOND
         else:
             amount = gst.SECOND
@@ -564,7 +564,7 @@ class PitiviViewer(Gtk.VBox, Loggable):
         self.remove(self.slider)
         self.external_vbox.pack_end(self.slider, False, False)
         self.external_vbox.pack_end(self.buttons, False, False)
-        self.external_window.set_type_hint(Gtk.gdk.WINDOW_TYPE_HINT_UTILITY)
+        self.external_window.set_type_hint(Gdk.WINDOW_TYPE_HINT_UTILITY)
         self.external_window.show()
         self.target = self.external
         # if we are playing, switch output immediately
@@ -634,10 +634,10 @@ class PitiviViewer(Gtk.VBox, Loggable):
             self._switch_output_window()
 
     def _switch_output_window(self):
-        Gtk.gdk.threads_enter()
+        Gdk.threads_enter()
         self.sink.set_xwindow_id(self.target.window_xid)
         self.sink.expose()
-        Gtk.gdk.threads_leave()
+        Gdk.threads_leave()
 
 
 <<<<<<< HEAD

@@ -96,7 +96,7 @@ class PreviewWidget(gtk.VBox, Loggable):
 
         # Play button
         self.bbox = gtk.HBox(homogeneous=0, spacing=0)
-        self.play_button = gtk.ToolButton(gtk.STOCK_MEDIA_PLAY)
+        self.play_button = gtk.ToolButton.new_from_stock(gtk.STOCK_MEDIA_PLAY)
         self.play_button.connect("clicked", self._on_start_stop_clicked_cb)
         self.bbox.pack_start(self.play_button, False, False, 0)
 
@@ -112,9 +112,9 @@ class PreviewWidget(gtk.VBox, Loggable):
         self.bbox.pack_start(self.seeker, False, False, 0)
 
         # Zoom buttons
-        self.b_zoom_in = gtk.ToolButton(gtk.STOCK_ZOOM_IN)
+        self.b_zoom_in = gtk.ToolButton.new_from_stock(gtk.STOCK_ZOOM_IN)
         self.b_zoom_in.connect("clicked", self._on_zoom_clicked_cb, 1)
-        self.b_zoom_out = gtk.ToolButton(gtk.STOCK_ZOOM_OUT)
+        self.b_zoom_out = gtk.ToolButton.new_from_stock(gtk.STOCK_ZOOM_OUT)
         self.b_zoom_out.connect("clicked", self._on_zoom_clicked_cb, -1)
         self.bbox.pack_start(self.b_zoom_in, False, False, 0)
         self.bbox.pack_start(self.b_zoom_out, False, False, 0)

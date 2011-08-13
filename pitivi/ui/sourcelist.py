@@ -123,8 +123,8 @@ class SourceList(gtk.VBox, Loggable):
 
         # Store
         # icon, infotext, objectfactory, uri, length
-        #self.storemodel = gtk.ListStore(#GdkPixbuf, GdkPixbuf,
-        self.storemodel = gtk.ListStore(str, object, str, str, str, str)
+        self.storemodel = gtk.ListStore(GdkPixbuf.Pixbuf, GdkPixbuf.Pixbuf,
+                                        str, object, str, str, str, str)
 
         # Scrolled Windows
         self.treeview_scrollwin = gtk.ScrolledWindow()

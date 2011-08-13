@@ -31,7 +31,7 @@ w("from gi.repository import Gtk as gtk")
 from gi.repository import Gtk as gtk
 w("from gi.repository import GObject as gobject")
 from gi.repository import GObject as gobject
-gobject.threads_init()
+from gi.repository import Gdk
 import gst
 w("from urllib import unquote")
 from urllib import unquote
@@ -205,7 +205,7 @@ class PitiviMainWindow(gtk.Window, Loggable):
         self._createUi(instance)
 
         self.app = instance
-        self.manager = Gtk.RecentManager()
+        self.manager = gtk.RecentManager()
         self._zoom_duration_changed = False
         self._missingUriOnLoading = False
 
@@ -357,10 +357,10 @@ class PitiviMainWindow(gtk.Window, Loggable):
         # Viewer
         self.viewer = PitiviViewer(instance)
         # drag and drop
-        self.viewer.drag_dest_set(gtk.DestDefaults.DROP | gtk.DestDefaults.MOTION,
-                           [dnd.FILESOURCE_TUPLE, dnd.URI_TUPLE],
-                           Gdk.DragAction.COPY)
-        self.viewer.connect("drag_data_received", self._viewerDndDataReceivedCb)
+        # self.viewer.drag_dest_set(gtk.DestDefaults.DROP | gtk.DestDefaults.MOTION,
+        #                    [dnd.FILESOURCE_TUPLE, dnd.URI_TUPLE],
+        #                    Gdk.DragAction.COPY)
+        # self.viewer.connect("drag_data_received", self._viewerDndDataReceivedCb)
         self.mainhpaned.pack2(self.viewer, resize=False, shrink=False)
 #        self.viewer.connect("expose-event", self._exposeEventCb)
 
