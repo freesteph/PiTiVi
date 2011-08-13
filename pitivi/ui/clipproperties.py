@@ -182,7 +182,7 @@ class EffectProperties(gtk.Expander, gtk.HBox):
         self.treeview.set_property("rules_hint", True)
         self.treeview.set_property("has_tooltip", True)
         tsel = self.treeview.get_selection()
-        tsel.set_mode(gtk.SELECTION_SINGLE)
+        tsel.set_mode(gtk.SelectionMode.SINGLE)
 
         activatedcell = gtk.CellRendererToggle()
         activatedcell.props.xpad = PADDING

@@ -122,7 +122,7 @@ class EffectList(gtk.VBox, Loggable):
         self.treeview.set_property("has_tooltip", True)
         self.treeview.set_property("headers-clickable", False)
         tsel = self.treeview.get_selection()
-        tsel.set_mode(gtk.SELECTION_SINGLE)
+        tsel.set_mode(gtk.SelectionMode.SINGLE)
 
         namecol = gtk.TreeViewColumn(_("Name"))
         namecol.set_sort_column_id(COL_NAME_TEXT)

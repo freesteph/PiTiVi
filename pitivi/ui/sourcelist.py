@@ -124,7 +124,7 @@ class SourceList(gtk.VBox, Loggable):
         # Store
         # icon, infotext, objectfactory, uri, length
         #self.storemodel = gtk.ListStore(#GdkPixbuf, GdkPixbuf,
-        self.storemodel = (str, object, str, str, str, str)
+        self.storemodel = gtk.ListStore(str, object, str, str, str, str)
 
         # Scrolled Windows
         self.treeview_scrollwin = gtk.ScrolledWindow()
@@ -175,12 +175,12 @@ class SourceList(gtk.VBox, Loggable):
         self.search_hbox.pack_end(searchEntry, True, False, 0)
         # Filtering model for the search box.
         # Use this instead of using self.storemodel directly
-        self.modelFilter = self.storemodel.filter_new()
-        self.modelFilter.set_visible_func(self._setRowVisible, data=searchEntry)
+        self.modelFilter = self.storemodel.filter_new(None)
+        self.modelFilter.set_visible_func(self._setRowVisible, searchEntry)
 
         # TreeView
         # Displays icon, name, type, length
-        self.treeview = gtk.TreeView(self.modelFilter)
+        self.treeview = gtk.TreeView(model=self.modelFilter)
         self.treeview_scrollwin.add(self.treeview)
         self.treeview.connect("button-press-event", self._treeViewButtonPressEventCb)
         self.treeview.connect("row-activated", self._rowActivatedCb)
@@ -188,7 +188,7 @@ class SourceList(gtk.VBox, Loggable):
         self.treeview.set_headers_visible(False)
         self.treeview.set_property("search_column", COL_SEARCH_TEXT)
         tsel = self.treeview.get_selection()
-        tsel.set_mode(gtk.SELECTION_MULTIPLE)
+        tsel.set_mode(gtk.SelectionMode.MULTIPLE)
         tsel.connect("changed", self._viewSelectionChangedCb)
 
         pixbufcol = gtk.TreeViewColumn(_("Icon"))
@@ -229,7 +229,7 @@ class SourceList(gtk.VBox, Loggable):
         self.iconview.set_tooltip_column(COL_INFOTEXT)
         self.iconview.set_text_column(COL_SHORT_TEXT)
         self.iconview.set_pixbuf_column(COL_ICON_LARGE)
-        self.iconview.set_selection_mode(gtk.SELECTION_MULTIPLE)
+        self.iconview.set_selection_mode(gtk.SelectionMode.MULTIPLE)
         self.iconview.set_item_width(106)
 
         # Explanatory message InfoBar
