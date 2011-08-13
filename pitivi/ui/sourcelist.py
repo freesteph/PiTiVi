@@ -172,7 +172,7 @@ class SourceList(gtk.VBox, Loggable):
         searchEntry.connect("focus-out-event", self.searchEntryDeactivateCb)
         searchEntry.connect("icon-press", self.searchEntryIconClickedCb)
         self.search_hbox.pack_start(searchLabel, False, False, 0)
-        self.search_hbox.pack_end(searchEntry, expand=True)
+        self.search_hbox.pack_end(searchEntry, True, False, 0)
         # Filtering model for the search box.
         # Use this instead of using self.storemodel directly
         self.modelFilter = self.storemodel.filter_new()

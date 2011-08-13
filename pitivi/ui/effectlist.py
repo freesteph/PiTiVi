@@ -91,7 +91,7 @@ class EffectList(gtk.VBox, Loggable):
         self.effectType.set_active(VIDEO_EFFECT)
 
         hfilters.pack_start(self.effectType, True, False, 0)
-        hfilters.pack_end(self.effectCategory, expand=True)
+        hfilters.pack_end(self.effectCategory, True, False, 0)
 
         hsearch = gtk.HBox(homogeneous=0, spacing=0)
         hsearch.set_spacing(SPACING)
@@ -100,7 +100,7 @@ class EffectList(gtk.VBox, Loggable):
         self.searchEntry = gtk.Entry()
         self.searchEntry.set_icon_from_stock(gtk.EntryIconPosition.SECONDARY, "gtk-clear")
         hsearch.pack_start(searchStr, False, False, 0)
-        hsearch.pack_end(self.searchEntry, expand=True)
+        hsearch.pack_end(self.searchEntry, True, False, 0)
 
         # Store
         self.storemodel = gtk.ListStore(str, str, int, object, object, str, GdkPixbuf)
@@ -185,8 +185,8 @@ class EffectList(gtk.VBox, Loggable):
 
         self.pack_start(hfilters, False, False, 0)
         self.pack_start(hsearch, False, False, 0)
-        self.pack_end(self.treeview_scrollwin, expand=True)
-        self.pack_end(self.iconview_scrollwin, expand=True)
+        self.pack_end(self.treeview_scrollwin, True, False, 0)
+        self.pack_end(self.iconview_scrollwin, True, False, 0)
 
         #create the filterModel
         self.modelFilter = self.storemodel.filter_new()

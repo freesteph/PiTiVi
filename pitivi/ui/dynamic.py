@@ -203,7 +203,7 @@ class NumericWidget(gtk.HBox, DynamicWidget):
         self.adjustment.props.lower = lower
         self.adjustment.props.upper = upper
         self.spinner = gtk.SpinButton(self.adjustment)
-        self.pack_end(self.spinner, expand=not hasattr(self, 'slider'))
+        self.pack_end(self.spinner, not hasattr(self, 'slider'), False, 0)
         self.spinner.show()
 
     def connectValueChanged(self, callback, *args):
