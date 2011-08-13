@@ -161,7 +161,7 @@ class SourceList(gtk.VBox, Loggable):
         self._importDialog = None
 
         # Search/filter box
-        self.search_hbox = gtk.HBox(homoegeneous=0, spacing=0)
+        self.search_hbox = gtk.HBox(homogeneous=0, spacing=0)
         self.search_hbox.set_spacing(SPACING)
         self.search_hbox.set_border_width(3)  # Prevents being flush against the notebook
         searchLabel = gtk.Label(_("Search:"))

@@ -81,7 +81,7 @@ class EffectList(gtk.VBox, Loggable):
         self._current_tooltip_icon = None
 
         #Searchbox and combobox
-        hfilters = gtk.HBox(homoegeneous=0, spacing=0)
+        hfilters = gtk.HBox(homogeneous=0, spacing=0)
         hfilters.set_spacing(SPACING)
         hfilters.set_border_width(3)  # Prevents being flush against the notebook
         self.effectType = gtk.combo_box_new_text()
@@ -93,7 +93,7 @@ class EffectList(gtk.VBox, Loggable):
         hfilters.pack_start(self.effectType, True, False, 0)
         hfilters.pack_end(self.effectCategory, expand=True)
 
-        hsearch = gtk.HBox(homoegeneous=0, spacing=0)
+        hsearch = gtk.HBox(homogeneous=0, spacing=0)
         hsearch.set_spacing(SPACING)
         hsearch.set_border_width(3)  # Prevents being flush against the notebook
         searchStr = gtk.Label(_("Search:"))

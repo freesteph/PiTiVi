@@ -710,7 +710,7 @@ if __name__ == '__main__':
     )
 
     W = gtk.Window()
-    v = gtk.VBox(homoegeneous=0, spacing=0)
+    v = gtk.VBox(homogeneous=0, spacing=0)
     t = gtk.Table()
 
     for y, (klass, default, args) in enumerate(widgets):

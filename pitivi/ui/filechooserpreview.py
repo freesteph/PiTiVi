@@ -95,7 +95,7 @@ class PreviewWidget(gtk.VBox, Loggable):
         self.pack_start(self.preview_image, False, False, 0)
 
         # Play button
-        self.bbox = gtk.HBox(homoegeneous=0, spacing=0)
+        self.bbox = gtk.HBox(homogeneous=0, spacing=0)
         self.play_button = gtk.ToolButton(gtk.STOCK_MEDIA_PLAY)
         self.play_button.connect("clicked", self._on_start_stop_clicked_cb)
         self.bbox.pack_start(self.play_button, False, False, 0)
@@ -129,7 +129,7 @@ class PreviewWidget(gtk.VBox, Loggable):
         self.pack_start(self.l_tags, False, False, 0)
 
         # Error handling
-        vbox = gtk.VBox(homoegeneous=0, spacing=0)
+        vbox = gtk.VBox(homogeneous=0, spacing=0)
         vbox.set_spacing(SPACING)
         self.l_error = gtk.Label(_("PiTiVi can not preview this file."))
         self.b_details = gtk.Button(_("More info"))
