@@ -20,7 +20,7 @@
 # Boston, MA 02110-1301, USA.
 
 import platform
-import gobject
+from gi.repository import GObject as gobject
 from gi.repository import Gtk as gtk
 from gtk import gdk
 import gst

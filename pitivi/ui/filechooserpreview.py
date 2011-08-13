@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-import gobject
+from gi.repository import GObject as gobject
 import gst
 from gi.repository import Gtk as gtk
 import pango

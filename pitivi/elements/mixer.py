@@ -23,7 +23,7 @@
 Audio and Video mixers
 """
 
-import gobject
+from gi.repository import GObject as gobject
 import gst
 from pitivi.utils import native_endianness
 

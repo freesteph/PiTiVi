@@ -20,7 +20,7 @@
 
 import gst
 from gi.repository import Gtk as gtk
-import gobject
+from gi.repository import GObject as gobject
 
 from pitivi.ui.gstwidget import GstElementSettingsWidget
 from pitivi.ui.dynamic import FractionWidget

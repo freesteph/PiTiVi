@@ -23,7 +23,7 @@
 A collection of helper classes and routines for dynamically creating user
 interfaces
 """
-import gobject
+from gi.repository import GObject as gobject
 from gi.repository import Gtk as gtk
 import re
 import sys

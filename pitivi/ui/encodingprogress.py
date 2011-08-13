@@ -28,7 +28,7 @@ from gi.repository import Gtk as gtk
 import gst
 import pitivi.configure as configure
 from gettext import gettext as _
-import gobject
+from gi.repository import GObject as gobject
 from pitivi.signalinterface import Signallable
 
 

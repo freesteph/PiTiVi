@@ -23,7 +23,7 @@
 Single-stream queue-less decodebin
 """
 
-import gobject
+from gi.repository import GObject as gobject
 import gst
 from pitivi.stream import get_pad_id, pad_compatible_stream
 from pitivi.utils import CachedFactoryList

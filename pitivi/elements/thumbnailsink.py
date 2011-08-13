@@ -22,7 +22,7 @@
 GdkPixbuf thumbnail sink
 """
 
-import gobject
+from gi.repository import GObject as gobject
 import gst
 import cairo
 import array

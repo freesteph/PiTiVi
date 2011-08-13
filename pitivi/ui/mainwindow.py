@@ -27,7 +27,7 @@ Main GTK+ window
 import os
 import platform
 from gi.repository import Gtk as gtk
-import gobject
+from gi.repository import GObject as gobject
 gobject.threads_init()
 import gst
 from urllib import unquote

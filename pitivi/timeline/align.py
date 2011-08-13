@@ -30,7 +30,7 @@ try:
 except ImportError:
     numpy = None
 
-import gobject
+from gi.repository import GObject as gobject
 import gst
 from pitivi.utils import beautify_ETA, call_false
 from pitivi.timeline.extract import Extractee, RandomAccessAudioExtractor

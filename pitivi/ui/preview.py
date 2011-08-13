@@ -25,7 +25,7 @@ canvas-item wrapper which ensures that the preview is updated appropriately.
 The actual drawing is done by the pitivi.previewer.Previewer class.  """
 
 import goocanvas
-import gobject
+from gi.repository import GObject as gobject
 
 from pitivi.receiver import receiver, handler
 from pitivi.ui.zoominterface import Zoomable

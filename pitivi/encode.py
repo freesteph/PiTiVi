@@ -23,7 +23,7 @@
 Encoding-related utilities and classes
 """
 
-import gobject
+from gi.repository import GObject as gobject
 import gst
 import pitivi.log.log as log
 from pitivi.factories.base import OperationFactory, SinkFactory

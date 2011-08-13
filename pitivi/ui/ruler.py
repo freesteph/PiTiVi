@@ -23,7 +23,7 @@
 Widget for the complex view ruler
 """
 
-import gobject
+from gi.repository import GObject as gobject
 from gi.repository import Gtk as gtk
 import gst
 import cairo

@@ -24,7 +24,7 @@
 """
 Main application
 """
-import gobject
+from gi.repository import GObject as gobject
 gobject.threads_init()
 from gi.repository import Gtk as gtk
 from optparse import OptionParser

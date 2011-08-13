@@ -25,7 +25,7 @@ Extract audio samples without storing the whole waveform in memory
 """
 
 import array
-import gobject
+from gi.repository import GObject as gobject
 gobject.threads_init()
 import gst
 from pitivi.utils import native_endianness, call_false

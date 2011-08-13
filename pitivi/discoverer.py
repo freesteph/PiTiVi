@@ -26,7 +26,7 @@ Discover file multimedia information.
 
 from gettext import gettext as _
 import os
-import gobject
+from gi.repository import GObject as gobject
 gobject.threads_init()
 import gst
 from gst import pbutils

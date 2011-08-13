@@ -23,7 +23,7 @@
 Widget for gstreamer element properties viewing/setting
 """
 
-import gobject
+from gi.repository import GObject as gobject
 from gi.repository import Gtk as gtk
 import gst
 import os

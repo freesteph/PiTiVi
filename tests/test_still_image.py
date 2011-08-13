@@ -22,7 +22,7 @@
 import os.path
 from unittest import TestCase
 
-import gobject
+from gi.repository import GObject as gobject
 gobject.threads_init()
 import gst
 

@@ -22,7 +22,7 @@
 Stores audio samples in an array for plotting waveforms
 """
 
-import gobject
+from gi.repository import GObject as gobject
 gobject.threads_init()
 import gst
 from gi.repository import Gtk as gtk

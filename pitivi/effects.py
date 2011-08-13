@@ -25,7 +25,7 @@ Effects global handling
 """
 import gst
 from gi.repository import Gtk as gtk
-import gobject
+from gi.repository import GObject as gobject
 import re
 import os
 

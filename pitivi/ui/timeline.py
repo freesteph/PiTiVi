@@ -30,7 +30,7 @@ from pitivi.log.loggable import Loggable
 import ruler
 import dnd
 import gst
-import gobject
+from gi.repository import GObject as gobject
 
 from gettext import gettext as _
 from timelinecanvas import TimelineCanvas
