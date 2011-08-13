@@ -521,11 +521,11 @@ class SourceList(gtk.VBox, Loggable):
 
         self._importDialog = gtk.FileChooserDialog(dialogtitle, None,
                                                    chooser_action,
-                                                   (gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE,
-                                                    gtk.STOCK_ADD, gtk.RESPONSE_OK))
+                                                   (gtk.STOCK_CLOSE, gtk.ResponseType.CLOSE,
+                                                    gtk.STOCK_ADD, gtk.ResponseType.OK))
         self._importDialog.set_icon_name("pitivi")
         self._importDialog.props.extra_widget = close_after
-        self._importDialog.set_default_response(gtk.RESPONSE_OK)
+        self._importDialog.set_default_response(gtk.ResponseType.OK)
         self._importDialog.set_select_multiple(True)
         self._importDialog.set_modal(False)
         pw = PreviewWidget(self.app)
@@ -671,7 +671,7 @@ class SourceList(gtk.VBox, Loggable):
 
     def _dialogBoxResponseCb(self, dialogbox, response, select_folders):
         self.debug("response:%r", response)
-        if response == gtk.RESPONSE_OK:
+        if response == gtk.ResponseType.OK:
             lastfolder = dialogbox.get_current_folder()
             self.app.settings.lastImportFolder = lastfolder
             self.app.settings.closeImportDialog = \

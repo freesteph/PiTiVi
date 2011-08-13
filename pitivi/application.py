@@ -273,7 +273,7 @@ class InteractivePitivi(Pitivi):
 
     def run(self):
         """Runs the main loop."""
-        self.mainloop.run()
+        gtk.main()
 
 
 class GuiPitivi(InteractivePitivi):
@@ -399,9 +399,11 @@ class StartupWizardGuiPitivi(FullGuiPitivi):
     def _createGui(self):
         w("createGui for StartupWizard")
         self.wizard = StartUpWizard(self)
+        w("created the wizard")
         return FullGuiPitivi._createGui(self)
 
     def _showGui(self):
+        w("Will show Wizard GUI")
         FullGuiPitivi._showGui(self)
         self.wizard.show()
 

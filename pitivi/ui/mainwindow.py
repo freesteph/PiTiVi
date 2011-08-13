@@ -190,6 +190,7 @@ class PitiviMainWindow(gtk.Window, Loggable):
     """
     def __init__(self, instance):
         """ initialize with the Pitivi object """
+        w("Init for the main window")
         gtk.Window.__init__(self)
         Loggable.__init__(self)
         self.log("Creating MainWindow")
@@ -209,6 +210,7 @@ class PitiviMainWindow(gtk.Window, Loggable):
         self._zoom_duration_changed = False
         self._missingUriOnLoading = False
 
+        w("Going to connect signals")
         self.app.projectManager.connect("new-project-loading",
                 self._projectManagerNewProjectLoadingCb)
         self.app.projectManager.connect("new-project-loaded",
@@ -250,7 +252,7 @@ class PitiviMainWindow(gtk.Window, Loggable):
         dialog = EncodingDialog(self, project)
         dialog.window.connect("destroy", self._encodingDialogDestroyCb)
         self.set_sensitive(False)
-        dialog.window.show()
+#        dialog.window.show()
 
     def _encodingDialogDestroyCb(self, unused_dialog):
         self.set_sensitive(True)
@@ -319,7 +321,7 @@ class PitiviMainWindow(gtk.Window, Loggable):
         self.secondhpaned = gtk.HPaned()
         self.mainhpaned.pack1(self.secondhpaned, resize=True, shrink=False)
         self.secondhpaned.show()
-        self.mainhpaned.show()
+#        self.mainhpaned.show()
 
         self.projecttabs = BaseTabs(instance)
 
@@ -586,9 +588,9 @@ class PitiviMainWindow(gtk.Window, Loggable):
     def openProject(self):
         chooser = gtk.FileChooserDialog(_("Open File..."),
             self,
-            action=gtk.FILE_CHOOSER_DragAction.OPEN,
-            buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
-                gtk.STOCK_OPEN, gtk.RESPONSE_OK))
+            action=gtk.FileChooserAction.OPEN,
+            buttons=(gtk.STOCK_CANCEL, gtk.ResponseType.CANCEL,
+                gtk.STOCK_OPEN, gtk.ResponseType.OK))
         chooser.set_icon_name("pitivi")
         chooser.set_select_multiple(False)
         chooser.set_current_folder(self.settings.lastProjectFolder)
@@ -601,12 +603,12 @@ class PitiviMainWindow(gtk.Window, Loggable):
             chooser.add_filter(filt)
         default = gtk.FileFilter()
         default.set_name(_("All Supported Formats"))
-        default.add_custom(gtk.FILE_FILTER_URI, supported)
+        default.add_custom(gtk.FileFilterFlags.URI, supported)
         chooser.add_filter(default)
 
         response = chooser.run()
         self.settings.lastProjectFolder = chooser.get_current_folder()
-        if response == gtk.RESPONSE_OK:
+        if response == gtk.ResponseType.OK:
             uri = chooser.get_uri()
             uri = unquote(uri)
             self.app.projectManager.loadProject(uri)
@@ -705,13 +707,13 @@ class PitiviMainWindow(gtk.Window, Loggable):
 
         dialog = gtk.Dialog("",
             self, gtk.DIALOG_MODAL | gtk.DIALOG_NO_SEPARATOR,
-            (_("Close without saving"), gtk.RESPONSE_REJECT,
-                    gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
-                    save, gtk.RESPONSE_YES))
+            (_("Close without saving"), gtk.ResponseType.REJECT,
+                    gtk.STOCK_CANCEL, gtk.ResponseType.CANCEL,
+                    save, gtk.ResponseType.YES))
         dialog.set_icon_name("pitivi")
         dialog.set_resizable(False)
         dialog.set_has_separator(False)
-        dialog.set_default_response(gtk.RESPONSE_YES)
+        dialog.set_default_response(gtk.ResponseType.YES)
         dialog.set_transient_for(self)
 
         primary = gtk.Label()
@@ -751,12 +753,12 @@ class PitiviMainWindow(gtk.Window, Loggable):
 
         response = dialog.run()
         dialog.destroy()
-        if response == gtk.RESPONSE_YES:
+        if response == gtk.ResponseType.YES:
             if project.uri is not None:
                 res = self.app.projectManager.saveProject(project, overwrite=True)
             else:
                 res = self._saveProjectAsCb(None)
-        elif response == gtk.RESPONSE_REJECT:
+        elif response == gtk.ResponseType.REJECT:
             res = True
         else:
             res = False
@@ -779,17 +781,17 @@ class PitiviMainWindow(gtk.Window, Loggable):
                     gtk.BUTTONS_NONE,
                     _("Do you want to reload current project?"))
             dialog.set_icon_name("pitivi")
-            dialog.add_buttons(gtk.STOCK_CANCEL, gtk.RESPONSE_NO,
-                    gtk.STOCK_REVERT_TO_SAVED, gtk.RESPONSE_YES)
+            dialog.add_buttons(gtk.STOCK_CANCEL, gtk.ResponseType.NO,
+                    gtk.STOCK_REVERT_TO_SAVED, gtk.ResponseType.YES)
             dialog.set_title(_("Revert to saved project"))
             dialog.set_resizable(False)
             dialog.set_property("secondary-text",
                     _("All unsaved changes will be lost."))
-            dialog.set_default_response(gtk.RESPONSE_NO)
+            dialog.set_default_response(gtk.ResponseType.NO)
             dialog.set_transient_for(self)
             response = dialog.run()
             dialog.destroy()
-            if response != gtk.RESPONSE_YES:
+            if response != gtk.ResponseType.YES:
                 return False
         return True
 
@@ -812,8 +814,8 @@ class PitiviMainWindow(gtk.Window, Loggable):
         dialog = gtk.Dialog(_("Locate missing file..."),
             self,
             gtk.DIALOG_MODAL,
-            buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
-            gtk.STOCK_OPEN, gtk.RESPONSE_OK))
+            buttons=(gtk.STOCK_CANCEL, gtk.ResponseType.CANCEL,
+            gtk.STOCK_OPEN, gtk.ResponseType.OK))
         dialog.set_icon_name("pitivi")
         dialog.set_border_width(SPACING * 2)
         dialog.get_content_area().set_spacing(SPACING)
@@ -851,7 +853,7 @@ class PitiviMainWindow(gtk.Window, Loggable):
         dialog.set_default_size(1024, 1000)
         response = dialog.run()
 
-        if response == gtk.RESPONSE_OK:
+        if response == gtk.ResponseType.OK:
             self.log("User chose a new URI for the missing file")
             new = chooser.get_uri()
             if new:
@@ -974,8 +976,8 @@ class PitiviMainWindow(gtk.Window, Loggable):
         chooser = gtk.FileChooserDialog(_("Save As..."),
             self,
             action=gtk.FILE_CHOOSER_DragAction.SAVE,
-            buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
-            gtk.STOCK_SAVE, gtk.RESPONSE_OK))
+            buttons=(gtk.STOCK_CANCEL, gtk.ResponseType.CANCEL,
+            gtk.STOCK_SAVE, gtk.ResponseType.OK))
 
         chooser.set_icon_name("pitivi")
         chooser.set_select_multiple(False)
@@ -999,7 +1001,7 @@ class PitiviMainWindow(gtk.Window, Loggable):
         if current_folder:
             self.settings.lastProjectFolder = current_folder
 
-        if response == gtk.RESPONSE_OK:
+        if response == gtk.ResponseType.OK:
             self.log("User chose a URI to save project to")
             # need to do this to work around bug in gst.uri_construct
             # which escapes all /'s in path!

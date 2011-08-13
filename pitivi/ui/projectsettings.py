@@ -562,7 +562,7 @@ class ProjectSettingsDialog():
         self.project.setSettings(self.settings)
 
     def _responseCb(self, unused_widget, response):
-        if response == gtk.RESPONSE_OK:
+        if response == gtk.ResponseType.OK:
             self.updateSettings()
             self.updateMetadata()
         self.audio_presets.save()

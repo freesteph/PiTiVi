@@ -498,15 +498,15 @@ class PresetChoiceWidget(gtk.HBox, DynamicWidget):
 
     def _savePreset(self, unused_button):
         d = gtk.Dialog(_("Save Preset"), None, gtk.DIALOG_MODAL,
-            buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL, gtk.STOCK_SAVE,
-                gtk.RESPONSE_OK))
+            buttons=(gtk.STOCK_CANCEL, gtk.ResponseType.CANCEL, gtk.STOCK_SAVE,
+                gtk.ResponseType.OK))
         input = gtk.Entry()
         ca = d.get_content_area()
         ca.pack_start(input, False, False, 0)
         input.show()
         response = d.run()
 
-        if response == gtk.RESPONSE_OK:
+        if response == gtk.ResponseType.OK:
             name = input.get_text()
             values = self._widget_map.unmap()
             self.presets.addPreset(name, values)
@@ -562,9 +562,9 @@ class PathWidget(gtk.FileChooserButton, DynamicWidget):
         DynamicWidget.__init__(self, default)
         self.dialog = gtk.FileChooserDialog(
             action=action,
-            buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL, gtk.STOCK_CLOSE,
-             gtk.RESPONSE_CLOSE))
-        self.dialog.set_default_response(gtk.RESPONSE_OK)
+            buttons=(gtk.STOCK_CANCEL, gtk.ResponseType.CANCEL, gtk.STOCK_CLOSE,
+             gtk.ResponseType.CLOSE))
+        self.dialog.set_default_response(gtk.ResponseType.OK)
         gtk.FileChooserButton.__init__(self, self.dialog)
         self.set_title(_("Choose..."))
         self.dialog.connect("response", self._responseCb)
@@ -581,7 +581,7 @@ class PathWidget(gtk.FileChooserButton, DynamicWidget):
         return self.uri
 
     def _responseCb(self, unused_dialog, response):
-        if response == gtk.RESPONSE_CLOSE:
+        if response == gtk.ResponseType.CLOSE:
             self.uri = self.get_uri()
             self.emit("value-changed")
             self.dialog.hide()
