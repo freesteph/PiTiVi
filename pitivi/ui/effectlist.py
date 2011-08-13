@@ -19,7 +19,7 @@
 # Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
 # Boston, MA 02110-1301, USA.
 
-from gi.repository import Gtk as gtk
+from gi.repository import Gtk as gtk, GdkPixbuf
 import pango
 import os
 import time
@@ -56,7 +56,7 @@ GlobalSettings.addConfigOption('lastEffectView',
  COL_ELEMENT_NAME,
  COL_ICON) = range(7)
 
-INVISIBLE = gtk.gdk.pixbuf_new_from_file(os.path.join(get_pixmap_dir(),
+INVISIBLE = GdkPixbuf.Pixbuf.new_from_file(os.path.join(get_pixmap_dir(),
     "invisible.png"))
 
 
@@ -81,7 +81,7 @@ class EffectList(gtk.VBox, Loggable):
         self._current_tooltip_icon = None
 
         #Searchbox and combobox
-        hfilters = gtk.HBox()
+        hfilters = gtk.HBox(homoegeneous=0, spacing=0)
         hfilters.set_spacing(SPACING)
         hfilters.set_border_width(3)  # Prevents being flush against the notebook
         self.effectType = gtk.combo_box_new_text()
@@ -90,29 +90,29 @@ class EffectList(gtk.VBox, Loggable):
         self.effectCategory = gtk.combo_box_new_text()
         self.effectType.set_active(VIDEO_EFFECT)
 
-        hfilters.pack_start(self.effectType, expand=True)
+        hfilters.pack_start(self.effectType, True, False, 0)
         hfilters.pack_end(self.effectCategory, expand=True)
 
-        hsearch = gtk.HBox()
+        hsearch = gtk.HBox(homoegeneous=0, spacing=0)
         hsearch.set_spacing(SPACING)
         hsearch.set_border_width(3)  # Prevents being flush against the notebook
         searchStr = gtk.Label(_("Search:"))
         self.searchEntry = gtk.Entry()
-        self.searchEntry.set_icon_from_stock(gtk.ENTRY_ICON_SECONDARY, "gtk-clear")
-        hsearch.pack_start(searchStr, expand=False)
+        self.searchEntry.set_icon_from_stock(gtk.EntryIconPosition.SECONDARY, "gtk-clear")
+        hsearch.pack_start(searchStr, False, False, 0)
         hsearch.pack_end(self.searchEntry, expand=True)
 
         # Store
-        self.storemodel = gtk.ListStore(str, str, int, object, object, str, gtk.gdk.Pixbuf)
+        self.storemodel = gtk.ListStore(str, str, int, object, object, str, GdkPixbuf)
 
         # Scrolled Windows
         self.treeview_scrollwin = gtk.ScrolledWindow()
-        self.treeview_scrollwin.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
-        self.treeview_scrollwin.set_shadow_type(gtk.SHADOW_ETCHED_IN)
+        self.treeview_scrollwin.set_policy(gtk.PolicyType.NEVER, gtk.PolicyType.AUTOMATIC)
+        self.treeview_scrollwin.set_shadow_type(gtk.ShadowType.ETCHED_IN)
 
         self.iconview_scrollwin = gtk.ScrolledWindow()
-        self.iconview_scrollwin.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        self.iconview_scrollwin.set_shadow_type(gtk.SHADOW_ETCHED_IN)
+        self.iconview_scrollwin.set_policy(gtk.PolicyType.AUTOMATIC, gtk.PolicyType.AUTOMATIC)
+        self.iconview_scrollwin.set_shadow_type(gtk.ShadowType.ETCHED_IN)
 
         # TreeView
         # Displays name, description
@@ -133,7 +133,7 @@ class EffectList(gtk.VBox, Loggable):
         namecell = gtk.CellRendererText()
         namecell.props.xpad = 6
         namecell.set_property("ellipsize", pango.ELLIPSIZE_END)
-        namecol.pack_start(namecell)
+        namecol.pack_start(namecell, False, False, 0)
         namecol.add_attribute(namecell, "text", COL_NAME_TEXT)
 
         desccol = gtk.TreeViewColumn(_("Description"))
@@ -146,7 +146,7 @@ class EffectList(gtk.VBox, Loggable):
         desccell = gtk.CellRendererText()
         desccell.props.xpad = 6
         desccell.set_property("ellipsize", pango.ELLIPSIZE_END)
-        desccol.pack_start(desccell)
+        desccol.pack_start(desccell, False, False, 0)
         desccol.add_attribute(desccell, "text", COL_DESC_TEXT)
 
         self.iconview = gtk.IconView(self.storemodel)
@@ -170,21 +170,21 @@ class EffectList(gtk.VBox, Loggable):
         self.treeview.connect("motion-notify-event", self._motionNotifyEventCb)
         self.treeview.connect("query-tooltip", self._queryTooltipCb)
         self.treeview.connect("button-release-event", self._buttonReleaseCb)
-        self.treeview.drag_source_set(0, [], gtk.gdk.ACTION_COPY)
+        self.treeview.drag_source_set(0, [], Gdk.DragAction.COPY)
         self.treeview.connect("drag_begin", self._dndDragBeginCb)
         self.treeview.connect("drag_data_get", self._dndDataGetCb)
 
         self.iconview.connect("button-press-event", self._buttonPressEventCb)
         self.iconview.connect("activate-cursor-item", self._enterPressEventCb)
         self.iconview.connect("query-tooltip", self._queryTooltipCb)
-        self.iconview.drag_source_set(0, [], gtk.gdk.ACTION_COPY)
+        self.iconview.drag_source_set(0, [], Gdk.DragAction.COPY)
         self.iconview.connect("motion-notify-event", self._motionNotifyEventCb)
         self.iconview.connect("button-release-event", self._buttonReleaseCb)
         self.iconview.connect("drag_begin", self._dndDragBeginCb)
         self.iconview.connect("drag_data_get", self._dndDataGetCb)
 
-        self.pack_start(hfilters, expand=False)
-        self.pack_start(hsearch, expand=False)
+        self.pack_start(hfilters, False, False, 0)
+        self.pack_start(hsearch, False, False, 0)
         self.pack_end(self.treeview_scrollwin, expand=True)
         self.pack_end(self.iconview_scrollwin, expand=True)
 
@@ -308,7 +308,7 @@ class EffectList(gtk.VBox, Loggable):
 
         if event.button == 3:
             chain_up = False
-        elif event.type is gtk.gdk._2BUTTON_PRESS:
+        elif event.type is Gdk._2BUTTON_PRESS:
             factory_name = self.getSelectedItems()
             self.app.gui.clipconfig.effect_expander.addEffectToCurrentSelection(factory_name)
         else:
@@ -352,14 +352,14 @@ class EffectList(gtk.VBox, Loggable):
         if self._nothingUnderMouse(view, event):
             return True
 
-        if not event.state & (gtk.gdk.CONTROL_MASK | gtk.gdk.SHIFT_MASK):
+        if not event.state & (Gdk.EventMask.CONTROL_MASK | Gdk.EventMask.SHIFT_MASK):
             chain_up = not self._rowUnderMouseSelected(view, event)
 
         if view.drag_check_threshold(self._dragX, self._dragY,
             int(event.x), int(event.y)):
             context = view.drag_begin(
                 self._getDndTuple(),
-                gtk.gdk.ACTION_COPY,
+                Gdk.DragAction.COPY,
                 self._dragButton,
                 event)
             self._dragStarted = True

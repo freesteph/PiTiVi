@@ -86,58 +86,58 @@ class PreviewWidget(gtk.VBox, Loggable):
         # Drawing area for video output
         self.preview_video = ViewerWidget()
         self.preview_video.modify_bg(gtk.STATE_NORMAL, self.preview_video.style.black)
-        self.pack_start(self.preview_video, expand=False)
+        self.pack_start(self.preview_video, False, False, 0)
 
         # An image for images and audio
         self.preview_image = gtk.Image()
         self.preview_image.set_size_request(self.settings.FCpreviewWidth, self.settings.FCpreviewHeight)
         self.preview_image.show()
-        self.pack_start(self.preview_image, expand=False)
+        self.pack_start(self.preview_image, False, False, 0)
 
         # Play button
-        self.bbox = gtk.HBox()
+        self.bbox = gtk.HBox(homoegeneous=0, spacing=0)
         self.play_button = gtk.ToolButton(gtk.STOCK_MEDIA_PLAY)
         self.play_button.connect("clicked", self._on_start_stop_clicked_cb)
-        self.bbox.pack_start(self.play_button, expand=False)
+        self.bbox.pack_start(self.play_button, False, False, 0)
 
         #Scale for position handling
         self.pos_adj = gtk.Adjustment()
-        self.seeker = gtk.HScale(self.pos_adj)
+        self.seeker = gtk.HScale(adjustment=self.pos_adj)
         self.seeker.set_update_policy(gtk.UPDATE_DISCONTINUOUS)
         self.seeker.connect('button-press-event', self._on_seeker_press_cb)
         self.seeker.connect('button-release-event', self._on_seeker_press_cb)
         self.seeker.connect('motion-notify-event', self._on_motion_notify_cb)
         self.seeker.set_draw_value(False)
         self.seeker.show()
-        self.bbox.pack_start(self.seeker)
+        self.bbox.pack_start(self.seeker, False, False, 0)
 
         # Zoom buttons
         self.b_zoom_in = gtk.ToolButton(gtk.STOCK_ZOOM_IN)
         self.b_zoom_in.connect("clicked", self._on_zoom_clicked_cb, 1)
         self.b_zoom_out = gtk.ToolButton(gtk.STOCK_ZOOM_OUT)
         self.b_zoom_out.connect("clicked", self._on_zoom_clicked_cb, -1)
-        self.bbox.pack_start(self.b_zoom_in, expand=False)
-        self.bbox.pack_start(self.b_zoom_out, expand=False)
+        self.bbox.pack_start(self.b_zoom_in, False, False, 0)
+        self.bbox.pack_start(self.b_zoom_out, False, False, 0)
         self.bbox.show_all()
-        self.pack_start(self.bbox, expand=False)
+        self.pack_start(self.bbox, False, False, 0)
 
         # Label for metadata tags
         self.l_tags = gtk.Label()
         self.l_tags.set_justify(gtk.JUSTIFY_LEFT)
         self.l_tags.set_ellipsize(pango.ELLIPSIZE_END)
         self.l_tags.show()
-        self.pack_start(self.l_tags, expand=False)
+        self.pack_start(self.l_tags, False, False, 0)
 
         # Error handling
-        vbox = gtk.VBox()
+        vbox = gtk.VBox(homoegeneous=0, spacing=0)
         vbox.set_spacing(SPACING)
         self.l_error = gtk.Label(_("PiTiVi can not preview this file."))
         self.b_details = gtk.Button(_("More info"))
         self.b_details.connect('clicked', self._on_b_details_clicked_cb)
-        vbox.pack_start(self.l_error)
-        vbox.pack_start(self.b_details, expand=False, fill=False)
+        vbox.pack_start(self.l_error, False, False, 0)
+        vbox.pack_start(self.b_details, False, False, 0)
         vbox.show()
-        self.pack_start(vbox, expand=False, fill=False)
+        self.pack_start(vbox, False, False, 0)
 
     def add_preview_request(self, dialogbox):
         """add a preview request """
@@ -188,11 +188,11 @@ class PreviewWidget(gtk.VBox, Loggable):
             if type(factory) == PictureFileSourceFactory:
                 self.current_preview_type = 'image'
                 self.preview_video.hide()
-                pixbuf = gtk.gdk.pixbuf_new_from_file(gst.uri_get_location(uri))
+                pixbuf = GdkPixbuf.Pixbuf.new_from_file(gst.uri_get_location(uri))
                 pixbuf_w = pixbuf.get_width()
                 pixbuf_h = pixbuf.get_height()
                 w, h = self.__get_best_size(pixbuf_w, pixbuf_h)
-                pixbuf = pixbuf.scale_simple(w, h, gtk.gdk.INTERP_NEAREST)
+                pixbuf = pixbuf.scale_simple(w, h, Gdk.INTERP_NEAREST)
                 self.preview_image.set_from_pixbuf(pixbuf)
                 self.preview_image.set_size_request(self.settings.FCpreviewWidth, self.settings.FCpreviewHeight)
                 self.preview_image.show()
@@ -265,11 +265,11 @@ class PreviewWidget(gtk.VBox, Loggable):
 
     def _on_seeker_press_cb(self, widget, event):
         event.button = 2
-        if event.type == gtk.gdk.BUTTON_PRESS:
+        if event.type == Gdk.BUTTON_PRESS:
             self.countinuous_seek = True
             if self.is_playing:
                 self.player.set_state(gst.STATE_PAUSED)
-        elif event.type == gtk.gdk.BUTTON_RELEASE:
+        elif event.type == Gdk.BUTTON_RELEASE:
             self.countinuous_seek = False
             value = long(widget.get_value())
             self.player.seek_simple(self.time_format, gst.SEEK_FLAG_FLUSH, value)
@@ -338,8 +338,8 @@ class PreviewWidget(gtk.VBox, Loggable):
                 h *= 0.8
                 if (w, h) < self.original_dims:
                     (w, h) = self.original_dims
-            pixbuf = gtk.gdk.pixbuf_new_from_file(gst.uri_get_location(self.current_selected_uri))
-            pixbuf = pixbuf.scale_simple(int(w), int(h), gtk.gdk.INTERP_BILINEAR)
+            pixbuf = GdkPixbuf.Pixbuf.new_from_file(gst.uri_get_location(self.current_selected_uri))
+            pixbuf = pixbuf.scale_simple(int(w), int(h), Gdk.INTERP_BILINEAR)
 
             w = max(w, self.settings.FCpreviewWidth)
             h = max(h, self.settings.FCpreviewHeight)
@@ -355,10 +355,10 @@ class PreviewWidget(gtk.VBox, Loggable):
                 sink = mess.src
                 sink.set_property('force-aspect-ratio', True)
                 sink.set_property("handle-expose", True)
-                gtk.gdk.threads_enter()
+                Gdk.threads_enter()
                 sink.set_xwindow_id(self.preview_video.window_xid)
                 sink.expose()
-                gtk.gdk.threads_leave()
+                Gdk.threads_leave()
         return gst.BUS_PASS
 
     def _tag_found_cb(self, abus, mess):

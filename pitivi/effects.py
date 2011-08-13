@@ -23,6 +23,7 @@
 """
 Effects global handling
 """
+from logging import warning as w
 import gst
 from gi.repository import Gtk as gtk
 from gi.repository import GObject as gobject
@@ -129,23 +130,25 @@ class EffectsHandler(object):
         """
         factlist = gst.registry_get_default().get_feature_list(
             gst.ElementFactory)
-        for element_factory in factlist:
-            klass = element_factory.get_klass()
-            name = element_factory.get_name()
-            if "Effect" in klass and name not in BLACKLISTED_EFFECTS and not\
-                [bplug for bplug in BLACKLISTED_PLUGINS if bplug in name]:
-                effect = EffectFactory(name, name,
-                                   self._getEffectCategories(name),
-                                   self._getEffectName(element_factory),
-                                   self._getEffectDescripton(element_factory))
-                added = self.addStreams(element_factory, effect)
+        # for element_factory in factlist:
+        #     klass = element_factory.get_klass()
+        #     name = element_factory.get_name()
+        #     w("Got the class and name")
+        #     if "Effect" in klass and name not in BLACKLISTED_EFFECTS and not\
+        #         [bplug for bplug in BLACKLISTED_PLUGINS if bplug in name]:
+        #         effect = EffectFactory(name, name,
+        #                            self._getEffectCategories(name),
+        #                            self._getEffectName(element_factory),
+        #                            self._getEffectDescripton(element_factory))
+        #         added = self.addStreams(element_factory, effect)
 
-                if added is True:
-                    if 'Audio' in klass:
-                        self.audio_effects.append(element_factory)
-                    elif 'Video' in klass:
-                        self.video_effects.append(element_factory)
-                    self._addEffectToDic(name, effect)
+        #         print "We have an effect"
+        #         if added is True:
+        #             if 'Audio' in klass:
+        #                 self.audio_effects.append(element_factory)
+        #             elif 'Video' in klass:
+        #                 self.video_effects.append(element_factory)
+        #             self._addEffectToDic(name, effect)
 
     def getAllAudioEffects(self):
         """
@@ -301,13 +304,13 @@ class EffectsHandler(object):
         effect_name = effect_name + ".png"
         icon = None
         try:
-            icon = gtk.gdk.pixbuf_new_from_file(os.path.join(self._pixdir,
+            icon = GdkPixbuf.Pixbuf.new_from_file(os.path.join(self._pixdir,
                 effect_name))
         # empty except clause is bad but load_icon raises gio.Error.
         ## Right, *gio*.
         except:
             try:
-                icon = gtk.gdk.pixbuf_new_from_file(os.path.join(self._pixdir,
+                icon = GdkPixbuf.Pixbuf.new_from_file(os.path.join(self._pixdir,
                     "defaultthumbnail.svg"))
             except:
                 return None

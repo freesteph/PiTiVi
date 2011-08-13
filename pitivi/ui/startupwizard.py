@@ -19,6 +19,7 @@
 # Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
 # Boston, MA 02110-1301, USA.
 
+from logging import warning as w
 import os
 from gi.repository import Gtk as gtk
 import webbrowser
@@ -45,6 +46,7 @@ class StartUpWizard(object):
     """
 
     def __init__(self, app):
+        w("Initate SW")
         self.app = app
         self.builder = gtk.Builder()
         self.builder.add_from_file(os.path.join(get_ui_dir(), "startupwizard.ui"))

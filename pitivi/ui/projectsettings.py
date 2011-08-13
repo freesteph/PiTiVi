@@ -88,19 +88,19 @@ class ProjectSettingsDialog():
         # add custom display aspect ratio widget
         self.dar_fraction_widget = FractionWidget()
         self.video_properties_table.attach(self.dar_fraction_widget,
-            0, 1, 6, 7, xoptions=gtk.EXPAND | gtk.FILL, yoptions=0)
+            0, 1, 6, 7, xoptions=gtk.EXPAND | gtk.AttachOptions.FILL, yoptions=0)
         self.dar_fraction_widget.show()
 
         # add custom pixel aspect ratio widget
         self.par_fraction_widget = FractionWidget()
         self.video_properties_table.attach(self.par_fraction_widget,
-            1, 2, 6, 7, xoptions=gtk.EXPAND | gtk.FILL, yoptions=0)
+            1, 2, 6, 7, xoptions=gtk.EXPAND | gtk.AttachOptions.FILL, yoptions=0)
         self.par_fraction_widget.show()
 
         # add custom framerate widget
         self.frame_rate_fraction_widget = FractionWidget()
         self.video_properties_table.attach(self.frame_rate_fraction_widget,
-            1, 2, 2, 3, xoptions=gtk.EXPAND | gtk.FILL, yoptions=0)
+            1, 2, 2, 3, xoptions=gtk.EXPAND | gtk.AttachOptions.FILL, yoptions=0)
         self.frame_rate_fraction_widget.show()
 
         # populate coboboxes with appropriate data

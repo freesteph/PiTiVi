@@ -117,7 +117,7 @@ def initial_checks():
     if not reg.find_plugin("autodetect"):
         return (_("Could not find the autodetect plugins"),
                 _("Make sure you have installed gst-plugins-good and that it's available in the GStreamer plugin path."))
-    if not hasattr(gtk.gdk.Window, 'cairo_create'):
+    if not hasattr(Gdk.Window, 'cairo_create'):
         return (_("PyGTK doesn't have cairo support"),
                 _("Please use a version of the GTK+ Python bindings built with cairo support."))
     if not initiate_videosinks():

@@ -25,6 +25,7 @@ Widget for the complex view ruler
 
 from gi.repository import GObject as gobject
 from gi.repository import Gtk as gtk
+from gi.repository import Gdk
 import gst
 import cairo
 from pitivi.ui.zoominterface import Zoomable
@@ -35,7 +36,7 @@ from pitivi.utils import time_to_string
 class ScaleRuler(gtk.DrawingArea, Zoomable, Loggable):
 
     __gsignals__ = {
-        "expose-event": "override",
+#        "expose-event": "override",
         "button-press-event": "override",
         "button-release-event": "override",
         "motion-notify-event": "override",
@@ -54,8 +55,8 @@ class ScaleRuler(gtk.DrawingArea, Zoomable, Loggable):
         Zoomable.__init__(self)
         Loggable.__init__(self)
         self.log("Creating new ScaleRule")
-        self.add_events(gtk.gdk.POINTER_MOTION_MASK |
-            gtk.gdk.BUTTON_PRESS_MASK | gtk.gdk.BUTTON_RELEASE_MASK)
+        self.add_events(Gdk.EventMask.POINTER_MOTION_MASK |
+            Gdk.EventMask.BUTTON_PRESS_MASK | Gdk.EventMask.BUTTON_RELEASE_MASK)
         self.hadj = hadj
         hadj.connect("value-changed", self._hadjValueChangedCb)
 
@@ -154,14 +155,14 @@ class ScaleRuler(gtk.DrawingArea, Zoomable, Loggable):
         return False
 
     def do_scroll_event(self, event):
-        if event.direction == gtk.gdk.SCROLL_UP:
+        if event.direction == Gdk.SCROLL_UP:
             Zoomable.zoomIn()
-        elif event.direction == gtk.gdk.SCROLL_DOWN:
+        elif event.direction == Gdk.SCROLL_DOWN:
             Zoomable.zoomOut()
         # TODO: seek timeline back/forward
-        elif event.direction == gtk.gdk.SCROLL_LEFT:
+        elif event.direction == Gdk.SCROLL_LEFT:
             pass
-        elif event.direction == gtk.gdk.SCROLL_RIGHT:
+        elif event.direction == Gdk.SCROLL_RIGHT:
             pass
 
 ## Seeking methods
@@ -204,7 +205,7 @@ class ScaleRuler(gtk.DrawingArea, Zoomable, Loggable):
         if (allocation.width != self.pixmap_old_allocated_width):
             if self.pixmap:
                 del self.pixmap
-            self.pixmap = gtk.gdk.Pixmap(self.window, allocation.width,
+            self.pixmap = Gdk.Pixmap(self.window, allocation.width,
                                          allocation.height)
             self.pixmap_old_allocated_width = allocation.width
 

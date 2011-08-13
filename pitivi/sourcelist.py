@@ -25,6 +25,8 @@ Handles the list of source for a project
 """
 
 import urllib
+
+from gi.repository import Gdk, GdkPixbuf
 from pitivi.discoverer import Discoverer
 from pitivi.signalinterface import Signallable
 from pitivi.log.loggable import Loggable

@@ -21,7 +21,7 @@
 
 from gi.repository import GObject as gobject
 import gst
-from gi.repository import Gtk as gtk
+from gi.repository import Gtk as gtk, Gdk, GdkPixbuf
 import pango
 import os
 import time
@@ -101,7 +101,7 @@ ui = '''
 </ui>
 '''
 
-INVISIBLE = gtk.gdk.pixbuf_new_from_file(os.path.join(get_pixmap_dir(),
+INVISIBLE = GdkPixbuf.Pixbuf.new_from_file(os.path.join(get_pixmap_dir(),
     "invisible.png"))
 
 
@@ -123,30 +123,30 @@ class SourceList(gtk.VBox, Loggable):
 
         # Store
         # icon, infotext, objectfactory, uri, length
-        self.storemodel = gtk.ListStore(gtk.gdk.Pixbuf, gtk.gdk.Pixbuf,
-            str, object, str, str, str, str)
+        #self.storemodel = gtk.ListStore(#GdkPixbuf, GdkPixbuf,
+        self.storemodel = (str, object, str, str, str, str)
 
         # Scrolled Windows
         self.treeview_scrollwin = gtk.ScrolledWindow()
-        self.treeview_scrollwin.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
-        self.treeview_scrollwin.set_shadow_type(gtk.SHADOW_ETCHED_IN)
+        self.treeview_scrollwin.set_policy(gtk.PolicyType.NEVER, gtk.PolicyType.AUTOMATIC)
+        self.treeview_scrollwin.set_shadow_type(gtk.ShadowType.ETCHED_IN)
 
         self.iconview_scrollwin = gtk.ScrolledWindow()
-        self.iconview_scrollwin.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        self.iconview_scrollwin.set_shadow_type(gtk.SHADOW_ETCHED_IN)
+        self.iconview_scrollwin.set_policy(gtk.PolicyType.AUTOMATIC, gtk.PolicyType.AUTOMATIC)
+        self.iconview_scrollwin.set_shadow_type(gtk.ShadowType.ETCHED_IN)
 
         # Popup Menu
         self.popup = gtk.Menu()
-        self.popup_importitem = gtk.ImageMenuItem(_("Import Files..."))
+        self.popup_importitem = gtk.ImageMenuItem.new_with_label(_("Import Files..."))
         image = gtk.Image()
-        image.set_from_stock(gtk.STOCK_ADD, gtk.ICON_SIZE_MENU)
+        image.set_from_stock(gtk.STOCK_ADD, gtk.IconSize.MENU)
         self.popup_importitem.set_image(image)
 
-        self.popup_remitem = gtk.ImageMenuItem(_("Remove Clip"))
+        self.popup_remitem = gtk.ImageMenuItem.new_with_label(_("Remove Clip"))
         image = gtk.Image()
-        image.set_from_stock(gtk.STOCK_REMOVE, gtk.ICON_SIZE_MENU)
+        image.set_from_stock(gtk.STOCK_REMOVE, gtk.IconSize.MENU)
         self.popup_remitem.set_image(image)
-        self.popup_playmenuitem = gtk.MenuItem(_("Play Clip"))
+        self.popup_playmenuitem = gtk.MenuItem.new_with_label(_("Play Clip"))
         self.popup_importitem.connect("activate", self._importButtonClickedCb)
         self.popup_remitem.connect("activate", self._removeButtonClickedCb)
         self.popup_playmenuitem.connect("activate", self._playButtonClickedCb)
@@ -161,17 +161,17 @@ class SourceList(gtk.VBox, Loggable):
         self._importDialog = None
 
         # Search/filter box
-        self.search_hbox = gtk.HBox()
+        self.search_hbox = gtk.HBox(homoegeneous=0, spacing=0)
         self.search_hbox.set_spacing(SPACING)
         self.search_hbox.set_border_width(3)  # Prevents being flush against the notebook
         searchLabel = gtk.Label(_("Search:"))
         searchEntry = gtk.Entry()
-        searchEntry.set_icon_from_stock(gtk.ENTRY_ICON_SECONDARY, "gtk-clear")
+        searchEntry.set_icon_from_stock(gtk.EntryIconPosition.SECONDARY, "gtk-clear")
         searchEntry.connect("changed", self.searchEntryChangedCb)
         searchEntry.connect("button-press-event", self.searchEntryActivateCb)
         searchEntry.connect("focus-out-event", self.searchEntryDeactivateCb)
         searchEntry.connect("icon-press", self.searchEntryIconClickedCb)
-        self.search_hbox.pack_start(searchLabel, expand=False)
+        self.search_hbox.pack_start(searchLabel, False, False, 0)
         self.search_hbox.pack_end(searchEntry, expand=True)
         # Filtering model for the search box.
         # Use this instead of using self.storemodel directly
@@ -197,7 +197,7 @@ class SourceList(gtk.VBox, Loggable):
         self.treeview.append_column(pixbufcol)
         pixcell = gtk.CellRendererPixbuf()
         pixcell.props.xpad = 6
-        pixbufcol.pack_start(pixcell)
+        pixbufcol.pack_start(pixcell, False, False, 0)
         pixbufcol.add_attribute(pixcell, 'pixbuf', COL_ICON)
 
         namecol = gtk.TreeViewColumn(_("Information"))
@@ -208,7 +208,7 @@ class SourceList(gtk.VBox, Loggable):
         namecol.set_min_width(150)
         txtcell = gtk.CellRendererText()
         txtcell.set_property("ellipsize", pango.ELLIPSIZE_END)
-        namecol.pack_start(txtcell)
+        namecol.pack_start(txtcell, False, False, 0)
         namecol.add_attribute(txtcell, "markup", COL_INFOTEXT)
 
         namecol = gtk.TreeViewColumn(_("Duration"))
@@ -216,7 +216,7 @@ class SourceList(gtk.VBox, Loggable):
         self.treeview.append_column(namecol)
         txtcell = gtk.CellRendererText()
         txtcell.set_property("yalign", 0.0)
-        namecol.pack_start(txtcell)
+        namecol.pack_start(txtcell, False, False, 0)
         namecol.add_attribute(txtcell, "markup", COL_LENGTH)
 
         # IconView
@@ -279,12 +279,12 @@ class SourceList(gtk.VBox, Loggable):
         self.videofilepixbuf = self._getIcon("video-x-generic", "pitivi-video.png")
 
         # Drag and Drop
-        self.drag_dest_set(gtk.DEST_DEFAULT_DROP | gtk.DEST_DEFAULT_MOTION,
+        self.drag_dest_set(gtk.DestDefaults.DROP | gtk.DestDefaults.MOTION,
                            [dnd.URI_TUPLE, dnd.FILE_TUPLE],
-                           gtk.gdk.ACTION_COPY)
+                           Gdk.DragAction.COPY)
         self.connect("drag_data_received", self._dndDataReceivedCb)
 
-        self.treeview.drag_source_set(0, [], gtk.gdk.ACTION_COPY)
+        self.treeview.drag_source_set(0, [], Gdk.DragAction.COPY)
         self.treeview.connect("motion-notify-event",
             self._treeViewMotionNotifyEventCb)
         self.treeview.connect("button-release-event",
@@ -292,7 +292,7 @@ class SourceList(gtk.VBox, Loggable):
         self.treeview.connect("drag_begin", self._dndDragBeginCb)
         self.treeview.connect("drag_data_get", self._dndDataGetCb)
 
-        self.iconview.drag_source_set(0, [], gtk.gdk.ACTION_COPY)
+        self.iconview.drag_source_set(0, [], Gdk.DragAction.COPY)
         self.iconview.connect("motion-notify-event",
             self._iconViewMotionNotifyEventCb)
         self.iconview.connect("button-release-event",
@@ -368,12 +368,12 @@ class SourceList(gtk.VBox, Loggable):
         seperator.show()
 
         # add all child widgets
-        self.pack_start(self.infobar, expand=False, fill=False)
-        self.pack_start(self._import_warning_infobar, expand=False, fill=False)
-        self.pack_start(self.search_hbox, expand=False)
-        self.pack_start(self.iconview_scrollwin)
-        self.pack_start(self.treeview_scrollwin)
-        self.pack_start(self._progressbar, expand=False)
+        self.pack_start(self.infobar, False, False, 0)
+        self.pack_start(self._import_warning_infobar, False, False, 0)
+        self.pack_start(self.search_hbox, False, False, 0)
+        self.pack_start(self.iconview_scrollwin, False, False, 0)
+        self.pack_start(self.treeview_scrollwin, False, False, 0)
+        self.pack_start(self._progressbar, False, False, 0)
 
         # display the help text
         self.clip_view = self.settings.lastClipView
@@ -437,7 +437,7 @@ class SourceList(gtk.VBox, Loggable):
             # empty except clause is bad but load_icon raises gio.Error.
             # Right, *gio*.
             if not icon:
-                icon = gtk.gdk.pixbuf_new_from_file(os.path.join(pixdir, alternate))
+                icon = GdkPixbuf.Pixbuf.new_from_file(os.path.join(pixdir, alternate))
         return icon
 
     def _connectToProject(self, project):
@@ -511,10 +511,10 @@ class SourceList(gtk.VBox, Loggable):
             return
 
         if select_folders:
-            chooser_action = gtk.FILE_CHOOSER_ACTION_SELECT_FOLDER
+            chooser_action = gtk.FILE_CHOOSER_DragAction.SELECT_FOLDER
             dialogtitle = _("Select One or More Folders")
         else:
-            chooser_action = gtk.FILE_CHOOSER_ACTION_OPEN
+            chooser_action = gtk.FILE_CHOOSER_DragAction.OPEN
             dialogtitle = _("Select One or More Files")
         close_after = gtk.CheckButton(_("Close after importing files"))
         close_after.set_active(self.app.settings.closeImportDialog)
@@ -564,7 +564,7 @@ class SourceList(gtk.VBox, Loggable):
             try:
                 self.debug("attempting to open thumbnail file '%s'",
                         thumbnail_file)
-                pixbuf = gtk.gdk.pixbuf_new_from_file(thumbnail_file)
+                pixbuf = GdkPixbuf.Pixbuf.new_from_file(thumbnail_file)
             except:
                 self.error("Failure to create thumbnail from file '%s'",
                         thumbnail_file)
@@ -573,10 +573,10 @@ class SourceList(gtk.VBox, Loggable):
             else:
                 desiredheight = int(64 / float(video[0].dar))
                 thumbnail = pixbuf.scale_simple(64,
-                        desiredheight, gtk.gdk.INTERP_BILINEAR)
+                        desiredheight, Gdk.INTERP_BILINEAR)
                 desiredheight = int(96 / float(video[0].dar))
                 thumbnail_large = pixbuf.scale_simple(96,
-                        desiredheight, gtk.gdk.INTERP_BILINEAR)
+                        desiredheight, Gdk.INTERP_BILINEAR)
         else:
             if video:
                 thumbnail = self.videofilepixbuf
@@ -823,10 +823,10 @@ class SourceList(gtk.VBox, Loggable):
             self.popup_remitem.set_sensitive(True)
             self.popup_playmenuitem.set_sensitive(True)
         elif view != None and (not self._nothingUnderMouse(view, event)):
-            if not event.state & (gtk.gdk.CONTROL_MASK | gtk.gdk.SHIFT_MASK):
+            if not event.state & (Gdk.EventMask.CONTROL_MASK | Gdk.EventMask.SHIFT_MASK):
                 self._viewUnselectAll()
             elif self.clip_view == SHOW_TREEVIEW and self._viewHasSelection() \
-                    and (event.state & gtk.gdk.SHIFT_MASK):
+                    and (event.state & Gdk.EventMask.SHIFT_MASK):
                 selection = self.treeview.get_selection()
                 start_path = self._viewGetFirstSelected()
                 end_path = self._viewGetPathAtPos(event)
@@ -874,7 +874,7 @@ class SourceList(gtk.VBox, Loggable):
     def _treeViewButtonPressEventCb(self, treeview, event):
         chain_up = True
 
-        if event.type == gtk.gdk._2BUTTON_PRESS:
+        if event.type == Gdk._2BUTTON_PRESS:
             self._playButtonClickedCb()
             chain_up = False
         elif event.button == 3:
@@ -883,7 +883,7 @@ class SourceList(gtk.VBox, Loggable):
 
         else:
 
-            if not event.state & (gtk.gdk.CONTROL_MASK | gtk.gdk.SHIFT_MASK):
+            if not event.state & (Gdk.EventMask.CONTROL_MASK | Gdk.EventMask.SHIFT_MASK):
                 chain_up = not self._rowUnderMouseSelected(treeview, event)
 
             self._dragStarted = False
@@ -912,7 +912,7 @@ class SourceList(gtk.VBox, Loggable):
             int(event.x), int(event.y)):
             context = treeview.drag_begin(
                 [dnd.URI_TUPLE, dnd.FILESOURCE_TUPLE],
-                gtk.gdk.ACTION_COPY,
+                Gdk.DragAction.COPY,
                 self._dragButton,
                 event)
             self._dragStarted = True
@@ -953,7 +953,7 @@ class SourceList(gtk.VBox, Loggable):
             int(event.x), int(event.y)):
             context = iconview.drag_begin(
                 [dnd.URI_TUPLE, dnd.FILESOURCE_TUPLE],
-                gtk.gdk.ACTION_COPY,
+                Gdk.DragAction.COPY,
                 self._dragButton,
                 event)
             self._dragStarted = True
@@ -962,14 +962,14 @@ class SourceList(gtk.VBox, Loggable):
     def _iconViewButtonPressEventCb(self, iconview, event):
         chain_up = True
 
-        if event.type == gtk.gdk._2BUTTON_PRESS:
+        if event.type == Gdk._2BUTTON_PRESS:
             self._playButtonClickedCb()
             chain_up = False
         elif event.button == 3:
             self._viewShowPopup(iconview, event)
             chain_up = False
         else:
-            if not event.state & (gtk.gdk.CONTROL_MASK | gtk.gdk.SHIFT_MASK):
+            if not event.state & (Gdk.EventMask.CONTROL_MASK | Gdk.EventMask.SHIFT_MASK):
                 chain_up = not self._rowUnderMouseSelected(iconview, event)
 
             self._dragStarted = False

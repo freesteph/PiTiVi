@@ -38,7 +38,7 @@ class BaseTabs(gtk.Notebook):
         """ set up the gui """
         settings = self.get_settings()
         settings.props.gtk_dnd_drag_threshold = 1
-        self.set_tab_pos(gtk.POS_TOP)
+        self.set_tab_pos(gtk.PositionType.TOP)
 
     def append_page(self, child, label):
         gtk.Notebook.append_page(self, child, label)
@@ -69,7 +69,7 @@ class BaseTabs(gtk.Notebook):
         original_position = self.child_get_property(child, "position")
         label = self.child_get_property(child, "tab-label")
         window = gtk.Window()
-        window.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_UTILITY)
+        window.set_type_hint(Gdk.WINDOW_TYPE_HINT_UTILITY)
 
         window.set_title(label)
         window.set_default_size(600, 400)

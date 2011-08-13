@@ -74,7 +74,7 @@ class ClipProperties(gtk.ScrolledWindow, Loggable):
         self.settings = instance.settings
         self._project = None
         self.transformation_expander = None
-        self.info_bar_box = gtk.VBox()
+        self.info_bar_box = gtk.VBox(homogeneous=0, spacing=0)
 
         vbox = gtk.VBox()
         vp.add(vbox)
@@ -85,17 +85,16 @@ class ClipProperties(gtk.ScrolledWindow, Loggable):
                                                 self.effect_properties_handling,
                                                 self)
 
-        vbox.pack_start(self.info_bar_box, expand=False, fill=True)
-
         self.transformation_expander = TransformationProperties(
             instance, instance.action_log)
-        vbox.pack_start(self.transformation_expander, expand=False, fill=False)
-        self.transformation_expander.show()
 
-        vbox.pack_end(self.effect_expander, expand=True, fill=True)
         vbox.set_spacing(SPACING)
+        vbox.pack_start(self.info_bar_box, False, True, 0)
+        vbox.pack_start(self.transformation_expander, False, False, 0)
+        vbox.pack_end(self.effect_expander, True, True, 0)
 
         self.info_bar_box.show()
+        self.transformation_expander.show()
         self.effect_expander.show()
         vbox.show()
         vp.show()
@@ -124,7 +123,7 @@ class ClipProperties(gtk.ScrolledWindow, Loggable):
         label.set_text(text)
 
         info_bar.add(label)
-        self.info_bar_box.pack_start(info_bar, expand=False, fill=False)
+        self.info_bar_box.pack_start(info_bar, False, False, 0)
 
         return label, info_bar
 
@@ -166,15 +165,15 @@ class EffectProperties(gtk.Expander, gtk.HBox):
         self._removeEffectBt.set_is_important(True)
         self._removeEffectBt.set_sensitive(False)
         self._toolbar.insert(self._removeEffectBt, 0)
-        self._table.attach(self._toolbar, 0, 1, 0, 1, yoptions=gtk.FILL)
+        self._table.attach(self._toolbar, 0, 1, 0, 1, yoptions=gtk.AttachOptions.FILL)
 
         self.storemodel = gtk.ListStore(bool, str, str, str, object)
 
         #Treeview
         self.treeview_scrollwin = gtk.ScrolledWindow()
-        self.treeview_scrollwin.set_policy(gtk.POLICY_NEVER,
-                                           gtk.POLICY_AUTOMATIC)
-        self.treeview_scrollwin.set_shadow_type(gtk.SHADOW_ETCHED_IN)
+        self.treeview_scrollwin.set_policy(gtk.PolicyType.NEVER,
+                                           gtk.PolicyType.AUTOMATIC)
+        self.treeview_scrollwin.set_shadow_type(gtk.ShadowType.ETCHED_IN)
 
         # TreeView
         # Displays name, description
@@ -202,7 +201,7 @@ class EffectProperties(gtk.Expander, gtk.HBox):
         typecell = gtk.CellRendererText()
         typecell.props.xpad = PADDING
         typecell.set_property("ellipsize", pango.ELLIPSIZE_END)
-        typecol.pack_start(typecell)
+        typecol.pack_start(typecell, False, False, 0)
         typecol.add_attribute(typecell, "text", COL_TYPE)
 
         namecol = gtk.TreeViewColumn(_("Effect name"))
@@ -212,12 +211,12 @@ class EffectProperties(gtk.Expander, gtk.HBox):
         namecell = gtk.CellRendererText()
         namecell.props.xpad = PADDING
         namecell.set_property("ellipsize", pango.ELLIPSIZE_END)
-        namecol.pack_start(namecell)
+        namecol.pack_start(namecell, False, False, 0)
         namecol.add_attribute(namecell, "text", COL_NAME_TEXT)
 
-        self.treeview.drag_dest_set(gtk.DEST_DEFAULT_MOTION,
+        self.treeview.drag_dest_set(gtk.DestDefaults.MOTION,
             [dnd.EFFECT_TUPLE],
-            gtk.gdk.ACTION_COPY)
+            Gdk.DragAction.COPY)
 
         self.selection = self.treeview.get_selection()
 
@@ -340,7 +339,7 @@ class EffectProperties(gtk.Expander, gtk.HBox):
         self.drag_unhighlight()
 
     def _dragMotionCb(self, unused, context, x, y, timestamp):
-        atom = gtk.gdk.atom_intern(dnd.EFFECT_TUPLE[0])
+        atom = Gdk.atom_intern(dnd.EFFECT_TUPLE[0])
         if not self._factory:
             self.drag_get_data(context, atom, timestamp)
         self.drag_highlight()

@@ -100,8 +100,8 @@ class GstElementSettingsWidget(gtk.VBox, Loggable):
         if not props:
             table = gtk.Table(rows=1, columns=1)
             widget = gtk.Label(_("No properties..."))
-            table.attach(widget, 0, 1, 0, 1, yoptions=gtk.FILL)
-            self.pack_start(table)
+            table.attach(widget, 0, 1, 0, 1, yoptions=gtk.AttachOptions.FILL)
+            self.pack_start(table, False, False, 0)
             self.show_all()
             return
 
@@ -127,12 +127,12 @@ class GstElementSettingsWidget(gtk.VBox, Loggable):
             widget = make_property_widget(self.element, prop, prop_value)
             if isinstance(widget, dynamic.ToggleWidget):
                 widget.set_label(prop.nick)
-                table.attach(widget, 0, 2, y, y + 1, yoptions=gtk.FILL)
+                table.attach(widget, 0, 2, y, y + 1, yoptions=gtk.AttachOptions.FILL)
             else:
                 label = gtk.Label(prop.nick + ":")
                 label.set_alignment(0.0, 0.5)
-                table.attach(label, 0, 1, y, y + 1, xoptions=gtk.FILL, yoptions=gtk.FILL)
-                table.attach(widget, 1, 2, y, y + 1, yoptions=gtk.FILL)
+                table.attach(label, 0, 1, y, y + 1, xoptions=gtk.AttachOptions.FILL, yoptions=gtk.AttachOptions.FILL)
+                table.attach(widget, 1, 2, y, y + 1, yoptions=gtk.AttachOptions.FILL)
 
             if hasattr(prop, 'description'):   # TODO: check that
                 widget.set_tooltip_text(prop.description)
@@ -140,7 +140,7 @@ class GstElementSettingsWidget(gtk.VBox, Loggable):
             self.properties[prop] = widget
             if default_btn:
                 button = self._getResetToDefaultValueButton(prop, widget)
-                table.attach(button, 2, 3, y, y + 1, xoptions=gtk.FILL, yoptions=gtk.FILL)
+                table.attach(button, 2, 3, y, y + 1, xoptions=gtk.AttachOptions.FILL, yoptions=gtk.AttachOptions.FILL)
                 self.buttons[button] = widget
             self.element.connect('notify::' + prop.name,
                                  self._propertyChangedCb,
@@ -148,7 +148,7 @@ class GstElementSettingsWidget(gtk.VBox, Loggable):
 
             y += 1
 
-        self.pack_start(table)
+        self.pack_start(table, False, False, 0)
         self.show_all()
 
     def _propertyChangedCb(self, element, pspec, widget):
@@ -156,7 +156,7 @@ class GstElementSettingsWidget(gtk.VBox, Loggable):
 
     def _getResetToDefaultValueButton(self, prop, widget):
         icon = gtk.Image()
-        icon.set_from_stock('gtk-clear', gtk.ICON_SIZE_MENU)
+        icon.set_from_stock('gtk-clear', gtk.IconSize.MENU)
         button = gtk.Button()
         button.add(icon)
         button.set_tooltip_text(_("Reset to default value"))
@@ -214,8 +214,8 @@ class GstElementSettingsDialog(Loggable):
             # The height of the content is small enough, disable the scrollbars.
             default_height = -1
             scrolledwindow = self.builder.get_object("scrolledwindow1")
-            scrolledwindow.set_policy(gtk.POLICY_NEVER, gtk.POLICY_NEVER)
-            scrolledwindow.set_shadow_type(gtk.SHADOW_NONE)
+            scrolledwindow.set_policy(gtk.PolicyType.NEVER, gtk.PolicyType.NEVER)
+            scrolledwindow.set_shadow_type(gtk.ShadowType.NONE)
         else:
             # If we need to scroll, set a reasonable height for the window.
             default_height = 600

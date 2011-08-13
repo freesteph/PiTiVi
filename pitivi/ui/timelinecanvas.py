@@ -19,28 +19,44 @@
 # Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
 # Boston, MA 02110-1301, USA.
 
-from gi.repository import Gtk as gtk
-import goocanvas
+from logging import warning as w
+w("from gi.repository import Gtk as gtk")
+from gi.repository import Gtk
+from gi.repository import GooCanvas
+from gi.repository import Gdk
+w("from gettext import gettext as _")
 from gettext import gettext as _
 
+w("from pitivi.log.loggable import Loggable")
 from pitivi.log.loggable import Loggable
+w("from pitivi.receiver import receiver, handler")
 from pitivi.receiver import receiver, handler
+w("from pitivi.ui.track import Track")
 from pitivi.ui.track import Track
+w("from pitivi.ui.trackobject import TrackObject")
 from pitivi.ui.trackobject import TrackObject
+w("from pitivi.ui.point import Point")
 from pitivi.ui.point import Point
+w("from pitivi.ui.zoominterface import Zoomable")
 from pitivi.ui.zoominterface import Zoomable
+w("from pitivi.settings import GlobalSettings")
 from pitivi.settings import GlobalSettings
+w("from pitivi.ui.prefs import PreferencesDialog")
 from pitivi.ui.prefs import PreferencesDialog
+w("from pitivi.ui.common import TRACK_SPACING, unpack_cairo_pattern, \ ")
 from pitivi.ui.common import TRACK_SPACING, unpack_cairo_pattern, \
         LAYER_HEIGHT_EXPANDED, LAYER_SPACING
+w("from pitivi.ui.controller import Controller")
 from pitivi.ui.controller import Controller
+w("from pitivi.ui.curve import KW_LABEL_Y_OVERFLOW")
 from pitivi.ui.curve import KW_LABEL_Y_OVERFLOW
+w("from pitivi.ui.common import SPACING")
 from pitivi.ui.common import SPACING
 
 # cursors to be used for resizing objects
-ARROW = gtk.gdk.Cursor(gtk.gdk.ARROW)
+ARROW = Gdk.Cursor(Gdk.CursorType.ARROW)
 # TODO: replace this with custom cursor
-PLAYHEAD_CURSOR = gtk.gdk.Cursor(gtk.gdk.SB_H_DOUBLE_ARROW)
+PLAYHEAD_CURSOR = Gdk.Cursor(Gdk.CursorType.SB_H_DOUBLE_ARROW)
 
 GlobalSettings.addConfigOption('edgeSnapDeadband',
     section="user-interface",
@@ -69,17 +85,17 @@ class PlayheadController(Controller, Zoomable):
         self._canvas.app.current.seeker.seek(Zoomable.pixelToNs(x))
 
 
-class TimelineCanvas(goocanvas.Canvas, Zoomable, Loggable):
+class TimelineCanvas(GooCanvas.Canvas, Zoomable, Loggable):
 
     __gtype_name__ = 'TimelineCanvas'
     __gsignals__ = {
-        "expose-event": "override",
+#        "expose-event": "override",
     }
 
     _tracks = None
 
     def __init__(self, instance, timeline=None):
-        goocanvas.Canvas.__init__(self)
+        GooCanvas.Canvas.__init__(self)
         Zoomable.__init__(self)
         Loggable.__init__(self)
         self.app = instance
@@ -101,15 +117,15 @@ class TimelineCanvas(goocanvas.Canvas, Zoomable, Loggable):
     def _createUI(self):
         self._cursor = ARROW
         root = self.get_root_item()
-        self.tracks = goocanvas.Group()
+        self.tracks = GooCanvas.CanvasGroup()
         self.tracks.set_simple_transform(0, KW_LABEL_Y_OVERFLOW, 1.0, 0)
-        root.add_child(self.tracks)
-        self._marquee = goocanvas.Rect(
-            parent=root,
-            stroke_pattern=unpack_cairo_pattern(0x33CCFF66),
-            fill_pattern=unpack_cairo_pattern(0x33CCFF66),
-            visibility=goocanvas.ITEM_INVISIBLE)
-        self._playhead = goocanvas.Rect(
+        root.add_child(self.tracks, -1)
+        self._marquee = GooCanvas.CanvasRect(
+            parent=root)
+            #stroke_pattern=GooCairoPattern(unpack_cairo_pattern(0x33CCFF66)),
+            #fill_pattern=unpack_cairo_pattern(0x33CCFF66),
+            #visibility=GooCanvas.CanvasItemVisibility.INVISIBLE)
+        self._playhead = GooCanvas.CanvasRect(
             y=-10,
             parent=root,
             line_width=1,
@@ -161,7 +177,7 @@ class TimelineCanvas(goocanvas.Canvas, Zoomable, Loggable):
             event.area.x, event.area.y,
             event.area.width, event.area.height)
 
-        goocanvas.Canvas.do_expose_event(self, event)
+        GooCanvas.Canvas.do_expose_event(self, event)
 
 ## implements selection marquee
 
@@ -187,7 +203,7 @@ class TimelineCanvas(goocanvas.Canvas, Zoomable, Loggable):
 
         @returns: A list of L{Track}, L{TrackObject} tuples
         '''
-        items = self.get_items_in_area(goocanvas.Bounds(x1, y1, x2, y2), True,
+        items = self.get_items_in_area(GooCanvas.CanvasBounds(x1, y1, x2, y2), True,
             True, True)
         if not items:
             return [], []
@@ -229,28 +245,28 @@ class TimelineCanvas(goocanvas.Canvas, Zoomable, Loggable):
 
     def _selectionStart(self, item, target, event):
         self._selecting = True
-        self._marquee.props.visibility = goocanvas.ITEM_VISIBLE
+        self._marquee.props.visibility = GooCanvas.CanvasITEM_VISIBLE
         self._mousedown = self.from_event(event)
         self._marquee.props.width = 0
         self._marquee.props.height = 0
-        self.pointer_grab(self.get_root_item(), gtk.gdk.POINTER_MOTION_MASK |
-            gtk.gdk.BUTTON_RELEASE_MASK, self._cursor, event.time)
+        self.pointer_grab(self.get_root_item(), Gdk.EventMask.POINTER_MOTION_MASK |
+            Gdk.EventMask.BUTTON_RELEASE_MASK, self._cursor, event.time)
         return True
 
     def _selectionEnd(self, item, target, event):
         seeker = self.app.current.seeker
         self.pointer_ungrab(self.get_root_item(), event.time)
         self._selecting = False
-        self._marquee.props.visibility = goocanvas.ITEM_INVISIBLE
+        self._marquee.props.visibility = GooCanvas.CanvasItemVisibility.INVISIBLE
         if not self._got_motion_notify:
             self.timeline.setSelectionTo(set(), 0)
             seeker.seek(Zoomable.pixelToNs(event.x))
         else:
             self._got_motion_notify = False
             mode = 0
-            if event.get_state() & gtk.gdk.SHIFT_MASK:
+            if event.get_state() & Gdk.EventMask.SHIFT_MASK:
                 mode = 1
-            if event.get_state() & gtk.gdk.CONTROL_MASK:
+            if event.get_state() & Gdk.EventMask.CONTROL_MASK:
                 mode = 2
             self.timeline.setSelectionTo(self._objectsUnderMarquee(), mode)
         return True

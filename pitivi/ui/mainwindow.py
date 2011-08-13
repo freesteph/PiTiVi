@@ -26,37 +26,56 @@ Main GTK+ window
 
 import os
 import platform
+from logging import warning as w
+w("from gi.repository import Gtk as gtk")
 from gi.repository import Gtk as gtk
+w("from gi.repository import GObject as gobject")
 from gi.repository import GObject as gobject
 gobject.threads_init()
 import gst
+w("from urllib import unquote")
 from urllib import unquote
 import webbrowser
 
 from gettext import gettext as _
-from gtk import RecentManager
 
+w("from pitivi.log.loggable import Loggable")
 from pitivi.log.loggable import Loggable
 
+w("from pitivi.ui.timeline import Timeline")
 from pitivi.ui.timeline import Timeline
+w("from pitivi.ui.basetabs import BaseTabs")
 from pitivi.ui.basetabs import BaseTabs
+w("from pitivi.ui.viewer import PitiviViewer")
 from pitivi.ui.viewer import PitiviViewer
 from pitivi.configure import pitivi_version, APPNAME, APPURL, \
      get_pixmap_dir, LIBDIR, get_ui_dir
+w("from pitivi.ui import dnd")
 from pitivi.ui import dnd
+w("from pitivi.pipeline import Pipeline")
 from pitivi.pipeline import Pipeline
+w("from pitivi.action import ViewAction")
 from pitivi.action import ViewAction
+w("from pitivi.settings import GlobalSettings")
 from pitivi.settings import GlobalSettings
+w("from pitivi.receiver import receiver, handler")
 from pitivi.receiver import receiver, handler
 import pitivi.formatters.format as formatter
+w("from pitivi.sourcelist import SourceListError")
 from pitivi.sourcelist import SourceListError
+w("from pitivi.ui.sourcelist import SourceList")
 from pitivi.ui.sourcelist import SourceList
+w("from pitivi.ui.effectlist import EffectList")
 from pitivi.ui.effectlist import EffectList
+w("from pitivi.ui.clipproperties import ClipProperties")
 from pitivi.ui.clipproperties import ClipProperties
+w("from pitivi.ui.common import SPACING")
 from pitivi.ui.common import SPACING
+w("from pitivi.ui.common import factory_name")
 from pitivi.ui.common import factory_name
 from pitivi.utils import beautify_length, show_user_manual
 from pitivi.ui.zoominterface import Zoomable
+w("from pitivi.ui.filechooserpreview import PreviewWidget")
 from pitivi.ui.filechooserpreview import PreviewWidget
 
 
@@ -127,37 +146,37 @@ def supported(info):
     return formatter.can_handle_location(info[1])
 
 
-def create_stock_icons():
-    """ Creates the pitivi-only stock icons """
-    gtk.stock_add([
-            ('pitivi-render', _('Render'), 0, 0, 'pitivi'),
-            ('pitivi-split', _('Split'), 0, 0, 'pitivi'),
-            ('pitivi-keyframe', _('Keyframe'), 0, 0, 'pitivi'),
-            ('pitivi-unlink', _('Unlink'), 0, 0, 'pitivi'),
-            # Translators: This is an action, the title of a button
-            ('pitivi-link', _('Link'), 0, 0, 'pitivi'),
-            ('pitivi-ungroup', _('Ungroup'), 0, 0, 'pitivi'),
-            # Translators: This is an action, the title of a button
-            ('pitivi-group', _('Group'), 0, 0, 'pitivi'),
-            ('pitivi-align', _('Align'), 0, 0, 'pitivi'),
-            ])
-    pixmaps = {
-        "pitivi-render": "pitivi-render-24.png",
-        "pitivi-split": "pitivi-split-24.svg",
-        "pitivi-keyframe": "pitivi-keyframe-24.svg",
-        "pitivi-unlink": "pitivi-unlink-24.svg",
-        "pitivi-link": "pitivi-relink-24.svg",
-        "pitivi-ungroup": "pitivi-ungroup-24.svg",
-        "pitivi-group": "pitivi-group-24.svg",
-        "pitivi-align": "pitivi-align-24.svg",
-    }
-    factory = gtk.IconFactory()
-    pmdir = get_pixmap_dir()
-    for stockid, path in pixmaps.iteritems():
-        pixbuf = gtk.gdk.pixbuf_new_from_file(os.path.join(pmdir, path))
-        iconset = gtk.IconSet(pixbuf)
-        factory.add(stockid, iconset)
-        factory.add_default()
+# def create_stock_icons():
+#     """ Creates the pitivi-only stock icons """
+#     gtk.stock_add([
+#             ('pitivi-render', _('Render'), 0, 0, 'pitivi'),
+#             ('pitivi-split', _('Split'), 0, 0, 'pitivi'),
+#             ('pitivi-keyframe', _('Keyframe'), 0, 0, 'pitivi'),
+#             ('pitivi-unlink', _('Unlink'), 0, 0, 'pitivi'),
+#             # Translators: This is an action, the title of a button
+#             ('pitivi-link', _('Link'), 0, 0, 'pitivi'),
+#             ('pitivi-ungroup', _('Ungroup'), 0, 0, 'pitivi'),
+#             # Translators: This is an action, the title of a button
+#             ('pitivi-group', _('Group'), 0, 0, 'pitivi'),
+#             ('pitivi-align', _('Align'), 0, 0, 'pitivi'),
+#             ])
+#     pixmaps = {
+#         "pitivi-render": "pitivi-render-24.png",
+#         "pitivi-split": "pitivi-split-24.svg",
+#         "pitivi-keyframe": "pitivi-keyframe-24.svg",
+#         "pitivi-unlink": "pitivi-unlink-24.svg",
+#         "pitivi-link": "pitivi-relink-24.svg",
+#         "pitivi-ungroup": "pitivi-ungroup-24.svg",
+#         "pitivi-group": "pitivi-group-24.svg",
+#         "pitivi-align": "pitivi-align-24.svg",
+#     }
+#     factory = gtk.IconFactory()
+#     pmdir = get_pixmap_dir()
+#     for stockid, path in pixmaps.iteritems():
+#         pixbuf = GdkPixbuf.Pixbuf.new_from_file(os.path.join(pmdir, path))
+#         iconset = gtk.IconSet(pixbuf)
+#         factory.add(stockid, iconset)
+#         factory.add_default()
 
 
 class PitiviMainWindow(gtk.Window, Loggable):
@@ -181,12 +200,12 @@ class PitiviMainWindow(gtk.Window, Loggable):
         self.is_fullscreen = self.settings.mainWindowFullScreen
         self.timelinepos = 0
         self.prefsdialog = None
-        create_stock_icons()
+        #create_stock_icons()
         self._setActions(instance)
         self._createUi(instance)
 
         self.app = instance
-        self.manager = RecentManager()
+        self.manager = Gtk.RecentManager()
         self._zoom_duration_changed = False
         self._missingUriOnLoading = False
 
@@ -223,6 +242,7 @@ class PitiviMainWindow(gtk.Window, Loggable):
         @param pause: If C{True}, pause the timeline before displaying the dialog.
         @type pause: C{bool}
         """
+        w("from encodingdialog import EncodingDialog")
         from encodingdialog import EncodingDialog
 
         if pause:
@@ -274,18 +294,18 @@ class PitiviMainWindow(gtk.Window, Loggable):
         self.connect("configure-event", self._configureCb)
 
         # main menu & toolbar
-        vbox = gtk.VBox(False)
+        vbox = gtk.VBox(homogeneous=False, spacing=0)
         self.add(vbox)
         vbox.show()
         self.menu = self.uimanager.get_widget("/MainMenuBar")
-        vbox.pack_start(self.menu, expand=False)
+        vbox.pack_start(self.menu, False, False, 0)
         self.menu.show()
         self.toolbar = self.uimanager.get_widget("/MainToolBar")
-        vbox.pack_start(self.toolbar, expand=False)
+        vbox.pack_start(self.toolbar, False, False, 0)
         self.toolbar.show()
         # timeline and project tabs
         vpaned = gtk.VPaned()
-        vbox.pack_start(vpaned)
+        vbox.pack_start(vpaned, False, False, 0)
         vpaned.show()
 
         self.timeline = Timeline(instance, self.uimanager)
@@ -337,12 +357,12 @@ class PitiviMainWindow(gtk.Window, Loggable):
         # Viewer
         self.viewer = PitiviViewer(instance)
         # drag and drop
-        self.viewer.drag_dest_set(gtk.DEST_DEFAULT_DROP | gtk.DEST_DEFAULT_MOTION,
+        self.viewer.drag_dest_set(gtk.DestDefaults.DROP | gtk.DestDefaults.MOTION,
                            [dnd.FILESOURCE_TUPLE, dnd.URI_TUPLE],
-                           gtk.gdk.ACTION_COPY)
+                           Gdk.DragAction.COPY)
         self.viewer.connect("drag_data_received", self._viewerDndDataReceivedCb)
         self.mainhpaned.pack2(self.viewer, resize=False, shrink=False)
-        self.viewer.connect("expose-event", self._exposeEventCb)
+#        self.viewer.connect("expose-event", self._exposeEventCb)
 
         # window and pane position defaults
         self.mainhpaned = self.mainhpaned
@@ -373,7 +393,7 @@ class PitiviMainWindow(gtk.Window, Loggable):
         # toolbar buttons should be clickable with the mouse cursor at the
         # very bottom of the screen.
         ttb = self.uimanager.get_widget("/TimelineToolBar")
-        vbox.pack_start(ttb, expand=False)
+        vbox.pack_start(ttb, False, False, 0)
         ttb.show()
 
         if not self.settings.mainWindowShowMainToolbar:
@@ -497,6 +517,7 @@ class PitiviMainWindow(gtk.Window, Loggable):
         self.showProjectSettingsDialog()
 
     def showProjectSettingsDialog(self):
+        w("from projectsettings import ProjectSettingsDialog")
         from projectsettings import ProjectSettingsDialog
         ProjectSettingsDialog(self, self.app.current).window.run()
         self.updateTitle()
@@ -565,7 +586,7 @@ class PitiviMainWindow(gtk.Window, Loggable):
     def openProject(self):
         chooser = gtk.FileChooserDialog(_("Open File..."),
             self,
-            action=gtk.FILE_CHOOSER_ACTION_OPEN,
+            action=gtk.FILE_CHOOSER_DragAction.OPEN,
             buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
                 gtk.STOCK_OPEN, gtk.RESPONSE_OK))
         chooser.set_icon_name("pitivi")
@@ -601,6 +622,7 @@ class PitiviMainWindow(gtk.Window, Loggable):
 
     def _prefsCb(self, unused_action):
         if not self.prefsdialog:
+            w("from pitivi.ui.prefs import PreferencesDialog")
             from pitivi.ui.prefs import PreferencesDialog
             self.prefsdialog = PreferencesDialog(self.app)
             self.prefsdialog.dialog.set_transient_for(self)
@@ -708,22 +730,22 @@ class PitiviMainWindow(gtk.Window, Loggable):
                 "changes will be lost")
 
         # put the text in a vbox
-        vbox = gtk.VBox(False, SPACING * 2)
-        vbox.pack_start(primary, expand=True, fill=True)
-        vbox.pack_start(secondary, expand=True, fill=True)
+        vbox = gtk.VBox(homogeneous=False, spacing=SPACING * 2)
+        vbox.pack_start(primary, True, True, 0)
+        vbox.pack_start(secondary, True, True, 0)
 
         # make the [[image] text] hbox
         image = gtk.image_new_from_stock(gtk.STOCK_DIALOG_WARNING,
-               gtk.ICON_SIZE_DIALOG)
-        hbox = gtk.HBox(False, SPACING * 2)
-        hbox.pack_start(image, expand=False)
-        hbox.pack_start(vbox, expand=True, fill=True)
+               gtk.IconSize.DIALOG)
+        hbox = gtk.HBox(homogeneous=False, spacing=SPACING * 2)
+        hbox.pack_start(image, False, False, 0)
+        hbox.pack_start(vbox, True, True, 0)
         action_area = dialog.get_action_area()
         hbox.set_border_width(SPACING)
 
         # stuff the hbox in the dialog
         content_area = dialog.get_content_area()
-        content_area.pack_start(hbox, expand=True, fill=True)
+        content_area.pack_start(hbox, True, True, 0)
         content_area.set_spacing(SPACING * 2)
         hbox.show_all()
 
@@ -814,7 +836,7 @@ class PitiviMainWindow(gtk.Window, Loggable):
         dialog.get_content_area().pack_start(label, False, False)
         label.show()
 
-        chooser = gtk.FileChooserWidget(action=gtk.FILE_CHOOSER_ACTION_OPEN)
+        chooser = gtk.FileChooserWidget(action=gtk.FILE_CHOOSER_DragAction.OPEN)
         chooser.set_select_multiple(False)
         pw = PreviewWidget(self.app)
         chooser.set_preview_widget(pw)
@@ -951,7 +973,7 @@ class PitiviMainWindow(gtk.Window, Loggable):
         self.log("Save URI requested")
         chooser = gtk.FileChooserDialog(_("Save As..."),
             self,
-            action=gtk.FILE_CHOOSER_ACTION_SAVE,
+            action=gtk.FILE_CHOOSER_DragAction.SAVE,
             buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL,
             gtk.STOCK_SAVE, gtk.RESPONSE_OK))
 
@@ -1011,6 +1033,7 @@ class PitiviMainWindow(gtk.Window, Loggable):
         try:
             fact = self.project.sources.getUri(uri)
         except SourceListError:
+            w("from pitivi.factories.file import FileSourceFactory")
             from pitivi.factories.file import FileSourceFactory
             fact = FileSourceFactory(uri)
         self._viewFactory(fact)

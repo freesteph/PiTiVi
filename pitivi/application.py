@@ -24,36 +24,54 @@
 """
 Main application
 """
+from logging import warning as w
+w("from gi.repository import GObject as gobject")
 from gi.repository import GObject as gobject
 gobject.threads_init()
+w("from gi.repository import Gtk as gtk")
 from gi.repository import Gtk as gtk
+w("from optparse import OptionParser")
 from optparse import OptionParser
 import os
 import sys
 import urllib
 
-from pitivi.pitivigstutils import patch_gst_python
-patch_gst_python()
-
+w("from gettext import gettext as _")
 from gettext import gettext as _
 
 import pitivi.instance as instance
 
-from pitivi.check import initial_checks
+w("Starting imports")
+w("from pitivi.effects import EffectsHandler")
 from pitivi.effects import EffectsHandler
+w("from pitivi.configure import APPNAME")
 from pitivi.configure import APPNAME
+w("from pitivi.settings import GlobalSettings")
 from pitivi.settings import GlobalSettings
+w("from pitivi.threads import ThreadMaster")
 from pitivi.threads import ThreadMaster
+w("from pitivi.signalinterface import Signallable")
 from pitivi.signalinterface import Signallable
+w("from pitivi.log.loggable import Loggable")
 from pitivi.log.loggable import Loggable
+w("from pitivi.log import log")
 from pitivi.log import log
+w("Got log")
+w("from pitivi.ui.mainwindow import PitiviMainWindow")
 from pitivi.ui.mainwindow import PitiviMainWindow
+w("from pitivi.projectmanager import ProjectManager, ProjectLogObserver")
 from pitivi.projectmanager import ProjectManager, ProjectLogObserver
+w("from pitivi.undo import UndoableActionLog, DebugActionLogObserver")
 from pitivi.undo import UndoableActionLog, DebugActionLogObserver
+w("from pitivi.timeline.timeline_undo import TimelineLogObserver")
 from pitivi.timeline.timeline_undo import TimelineLogObserver
+w("from pitivi.sourcelist_undo import SourceListLogObserver")
 from pitivi.sourcelist_undo import SourceListLogObserver
+w("from pitivi.ui.viewer import PitiviViewer")
 from pitivi.ui.viewer import PitiviViewer
+w("from pitivi.actioner import Renderer, Previewer")
 from pitivi.actioner import Renderer, Previewer
+w("from pitivi.ui.startupwizard import StartUpWizard")
 from pitivi.ui.startupwizard import StartUpWizard
 
 # FIXME : Speedup loading time
@@ -104,12 +122,14 @@ class Pitivi(Loggable, Signallable):
         """
         initialize pitivi with the command line arguments
         """
+        w("Creating loggable")
         Loggable.__init__(self)
 
         # init logging as early as possible so we can log startup code
         enable_color = os.environ.get('PITIVI_DEBUG_NO_COLOR', '0') in ('', '0')
         log.init('PITIVI_DEBUG', enable_color)
 
+        w("starting up")
         self.info('starting up')
 
         # store ourself in the instance global
@@ -122,15 +142,20 @@ class Pitivi(Loggable, Signallable):
         self.current = None
 
         # get settings
+        w("Getting settings")
         self.settings = GlobalSettings()
+        w("Getting threads")
         self.threads = ThreadMaster()
         #self.screencast = False
 
+        w("Doing effects")
         self.effects = EffectsHandler()
 
+        w("Projectmanager")
         self.projectManager = ProjectManager(self.effects)
         self._connectToProjectManager(self.projectManager)
 
+        w("Undo log")
         self.action_log = UndoableActionLog()
         self.debug_action_log_observer = DebugActionLogObserver()
         self.debug_action_log_observer.startObserving(self.action_log)
@@ -210,20 +235,15 @@ class InteractivePitivi(Pitivi):
     """
 
     def __init__(self, debug=False):
+        w("Init for InteractivePitivi")
         Pitivi.__init__(self)
+        w("Done initatin PiTiVi")
         self.mainloop = gobject.MainLoop()
+        w("Mainloop created")
         self.actioner = None
         self.gui = None
 
         # Check the dependencies.
-        missing_deps = initial_checks()
-        if missing_deps:
-            message, detail = missing_deps
-            self._showStartupError(message, detail)
-            sys.exit(2)
-
-        if debug:
-            sys.excepthook = self._excepthook
 
     def _showStartupError(self, message, detail):
         self.error("%s %s" % (message, detail))
@@ -262,7 +282,9 @@ class GuiPitivi(InteractivePitivi):
     """
 
     def __init__(self, debug=False):
+        w("Initiating a GUI")
         InteractivePitivi.__init__(self, debug)
+        w("Going to show")
         self._showGui()
 
     def _showStartupError(self, message, detail):
@@ -282,6 +304,7 @@ class GuiPitivi(InteractivePitivi):
 
     def _showGui(self):
         """Creates and shows the UI."""
+        w("Creating the GUI")
         self.gui = self._createGui()
         self.gui.show()
 
@@ -302,6 +325,7 @@ class FullGuiPitivi(GuiPitivi):
     """
 
     def _createGui(self):
+        w("Going for the main window")
         return PitiviMainWindow(self)
 
 
@@ -369,9 +393,11 @@ class StartupWizardGuiPitivi(FullGuiPitivi):
     """
 
     def __init__(self, debug=False):
+        w("Initing StartupWizardGuiPiTiVi")
         FullGuiPitivi.__init__(self, debug)
 
     def _createGui(self):
+        w("createGui for StartupWizard")
         self.wizard = StartUpWizard(self)
         return FullGuiPitivi._createGui(self)
 
@@ -492,19 +518,24 @@ def _parse_options(argv):
 def main(argv):
     options, args = _parse_options(argv)
     if options.import_sources:
+        w("project creator")
         ptv = ProjectCreatorGuiPitivi(media_filenames=args,
                                       add_to_timeline=options.add_to_timeline,
                                       debug=options.debug)
     elif options.render_output:
+        w("render output")
         ptv = RenderingNoGuiPitivi(project_filename=args[0],
                                    output_filename=options.render_output,
                                    debug=options.debug)
     elif options.preview:
+        w("preview")
         ptv = PreviewGuiPitivi(project_filename=args[0], debug=options.debug)
     else:
         if args:
             ptv = ProjectLoaderGuiPitivi(project_filename=args[0],
                                          debug=options.debug)
         else:
+            w("normal version")
             ptv = StartupWizardGuiPitivi(debug=options.debug)
+    w("Going to run!")
     ptv.run()

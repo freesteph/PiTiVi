@@ -213,7 +213,7 @@ class PreferencesDialog():
         """
         Add an auto-generated user preference for specifying colors. The
         colors can be returned as either int, a string colorspec, or a
-        gtk.gdk.Color object. See the gtk.gdk.color_parse() function for info
+        Gdk.Color object. See the Gdk.color_parse() function for info
         on colorspecs.
 
         @param label: user-visible name for this option
@@ -272,7 +272,7 @@ class PreferencesDialog():
                 else:
                     label_widget = gtk.Label(_(label) + ":")
                 icon = gtk.Image()
-                icon.set_from_stock('gtk-clear', gtk.ICON_SIZE_MENU)
+                icon.set_from_stock('gtk-clear', gtk.IconSize.MENU)
                 revert = gtk.Button()
                 revert.add(icon)
                 revert.set_tooltip_text(_("Reset to default value"))
@@ -296,7 +296,7 @@ class PreferencesDialog():
                 else:
                     label.set_alignment(1.0, 0.5)
                     label.set_tooltip_text(description)
-                    widgets.attach(label, 0, 1, y, y + 1, xoptions=gtk.FILL, yoptions=0)
+                    widgets.attach(label, 0, 1, y, y + 1, xoptions=gtk.AttachOptions.FILL, yoptions=0)
                     widgets.attach(widget, 1, 2, y, y + 1, yoptions=0)
                     widgets.attach(revert, 2, 3, y, y + 1, xoptions=0, yoptions=0)
                     label.show()

@@ -21,8 +21,7 @@
 
 import platform
 from gi.repository import GObject as gobject
-from gi.repository import Gtk as gtk
-from gtk import gdk
+from gi.repository import Gtk, Gdk
 import gst
 from math import pi
 import cairo
@@ -79,7 +78,7 @@ class ViewerError(Exception):
 
 
 # TODO : Switch to using Pipeline and Action
-class PitiviViewer(gtk.VBox, Loggable):
+class PitiviViewer(Gtk.VBox, Loggable):
 
     __gtype_name__ = 'PitiviViewer'
     __gsignals__ = {
@@ -102,7 +101,7 @@ class PitiviViewer(gtk.VBox, Loggable):
         @param action: Specific action to use instead of auto-created one
         @type action: L{ViewAction}
         """
-        gtk.VBox.__init__(self)
+        Gtk.VBox.__init__(self)
         self.set_border_width(SPACING)
         self.settings = app.settings
         self.app = app
@@ -277,21 +276,21 @@ class PitiviViewer(gtk.VBox, Loggable):
     def _createUi(self):
         """ Creates the Viewer GUI """
         # drawing area
-        self.aframe = gtk.AspectFrame(xalign=0.5, yalign=0.5, ratio=4.0 / 3.0,
+        self.aframe = Gtk.AspectFrame(xalign=0.5, yalign=0.5, ratio=4.0 / 3.0,
                                       obey_child=False)
-
         self.internal = ViewerWidget(self.action, self.app.settings)
         self.internal.init_transformation_events()
+
         self.internal.show()
         self.aframe.add(self.internal)
         self.pack_start(self.aframe, expand=True)
 
-        self.external_window = gtk.Window()
-        vbox = gtk.VBox()
+        self.external_window = Gtk.Window()
+        vbox = Gtk.VBox()
         vbox.set_spacing(SPACING)
         self.external_window.add(vbox)
         self.external = ViewerWidget(self.action, self.app.settings)
-        vbox.pack_start(self.external)
+        vbox.pack_start(self.external, False, False, 0)
         self.external_window.connect("delete-event",
             self._externalWindowDeleteCb)
         self.external_window.connect("configure-event",
@@ -300,57 +299,57 @@ class PitiviViewer(gtk.VBox, Loggable):
         self.external_vbox.show_all()
 
         # Slider
-        self.posadjust = gtk.Adjustment()
-        self.slider = gtk.HScale(self.posadjust)
+        self.posadjust = Gtk.Adjustment()
+        self.slider = Gtk.HScale(self.posadjust)
         self.slider.set_draw_value(False)
         self.slider.connect("button-press-event", self._sliderButtonPressCb)
         self.slider.connect("button-release-event", self._sliderButtonReleaseCb)
         self.slider.connect("scroll-event", self._sliderScrollCb)
-        self.pack_start(self.slider, expand=False)
+        self.pack_start(self.slider, False, False, 0)
         self.moving_slider = False
         self.slider.set_sensitive(False)
 
         # Buttons/Controls
-        bbox = gtk.HBox()
-        boxalign = gtk.Alignment(xalign=0.5, yalign=0.5)
+        bbox = Gtk.HBox()
+        boxalign = Gtk.Alignment(xalign=0.5, yalign=0.5)
         boxalign.add(bbox)
-        self.pack_start(boxalign, expand=False)
+        self.pack_start(boxalign, False, False, 0)
 
-        self.goToStart_button = gtk.ToolButton(gtk.STOCK_MEDIA_PREVIOUS)
+        self.goToStart_button = Gtk.ToolButton(Gtk.STOCK_MEDIA_PREVIOUS)
         self.goToStart_button.connect("clicked", self._goToStartCb)
         self.goToStart_button.set_tooltip_text(_("Go to the beginning of the timeline"))
         self.goToStart_button.set_sensitive(False)
-        bbox.pack_start(self.goToStart_button, expand=False)
+        bbox.pack_start(self.goToStart_button, False, False, 0)
 
-        self.back_button = gtk.ToolButton(gtk.STOCK_MEDIA_REWIND)
+        self.back_button = Gtk.ToolButton(Gtk.STOCK_MEDIA_REWIND)
         self.back_button.connect("clicked", self._backCb)
         self.back_button.set_tooltip_text(_("Go back one second"))
         self.back_button.set_sensitive(False)
-        bbox.pack_start(self.back_button, expand=False)
+        bbox.pack_start(self.back_button, False, False, 0)
 
         self.playpause_button = PlayPauseButton()
         self.playpause_button.connect("play", self._playButtonCb)
-        bbox.pack_start(self.playpause_button, expand=False)
+        bbox.pack_start(self.playpause_button, False, False, 0)
         self.playpause_button.set_sensitive(False)
 
-        self.forward_button = gtk.ToolButton(gtk.STOCK_MEDIA_FORWARD)
+        self.forward_button = Gtk.ToolButton(Gtk.STOCK_MEDIA_FORWARD)
         self.forward_button.connect("clicked", self._forwardCb)
         self.forward_button.set_tooltip_text(_("Go forward one second"))
         self.forward_button.set_sensitive(False)
-        bbox.pack_start(self.forward_button, expand=False)
+        bbox.pack_start(self.forward_button, False, False, 0)
 
-        self.goToEnd_button = gtk.ToolButton(gtk.STOCK_MEDIA_NEXT)
+        self.goToEnd_button = Gtk.ToolButton(Gtk.STOCK_MEDIA_NEXT)
         self.goToEnd_button.connect("clicked", self._goToEndCb)
         self.goToEnd_button.set_tooltip_text(_("Go to the end of the timeline"))
         self.goToEnd_button.set_sensitive(False)
-        bbox.pack_start(self.goToEnd_button, expand=False)
+        bbox.pack_start(self.goToEnd_button, False, False, 0)
 
         # current time
         self.timecode_entry = TimeWidget()
         self.timecode_entry.setWidgetValue(0)
         self.timecode_entry.connect("value-changed", self._jumpToTimecodeCb)
         self.timecode_entry.connectFocusEvents(self._entryFocusInCb, self._entryFocusOutCb)
-        bbox.pack_start(self.timecode_entry, expand=False, padding=10)
+        bbox.pack_start(self.timecode_entry, False, 10, 0)
         self._haveUI = True
 
         screen = gdk.screen_get_default()
@@ -408,7 +407,7 @@ class PitiviViewer(gtk.VBox, Loggable):
         except:
             self.warning("could not set ratio !")
 
-    ## gtk.HScale callbacks for self.slider
+    ## Gtk.HScale callbacks for self.slider
 
     def _entryFocusInCb(self, entry, event):
         sensitive_actions = self.app.gui.sensitive_actions
@@ -452,7 +451,7 @@ class PitiviViewer(gtk.VBox, Loggable):
             self.seek(value)
 
     def _sliderScrollCb(self, unused_slider, event):
-        if event.direction == gtk.gdk.SCROLL_LEFT:
+        if event.direction == Gtk.gdk.SCROLL_LEFT:
             amount = -gst.SECOND
         else:
             amount = gst.SECOND
@@ -496,7 +495,7 @@ class PitiviViewer(gtk.VBox, Loggable):
             seek, self._initial_seek = self._initial_seek, None
             self.pipeline.seek(seek)
 
-    ## Control gtk.Button callbacks
+    ## Control Gtk.Button callbacks
 
     def setZoom(self, zoom):
         if self.target.box:
@@ -565,7 +564,7 @@ class PitiviViewer(gtk.VBox, Loggable):
         self.remove(self.slider)
         self.external_vbox.pack_end(self.slider, False, False)
         self.external_vbox.pack_end(self.buttons, False, False)
-        self.external_window.set_type_hint(gtk.gdk.WINDOW_TYPE_HINT_UTILITY)
+        self.external_window.set_type_hint(Gtk.gdk.WINDOW_TYPE_HINT_UTILITY)
         self.external_window.show()
         self.target = self.external
         # if we are playing, switch output immediately
@@ -635,12 +634,13 @@ class PitiviViewer(gtk.VBox, Loggable):
             self._switch_output_window()
 
     def _switch_output_window(self):
-        gtk.gdk.threads_enter()
+        Gtk.gdk.threads_enter()
         self.sink.set_xwindow_id(self.target.window_xid)
         self.sink.expose()
-        gtk.gdk.threads_leave()
+        Gtk.gdk.threads_leave()
 
 
+<<<<<<< HEAD
 class Point():
     def __init__(self, x, y, settings):
         self.x = x
@@ -948,7 +948,7 @@ class TransformationBox():
             self.transformation_properties.connectSpinButtonsToFlush()
 
 
-class ViewerWidget(gtk.DrawingArea, Loggable):
+class ViewerWidget(Gtk.DrawingArea, Loggable):
     """
     Widget for displaying properly GStreamer video sink
     """
@@ -956,7 +956,7 @@ class ViewerWidget(gtk.DrawingArea, Loggable):
     __gsignals__ = {}
 
     def __init__(self, action=None, settings=None):
-        gtk.DrawingArea.__init__(self)
+        Gtk.DrawingArea.__init__(self)
         Loggable.__init__(self)
         # FIXME : Check if it's a view action
         self.action = action
@@ -1022,7 +1022,7 @@ class ViewerWidget(gtk.DrawingArea, Loggable):
         self.stored = True
 
     def do_realize(self):
-        gtk.DrawingArea.do_realize(self)
+        Gtk.DrawingArea.do_realize(self)
         if platform.system() == 'Windows':
             self.window_xid = self.window.handle
         else:
@@ -1108,8 +1108,8 @@ class ViewerWidget(gtk.DrawingArea, Loggable):
             cr.paint()
 
 
-class PlayPauseButton(gtk.Button, Loggable):
-    """ Double state gtk.Button which displays play/pause """
+class PlayPauseButton(Gtk.Button, Loggable):
+    """ Double state Gtk.Button which displays play/pause """
 
     __gsignals__ = {
         "play": (gobject.SIGNAL_RUN_LAST,
@@ -1117,16 +1117,16 @@ class PlayPauseButton(gtk.Button, Loggable):
                    (gobject.TYPE_BOOLEAN,))}
 
     def __init__(self):
-        gtk.Button.__init__(self)
+        Gtk.Button.__init__(self)
         Loggable.__init__(self)
-        self.image = gtk.Image()
+        self.image = Gtk.Image()
         self.add(self.image)
         self.playing = True
         self.setPlay()
         self.connect('clicked', self._clickedCb)
 
     def set_sensitive(self, value):
-        gtk.Button.set_sensitive(self, value)
+        Gtk.Button.set_sensitive(self, value)
 
     def _clickedCb(self, unused):
         self.emit("play", self.playing)
@@ -1135,7 +1135,7 @@ class PlayPauseButton(gtk.Button, Loggable):
         """ display the play image """
         self.log("setPlay")
         if self.playing:
-            self.image.set_from_stock(gtk.STOCK_MEDIA_PLAY, gtk.ICON_SIZE_BUTTON)
+            self.image.set_from_stock(Gtk.STOCK_MEDIA_PLAY, Gtk.IconSize.BUTTON)
             self.set_tooltip_text(_("Play"))
             self.playing = False
 
@@ -1143,6 +1143,6 @@ class PlayPauseButton(gtk.Button, Loggable):
         self.log("setPause")
         """ display the pause image """
         if not self.playing:
-            self.image.set_from_stock(gtk.STOCK_MEDIA_PAUSE, gtk.ICON_SIZE_BUTTON)
+            self.image.set_from_stock(Gtk.STOCK_MEDIA_PAUSE, Gtk.IconSize.BUTTON)
             self.set_tooltip_text(_("Pause"))
             self.playing = True

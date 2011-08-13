@@ -1,21 +1,28 @@
+from logging import warning as w
+
+w("from pitivi.ui.zoominterface import Zoomable ")
 from pitivi.ui.zoominterface import Zoomable
+w("from pitivi.ui.trackobject import TrackObject ")
 from pitivi.ui.trackobject import TrackObject
+w("from pitivi.timeline.track import TrackEffect ")
 from pitivi.timeline.track import TrackEffect
+w("from pitivi.receiver import receiver, handler ")
 from pitivi.receiver import receiver, handler
+w("from pitivi.ui.common import LAYER_HEIGHT_EXPANDED, LAYER_HEIGHT_COLLAPSED, LAYER_SPACING ")
 from pitivi.ui.common import LAYER_HEIGHT_EXPANDED, LAYER_HEIGHT_COLLAPSED, LAYER_SPACING
-import goocanvas
+from gi.repository import GooCanvas
 
 
-class Transition(goocanvas.Rect, Zoomable):
+class Transition(GooCanvas.CanvasRect, Zoomable):
 
     def __init__(self, transition):
-        goocanvas.Rect.__init__(self)
+        GooCanvas.CanvasRect.__init__(self)
         Zoomable.__init__(self)
         self.props.fill_color_rgba = 0xFFFFFF99
         self.props.stroke_color_rgba = 0x00000099
         self.set_simple_transform(0, -LAYER_SPACING + 3, 1.0, 0)
         self.props.height = LAYER_SPACING - 6
-        self.props.pointer_events = goocanvas.EVENTS_NONE
+        self.props.pointer_events = GooCanvas.CanvasEVENTS_NONE
         self.props.radius_x = 2
         self.props.radius_y = 2
         self.transition = transition
@@ -43,9 +50,9 @@ class Transition(goocanvas.Rect, Zoomable):
     def _updateDuration(self, transition, duration):
         width = max(0, self.nsToPixel(duration))
         if width == 0:
-            self.props.visibility = goocanvas.ITEM_INVISIBLE
+            self.props.visibility = GooCanvas.CanvasItemVisibility.INVISIBLE
         else:
-            self.props.visibility = goocanvas.ITEM_VISIBLE
+            self.props.visibility = GooCanvas.CanvasITEM_VISIBLE
         self.props.width = width
 
     @handler(transition, "priority-changed")
@@ -56,11 +63,11 @@ class Transition(goocanvas.Rect, Zoomable):
         self._updateAll()
 
 
-class Track(goocanvas.Group, Zoomable):
+class Track(GooCanvas.CanvasGroup, Zoomable):
     __gtype_name__ = 'Track'
 
     def __init__(self, instance, track, timeline=None):
-        goocanvas.Group.__init__(self)
+        GooCanvas.CanvasGroup.__init__(self)
         Zoomable.__init__(self)
         self.app = instance
         self.widgets = {}

@@ -24,10 +24,14 @@ Custom canvas item for timeline object previews. This code is just a thin
 canvas-item wrapper which ensures that the preview is updated appropriately.
 The actual drawing is done by the pitivi.previewer.Previewer class.  """
 
-import goocanvas
+from logging import warning as w
+from gi.repository import GooCanvas
+w("from gi.repository import GObject as gobject ")
 from gi.repository import GObject as gobject
 
+w("from pitivi.receiver import receiver, handler ")
 from pitivi.receiver import receiver, handler
+w("from pitivi.ui.zoominterface import Zoomable ")
 from pitivi.ui.zoominterface import Zoomable
 import pitivi.ui.previewer as previewer
 
@@ -37,11 +41,11 @@ def between(a, b, c):
 
 
 def intersect(b1, b2):
-    return goocanvas.Bounds(max(b1.x1, b2.x1), max(b1.y1, b2.y1),
+    return GooCanvas.CanvasBounds(max(b1.x1, b2.x1), max(b1.y1, b2.y1),
         min(b1.x2, b2.x2), min(b1.y2, b2.y2))
 
 
-class Preview(goocanvas.ItemSimple, goocanvas.Item, Zoomable):
+class Preview(GooCanvas.CanvasItemSimple, GooCanvas.CanvasItem, Zoomable):
 
     __gtype_name__ = 'Preview'
 
@@ -101,7 +105,7 @@ class Preview(goocanvas.ItemSimple, goocanvas.Item, Zoomable):
         cr.identity_matrix()
         if self.element.factory:
             border_width = self.previewer._spacing()
-            self.bounds = goocanvas.Bounds(border_width, 4,
+            self.bounds = GooCanvas.CanvasBounds(border_width, 4,
             max(0, Zoomable.nsToPixel(self.element.duration) -
                 border_width), self.height)
 

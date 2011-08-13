@@ -50,8 +50,8 @@ class EffectsPropertiesHandling:
             nb_rows = effect_set_ui.get_children()[0].get_property('n-rows')
             effect_configuration_ui = gtk.ScrolledWindow()
             effect_configuration_ui.add_with_viewport(effect_set_ui)
-            effect_configuration_ui.set_policy(gtk.POLICY_AUTOMATIC,
-                                               gtk.POLICY_AUTOMATIC)
+            effect_configuration_ui.set_policy(gtk.PolicyType.AUTOMATIC,
+                                               gtk.PolicyType.AUTOMATIC)
             self.cache_dict[effect] = effect_configuration_ui
             self._connectAllWidgetCbs(effect_set_ui, effect)
             self._postConfiguration(effect, effect_set_ui)

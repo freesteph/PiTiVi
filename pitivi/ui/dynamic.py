@@ -25,6 +25,7 @@ interfaces
 """
 from gi.repository import GObject as gobject
 from gi.repository import Gtk as gtk
+from gi.repository import Gdk
 import re
 import sys
 import gst
@@ -94,8 +95,8 @@ class TextWidget(gtk.HBox, DynamicWidget):
             (),)
     }
 
-    __INVALID__ = gtk.gdk.Color(0xFFFF, 0, 0)
-    __NORMAL__ = gtk.gdk.Color(0, 0, 0)
+    __INVALID__ = Gdk.Color(0xFFFF, 0, 0)
+    __NORMAL__ = Gdk.Color(0, 0, 0)
 
     def __init__(self, matches=None, choices=None, default=None):
         gtk.HBox.__init__(self)
@@ -107,13 +108,13 @@ class TextWidget(gtk.HBox, DynamicWidget):
             self.combo = gtk.combo_box_entry_new_text()
             self.text = self.combo.child
             self.combo.show()
-            self.pack_start(self.combo)
+            self.pack_start(self.combo, False, False, 0)
             for choice in choices:
                 self.combo.append_text(choice)
         else:
             self.text = gtk.Entry()
             self.text.show()
-            self.pack_start(self.text)
+            self.pack_start(self.text, False, False, 0)
         self.matches = None
         self.last_valid = None
         self.valid = False
@@ -189,8 +190,8 @@ class NumericWidget(gtk.HBox, DynamicWidget):
         self._type = None
         if (upper != None) and (lower != None) and\
             (upper < 5000) and (lower > -5000):
-            self.slider = gtk.HScale(self.adjustment)
-            self.pack_start(self.slider, fill=True, expand=True)
+            self.slider = gtk.HScale(adjustment=self.adjustment)
+            self.pack_start(self.slider, True, True, 0)
             self.slider.show()
             self.slider.props.draw_value = False
 
@@ -388,7 +389,7 @@ class ChoiceWidget(gtk.HBox, DynamicWidget):
         self.choices = None
         self.values = None
         self.contents = gtk.combo_box_new_text()
-        self.pack_start(self.contents)
+        self.pack_start(self.contents, False, False, 0)
         self.setChoices(choices)
         self.contents.show()
         cell = self.contents.get_cells()[0]
@@ -473,7 +474,7 @@ class PresetChoiceWidget(gtk.HBox, DynamicWidget):
             self.combo.append_text(preset[0])
         self.combo.append_text("-")
         self.combo.append_text(_("Custom"))
-        self.pack_start(self.combo)
+        self.pack_start(self.combo, False, False, 0)
         self._custom_row = len(presets) + 1
 
         save_button = gtk.Button(stock=gtk.STOCK_SAVE)
@@ -501,7 +502,7 @@ class PresetChoiceWidget(gtk.HBox, DynamicWidget):
                 gtk.RESPONSE_OK))
         input = gtk.Entry()
         ca = d.get_content_area()
-        ca.pack_start(input)
+        ca.pack_start(input, False, False, 0)
         input.show()
         response = d.run()
 
@@ -557,7 +558,7 @@ class PathWidget(gtk.FileChooserButton, DynamicWidget):
             ()),
     }
 
-    def __init__(self, action=gtk.FILE_CHOOSER_ACTION_OPEN, default=None):
+    def __init__(self, action=gtk.FileChooserAction.OPEN, default=None):
         DynamicWidget.__init__(self, default)
         self.dialog = gtk.FileChooserDialog(
             action=action,
@@ -602,11 +603,11 @@ class ColorWidget(gtk.ColorButton, DynamicWidget):
         alpha = 0xFFFF
 
         if type_ is str:
-            color = gtk.gdk.Color(value)
+            color = Gdk.Color(value)
         elif (type_ is int) or (type_ is long):
             red, green, blue, alpha = unpack_color(value)
-            color = gtk.gdk.Color(red, green, blue)
-        elif type_ is gtk.gdk.Color:
+            color = Gdk.Color(red, green, blue)
+        elif type_ is Gdk.Color:
             color = value
         else:
             raise TypeError("%r is not something we can convert to a color" %
@@ -621,7 +622,7 @@ class ColorWidget(gtk.ColorButton, DynamicWidget):
             return pack_color_32(color.red, color.green, color.blue, alpha)
         if self.value_type is long:
             return pack_color_64(color.red, color.green, color.blue, alpha)
-        elif self.value_type is gtk.gdk.Color:
+        elif self.value_type is Gdk.Color:
             return color
         return color.to_string()
 
@@ -654,9 +655,9 @@ class ResolutionWidget(gtk.HBox, DynamicWidget):
         self.dheight = 0
         self.dwidthWidget = NumericWidget(lower=0)
         self.dheightWidget = NumericWidget(lower=0)
-        self.pack_start(self.dwidthWidget)
-        self.pack_start(gtk.Label("x"))
-        self.pack_start(self.dheightWidget)
+        self.pack_start(self.dwidthWidget, False, False, 0)
+        self.pack_start(gtk.Label("x"), False, False, 0)
+        self.pack_start(self.dheightWidget, False, False, 0)
         self.setWidgetValue((320, 240))
         self.show_all()
 
@@ -709,7 +710,7 @@ if __name__ == '__main__':
     )
 
     W = gtk.Window()
-    v = gtk.VBox()
+    v = gtk.VBox(homoegeneous=0, spacing=0)
     t = gtk.Table()
 
     for y, (klass, default, args) in enumerate(widgets):

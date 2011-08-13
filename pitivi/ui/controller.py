@@ -19,7 +19,7 @@
 # Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
 # Boston, MA 02110-1301, USA.
 
-from gi.repository import Gtk as gtk.gdk
+from gi.repository import Gtk, Gdk
 from pitivi.receiver import receiver, handler
 from pitivi.ui.point import Point
 
@@ -30,7 +30,7 @@ from pitivi.ui.point import Point
 # that explictly combines the functionality of both when custom behavior is
 # desired.
 
-ARROW = gtk.gdk.Cursor(gtk.gdk.ARROW)
+ARROW = Gdk.Cursor(Gdk.CursorType.ARROW)
 
 
 class Controller(object):
@@ -172,8 +172,8 @@ class Controller(object):
             self._vadj = self._canvas.app.gui.timeline.vadj
         self._last_event = event
         s = event.get_state()
-        self._shift_down = s & gtk.gdk.SHIFT_MASK
-        self._control_down = s & gtk.gdk.CONTROL_MASK
+        self._shift_down = s & Gdk.EventMask.SHIFT_MASK
+        self._control_down = s & Gdk.EventMask.CONTROL_MASK
 
     def _drag_start(self, item, target, event):
         self.drag_start(item, target, event)
