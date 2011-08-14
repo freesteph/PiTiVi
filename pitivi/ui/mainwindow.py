@@ -27,13 +27,11 @@ Main GTK+ window
 import os
 import platform
 from logging import warning as w
-w("from gi.repository import Gtk as gtk")
 from gi.repository import Gtk as gtk
-w("from gi.repository import GObject as gobject")
 from gi.repository import GObject as gobject
-from gi.repository import Gdk
+from gi.repository import Gdk, GdkPixbuf
 import gst
-w("from urllib import unquote")
+
 from urllib import unquote
 import webbrowser
 
@@ -137,37 +135,24 @@ def supported(info):
     return formatter.can_handle_location(info[1])
 
 
-# def create_stock_icons():
-#     """ Creates the pitivi-only stock icons """
-#     gtk.stock_add([
-#             ('pitivi-render', _('Render'), 0, 0, 'pitivi'),
-#             ('pitivi-split', _('Split'), 0, 0, 'pitivi'),
-#             ('pitivi-keyframe', _('Keyframe'), 0, 0, 'pitivi'),
-#             ('pitivi-unlink', _('Unlink'), 0, 0, 'pitivi'),
-#             # Translators: This is an action, the title of a button
-#             ('pitivi-link', _('Link'), 0, 0, 'pitivi'),
-#             ('pitivi-ungroup', _('Ungroup'), 0, 0, 'pitivi'),
-#             # Translators: This is an action, the title of a button
-#             ('pitivi-group', _('Group'), 0, 0, 'pitivi'),
-#             ('pitivi-align', _('Align'), 0, 0, 'pitivi'),
-#             ])
-#     pixmaps = {
-#         "pitivi-render": "pitivi-render-24.png",
-#         "pitivi-split": "pitivi-split-24.svg",
-#         "pitivi-keyframe": "pitivi-keyframe-24.svg",
-#         "pitivi-unlink": "pitivi-unlink-24.svg",
-#         "pitivi-link": "pitivi-relink-24.svg",
-#         "pitivi-ungroup": "pitivi-ungroup-24.svg",
-#         "pitivi-group": "pitivi-group-24.svg",
-#         "pitivi-align": "pitivi-align-24.svg",
-#     }
-#     factory = gtk.IconFactory()
-#     pmdir = get_pixmap_dir()
-#     for stockid, path in pixmaps.iteritems():
-#         pixbuf = GdkPixbuf.Pixbuf.new_from_file(os.path.join(pmdir, path))
-#         iconset = gtk.IconSet(pixbuf)
-#         factory.add(stockid, iconset)
-#         factory.add_default()
+def create_stock_icons():
+    pixmaps = {
+        "pitivi-render": "pitivi-render-24.png",
+        "pitivi-split": "pitivi-split-24.svg",
+        "pitivi-keyframe": "pitivi-keyframe-24.svg",
+        "pitivi-unlink": "pitivi-unlink-24.svg",
+        "pitivi-link": "pitivi-relink-24.svg",
+        "pitivi-ungroup": "pitivi-ungroup-24.svg",
+        "pitivi-group": "pitivi-group-24.svg",
+        "pitivi-align": "pitivi-align-24.svg",
+    }
+    factory = gtk.IconFactory()
+    pmdir = get_pixmap_dir()
+    for stockid, path in pixmaps.iteritems():
+        pixbuf = GdkPixbuf.Pixbuf.new_from_file(os.path.join(pmdir, path))
+        iconset = gtk.IconSet.new_from_pixbuf(pixbuf)
+        factory.add(stockid, iconset)
+        factory.add_default()
 
 
 class PitiviMainWindow(gtk.Window, Loggable):
@@ -192,7 +177,7 @@ class PitiviMainWindow(gtk.Window, Loggable):
         self.is_fullscreen = self.settings.mainWindowFullScreen
         self.timelinepos = 0
         self.prefsdialog = None
-        #create_stock_icons()
+        create_stock_icons()
         self._setActions(instance)
         self._createUi(instance)
 
