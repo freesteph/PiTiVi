@@ -26,7 +26,7 @@
       <placeholder name="Timeline" />
       <separator />
       <menuitem action="FullScreen" />
-      <menuitem action="WindowizeViewer" />
+      <menuitem action="UndockViewer" />
     </menu>
     <menu action="Library">
       <separator />

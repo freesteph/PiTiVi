@@ -16,7 +16,7 @@
     </child>
     <child>
       <object class="GtkAction" id="File">
-        <property name="label" translatable="yes">_File</property>
+        <property name="label" translatable="yes">_Project</property>
       </object>
     </child>
     <child>
@@ -26,7 +26,7 @@
     </child>
     <child>
       <object class="GtkAction" id="Library">
-        <property name="label" translatable="yes">_Project</property>
+        <property name="label" translatable="yes">_Library</property>
       </object>
     </child>
     <child>
@@ -39,7 +39,7 @@
     </child>
     <child>
       <object class="GtkAction" id="NewProject">
-        <property name="tooltip" translatable="yes">Creates a new project</property>
+        <property name="tooltip" translatable="yes">Create a new project</property>
         <property name="stock_id">gtk-new</property>
         <signal name="activate" handler="_newProjectMenuCb" swapped="no"/>
       </object>
@@ -101,13 +101,15 @@
       <object class="GtkAction" id="SaveProject">
         <property name="tooltip" translatable="yes">Save the current project</property>
         <property name="stock_id">gtk-save</property>
+        <property name="is_important">True</property>
+        <property name="sensitive">False</property>
         <signal name="activate" handler="_saveProjectCb" swapped="no"/>
       </object>
     </child>
     <child>
       <object class="GtkAction" id="SaveProjectAs">
         <property name="label" translatable="yes">Save _As...</property>
-        <property name="tooltip" translatable="yes">Save the current project on a different name</property>
+        <property name="tooltip" translatable="yes">Save the current project</property>
         <property name="stock_id">gtk-save-as</property>
         <signal name="activate" handler="_saveProjectAsCb" swapped="no"/>
       </object>
@@ -129,6 +131,7 @@
     <child>
       <object class="GtkAction" id="UserManual">
         <property name="label" translatable="yes">User manual</property>
+        <property name="short_label" translatable="yes">User Manual</property>
         <property name="stock_id">gtk-help</property>
         <signal name="activate" handler="_userManualCb" swapped="no"/>
       </object>
@@ -146,7 +149,7 @@
     <child>
       <object class="GtkAction" id="RenderProject">
         <property name="label" translatable="yes">_Render project</property>
-        <property name="tooltip" translatable="yes">Render project...</property>
+        <property name="tooltip" translatable="yes">Export your project as a finished movie</property>
         <property name="icon_name">pitivi-render</property>
         <signal name="activate" handler="_recordCb" swapped="no"/>
       </object>
@@ -177,6 +180,12 @@
         <signal name="activate" handler="_fullScreenAlternateCb" swapped="no"/>
       </object>
       <accelerator key="F11"/>
+    </child>
+    <child>
+      <object class="GtkAction" id="UndockViewer">
+        <property name="label" translatable="yes">Undock Viewer</property>
+        <property name="tooltip" translatable="yes">Put the viewer in a separate windowx</property>
+      </object>
     </child>
   </object>
   <object class="GtkWindow" id="window1">

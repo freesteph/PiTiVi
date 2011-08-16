@@ -239,78 +239,12 @@ class PitiviMainWindow(gtk.Window, Loggable):
         self.showEncodingDialog(self.project)
 
     def _setActions(self, instance):
-        PLAY = _("Start Playback")
-        PAUSE = _("Stop Playback")
-        LOOP = _("Loop over selected area")
-
         """ sets up the GtkActions """
-        self.actions = [
-            ("NewProject", gtk.STOCK_NEW, None,
-             None, _("Create a new project"), self._newProjectMenuCb),
-            ("OpenProject", gtk.STOCK_OPEN, _("_Open..."),
-             None, _("Open an existing project"), self._openProjectCb),
-            ("SaveProject", gtk.STOCK_SAVE, None,
-             None, _("Save the current project"), self._saveProjectCb),
-            ("SaveProjectAs", gtk.STOCK_SAVE_AS, _("Save _As..."),
-             None, _("Save the current project"), self._saveProjectAsCb),
-            ("RevertToSavedProject", gtk.STOCK_REVERT_TO_SAVED, None,
-             None, _("Reload the current project"), self._revertToSavedProjectCb),
-            ("ProjectSettings", gtk.STOCK_PROPERTIES, _("Project Settings"),
-             None, _("Edit the project settings"), self._projectSettingsCb),
-            ("RenderProject", 'pitivi-render', _("_Render..."),
-             None, _("Export your project as a finished movie"), self._recordCb),
-            ("Undo", gtk.STOCK_UNDO,
-             _("_Undo"),
-             "<Ctrl>Z", _("Undo the last operation"), self._undoCb),
-            ("Redo", gtk.STOCK_REDO,
-             _("_Redo"),
-             "<Ctrl>Y", _("Redo the last operation that was undone"), self._redoCb),
-            ("Preferences", gtk.STOCK_PREFERENCES, _("_Preferences"),
-              None, None, self._prefsCb),
-            ("Quit", gtk.STOCK_QUIT, None, None, None, self._quitCb),
-            ("About", gtk.STOCK_ABOUT, None, None,
-             _("Information about %s") % APPNAME, self._aboutCb),
-            ("UserManual", gtk.STOCK_HELP, _("User Manual"),
-             None, None, self._userManualCb),
-            ("File", None, _("_Project")),
-            ("Edit", None, _("_Edit")),
-            ("View", None, _("_View")),
-            ("Library", None, _("_Library")),
-            ("Timeline", None, _("_Timeline")),
-            ("Viewer", None, _("Previe_w")),
-            ("PlayPause", gtk.STOCK_MEDIA_PLAY, None, "space", PLAY,
-                self.playPause),
-            ("Loop", gtk.STOCK_REFRESH, _("Loop"), None, LOOP,
-                self.loop),
-            ("Help", None, _("_Help")),
-        ]
+        builder = gtk.Builder()
+        builder.add_from_file(os.path.join(get_ui_dir(), "mainwindow.ui"))
+        self.actiongroup = builder.get_object("mainwindowgroup")
 
-        self.toggleactions = [
-            ("FullScreen", gtk.STOCK_FULLSCREEN, None, "f",
-             _("View the main window on the whole screen"),
-                 self._fullScreenCb),
-            ("FullScreenAlternate", gtk.STOCK_FULLSCREEN, None, "F11", None,
-                self._fullScreenAlternateCb),
-            ("ShowHideMainToolbar", None, _("Main Toolbar"), None, None,
-                self._showHideMainToolBar,
-                self.settings.mainWindowShowMainToolbar),
-            ("ShowHideTimelineToolbar", None, _("Timeline Toolbar"), None,
-                None, self._showHideTimelineToolbar,
-                self.settings.mainWindowShowTimelineToolbar),
-        ]
-
-        self.actiongroup = gtk.ActionGroup("mainwindow")
-        self.actiongroup.add_actions(self.actions)
-        self.actiongroup.add_toggle_actions(self.toggleactions)
-        self.undock_action = gtk.Action("WindowizeViewer", _("Undock Viewer"),
-            _("Put the viewer in a separate window"), None)
-        self.actiongroup.add_action(self.undock_action)
-
-        # deactivating non-functional actions
-        # FIXME : reactivate them
-        save_action = self.actiongroup.get_action("SaveProject")
-        save_action.set_sensitive(False)
-
+        self.toggleactions = []
         for action in self.actiongroup.list_actions():
             action_name = action.get_name()
             if action_name == "RenderProject":
@@ -318,33 +252,15 @@ class PitiviMainWindow(gtk.Window, Loggable):
                 # this will be set sensitive when the timeline duration changes
                 action.set_sensitive(False)
                 action.props.is_important = True
-            elif action_name == "Screencast":
-                # FIXME : re-enable this action once istanbul integration is complete
-                # and upstream istanbul has applied packages for proper interaction.
-                action.set_sensitive(False)
-                action.set_visible(False)
-            elif action_name in [
-                "ProjectSettings", "Quit", "File", "Edit", "Help", "About",
-                "View", "FullScreen", "FullScreenAlternate", "UserManual",
-                "ImportSourcesFolder", "PlayPause",
-                "Project", "FrameForward", "FrameBackward",
-                "ShowHideMainToolbar", "ShowHideTimelineToolbar", "Library",
-                "Timeline", "Viewer", "FrameForward", "FrameBackward",
-                "SecondForward", "SecondBackward", "EdgeForward",
-                "EdgeBackward", "Preferences", "WindowizeViewer"]:
-                action.set_sensitive(True)
             elif action_name in ["NewProject", "SaveProjectAs", "OpenProject"]:
                 if instance.settings.fileSupportEnabled:
                     action.set_sensitive(True)
             elif action_name == "SaveProject":
                 if instance.settings.fileSupportEnabled:
                     action.set_sensitive(True)
-                action.props.is_important = True
-            elif action_name == "Undo":
-                action.set_sensitive(True)
-                action.props.is_important = True
-            else:
-                action.set_sensitive(False)
+            elif action_name in ["FullScreen", "AlternateFullScren",
+                                 "ShowHideMainToolBar", "ShowHideTimelineToolbar"]:
+                self.toggleactions.append(action)
 
         self.uimanager = gtk.UIManager()
         self.add_accel_group(self.uimanager.get_accel_group())
@@ -403,9 +319,9 @@ class PitiviMainWindow(gtk.Window, Loggable):
         # a gtk entry box is used to avoid conflicts.
         self.sensitive_actions = []
         for action in self.timeline.playhead_actions:
-            self.sensitive_actions.append(action[0])
+            self.sensitive_actions.append(action)
         for action in self.toggleactions:
-            self.sensitive_actions.append(action[0])
+            self.sensitive_actions.append(action)
 
         #Clips properties
         self.propertiestabs = BaseTabs(instance, True)
@@ -419,7 +335,7 @@ class PitiviMainWindow(gtk.Window, Loggable):
         self.propertiestabs.show()
 
         # Viewer
-        self.viewer = PitiviViewer(instance, undock_action=self.undock_action)
+        self.viewer = PitiviViewer(instance)
         # drag and drop
         self.viewer.drag_dest_set(gtk.DEST_DEFAULT_DROP | gtk.DEST_DEFAULT_MOTION,
                            [dnd.FILESOURCE_TUPLE, dnd.URI_TUPLE],
