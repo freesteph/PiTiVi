@@ -23,7 +23,7 @@
 Single-stream queue-less decodebin
 """
 
-from gi.repository import GObject as gobject
+from gi.repository import GObject
 import gst
 from pitivi.stream import get_pad_id, pad_compatible_stream
 from pitivi.utils import CachedFactoryList
@@ -288,7 +288,7 @@ class SingleDecodeBin(gst.Bin):
         if self._srcpad:
             return
         self._markValidElements(element)
-        gobject.idle_add(self._removeUnusedElements, self.typefind)
+        GObject.idle_add(self._removeUnusedElements, self.typefind)
         if pad.props.caps is not None:
             caps = pad.props.caps
         else:
@@ -411,4 +411,4 @@ class SingleDecodeBin(gst.Bin):
     def _dynamicNoMorePadsCb(self, element):
         self.log("element:%s" % element.get_name())
 
-##gobject.type_register(SingleDecodeBin)
+##GObject.type_register(SingleDecodeBin)

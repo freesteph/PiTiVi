@@ -23,7 +23,7 @@
 Widget for the complex view ruler
 """
 
-from gi.repository import GObject as gobject
+from gi.repository import GObject
 from gi.repository import Gtk as gtk
 from gi.repository import Gdk
 import gst
@@ -41,8 +41,8 @@ class ScaleRuler(gtk.DrawingArea, Zoomable, Loggable):
         "button-release-event": "override",
         "motion-notify-event": "override",
         "scroll-event": "override",
-        "seek": (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,
-                [gobject.TYPE_UINT64])
+        "seek": (GObject.SIGNAL_RUN_LAST, GObject.TYPE_NONE,
+                [GObject.TYPE_UINT64])
         }
 
     border = 0

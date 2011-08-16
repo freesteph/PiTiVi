@@ -30,7 +30,7 @@ from pitivi.timeline.timeline import MoveContext, TrimStartContext,\
 from pitivi.signalinterface import Signallable
 from pitivi.stream import AudioStream, VideoStream
 import pitivi.instance
-from gi.repository import GObject as gobject
+from gi.repository import GObject
 import os.path
 import gst
 import random
@@ -57,7 +57,7 @@ class WatchDog(object):
     def start(self):
         self.will_quit = False
         self.keep_going = True
-        gobject.timeout_add(self.timeout, self._timeoutcb)
+        GObject.timeout_add(self.timeout, self._timeoutcb)
 
     def suspend(self):
         self.keepAlive()
@@ -78,33 +78,33 @@ class WatchDog(object):
 class TestWatchdog(TestCase):
 
     def testWatchdog(self):
-        self.ml = gobject.MainLoop()
+        self.ml = GObject.MainLoop()
         wd = WatchDog(self.ml, 100)
         self.timeout_called = False
         wd.start()
-        gobject.timeout_add(2000, self._timeoutCb)
+        GObject.timeout_add(2000, self._timeoutCb)
         self.ml.run()
         self.assertFalse(self.timeout_called)
         self.assertTrue(wd.activated)
 
     def testKeepAlive(self):
-        self.ml = gobject.MainLoop()
+        self.ml = GObject.MainLoop()
         wd = WatchDog(self.ml, 2000)
         self.timeout_called = False
         wd.start()
-        gobject.timeout_add(500, wd.keepAlive)
-        gobject.timeout_add(2500, self._timeoutCb)
+        GObject.timeout_add(500, wd.keepAlive)
+        GObject.timeout_add(2500, self._timeoutCb)
         self.ml.run()
         self.assertTrue(self.timeout_called)
         self.assertFalse(wd.activated)
 
     def testSuspend(self):
-        self.ml = gobject.MainLoop()
+        self.ml = GObject.MainLoop()
         wd = WatchDog(self.ml, 500)
         self.timeout_called = False
         wd.start()
         wd.suspend()
-        gobject.timeout_add(2000, self._timeoutCb)
+        GObject.timeout_add(2000, self._timeoutCb)
         self.ml.run()
         self.assertTrue(self.timeout_called)
         self.assertFalse(wd.activated)
@@ -314,7 +314,7 @@ class InstanceRunner(Signallable):
             self.instance.run([])
 
     def shutDown(self):
-        gobject.idle_add(self.instance.shutdown)
+        GObject.idle_add(self.instance.shutdown)
         self.project._dirty = False
 
 
@@ -344,7 +344,7 @@ class Brush(Signallable):
         self.priority = finalPriority
         self.count = 0
         self.steps = steps
-        gobject.timeout_add(self.delay, self._scrubTimeoutCb)
+        GObject.timeout_add(self.delay, self._scrubTimeoutCb)
 
     def _scrubTimeoutCb(self):
         self.watchdog.keepAlive()
@@ -644,7 +644,7 @@ class TestSeeking(Base):
         self.steps = steps
         self.positions = 0
         self.runner.project.pipeline.connect("position", self._positionCb)
-        gobject.timeout_add(interval, self._seekTimeoutCb)
+        GObject.timeout_add(interval, self._seekTimeoutCb)
 
     def _seekTimeoutCb(self):
         if self.count < self.steps:

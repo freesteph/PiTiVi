@@ -30,7 +30,7 @@ try:
 except ImportError:
     numpy = None
 
-from gi.repository import GObject as gobject
+from gi.repository import GObject
 import gst
 from pitivi.utils import beautify_ETA, call_false
 from pitivi.timeline.extract import Extractee, RandomAccessAudioExtractor
@@ -113,7 +113,7 @@ class ProgressAggregator(ProgressMeter):
 
         def cb(thusfar):
             self._portions[i] = thusfar
-            gobject.idle_add(self._callForward)
+            GObject.idle_add(self._callForward)
         return cb
 
     def addWatcher(self, function):
@@ -121,7 +121,7 @@ class ProgressAggregator(ProgressMeter):
 
     def _callForward(self):
         # This function always returns False so that it may be safely
-        # invoked via gobject.idle_add(). Use of idle_add() is necessary
+        # invoked via GObject.idle_add(). Use of idle_add() is necessary
         # to ensure that watchers are always called from the main thread,
         # even if progress updates are received from other threads.
         total_target = sum(self._targets)
@@ -330,7 +330,7 @@ class AutoAligner(Loggable):
                         progress_aggregator.getPortionCB(numsamples))
                 self._extraction_stack.append((audiotrack, extractee))
             # After we return, start the extraction cycle.
-            # This gobject.idle_add call should not be necessary;
+            # This GObject.idle_add call should not be necessary;
             # we should be able to invoke _extractNextEnvelope directly
             # here.  However, there is some as-yet-unexplained
             # race condition between the Python GIL, GTK UI updates,
@@ -338,10 +338,10 @@ class AutoAligner(Loggable):
             # occasional deadlocks during autoalignment.
             # This call to idle_add() reportedly eliminates the deadlock.
             # No one knows why.
-            gobject.idle_add(self._extractNextEnvelope)
+            GObject.idle_add(self._extractNextEnvelope)
         else:  # We can't do anything without at least two audio tracks
             # After we return, call the callback function (once)
-            gobject.idle_add(call_false, self._callback)
+            GObject.idle_add(call_false, self._callback)
         return progress_aggregator
 
     def _chooseReference(self):

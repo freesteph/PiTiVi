@@ -23,7 +23,7 @@
 Widget for gstreamer element properties viewing/setting
 """
 
-from gi.repository import GObject as gobject
+from gi.repository import GObject
 from gi.repository import Gtk as gtk
 import gst
 import os
@@ -38,7 +38,7 @@ from pitivi.ui.common import SPACING
 def make_property_widget(unused_element, prop, value=None):
     """ Creates a Widget for the given element property """
     # FIXME : implement the case for flags
-    type_name = gobject.type_name(prop.value_type.fundamental)
+    type_name = GObject.type_name(prop.value_type.fundamental)
 
     if value == None:
         value = prop.default_value
@@ -96,7 +96,7 @@ class GstElementSettingsWidget(gtk.VBox, Loggable):
         self._addWidgets(properties, default_btn, use_element_props)
 
     def _addWidgets(self, properties, default_btn, use_element_props):
-        props = [prop for prop in gobject.list_properties(self.element) if not prop.name in self.ignore]
+        props = [prop for prop in GObject.list_properties(self.element) if not prop.name in self.ignore]
         if not props:
             table = gtk.Table(rows=1, columns=1)
             widget = gtk.Label(_("No properties..."))
@@ -115,8 +115,8 @@ class GstElementSettingsWidget(gtk.VBox, Loggable):
         table.set_border_width(SPACING)
         y = 0
         for prop in props:
-            if not prop.flags & gobject.PARAM_WRITABLE\
-              or not prop.flags & gobject.PARAM_READABLE:
+            if not prop.flags & GObject.PARAM_WRITABLE\
+              or not prop.flags & GObject.PARAM_READABLE:
                 continue
 
             if use_element_props:
@@ -172,7 +172,7 @@ class GstElementSettingsWidget(gtk.VBox, Loggable):
         """
         d = {}
         for prop, widget in self.properties.iteritems():
-            if not prop.flags & gobject.PARAM_WRITABLE\
+            if not prop.flags & GObject.PARAM_WRITABLE\
               or isinstance(widget, dynamic.DefaultWidget):
                 continue
             value = widget.getWidgetValue()

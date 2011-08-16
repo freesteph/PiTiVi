@@ -23,7 +23,7 @@
 Utility tools and classes for easy generation of previews
 """
 
-from gi.repository import GObject as gobject
+from gi.repository import GObject
 import gst
 import cairo
 import os
@@ -404,7 +404,7 @@ class RandomAccessVideoPreviewer(RandomAccessPreviewer):
         return utils.quantize(time, self.tperiod)
 
     def _thumbnailCb(self, unused_thsink, pixbuf, timestamp):
-        gobject.idle_add(self._finishThumbnail, pixbuf, timestamp)
+        GObject.idle_add(self._finishThumbnail, pixbuf, timestamp)
 
     def _startThumbnail(self, timestamp):
         RandomAccessPreviewer._startThumbnail(self, timestamp)
@@ -514,7 +514,7 @@ class RandomAccessAudioPreviewer(RandomAccessPreviewer):
             cr.fill()
             surfaces.append(scaled)
         surfaces.append(surface)
-        gobject.idle_add(self._finishThumbnail, surfaces, self._audio_cur)
+        GObject.idle_add(self._finishThumbnail, surfaces, self._audio_cur)
 
     def _plotWaveform(self, cr, base_width):
         # clear background

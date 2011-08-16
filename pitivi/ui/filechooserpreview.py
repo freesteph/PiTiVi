@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from gi.repository import GObject as gobject
+from gi.repository import GObject
 import gst
 from gi.repository import Gtk as gtk
 import pango
@@ -302,7 +302,7 @@ class PreviewWidget(gtk.VBox, Loggable):
     def _on_start_stop_clicked_cb(self, button):
         if button.get_stock_id() == gtk.STOCK_MEDIA_PLAY:
             self.player.set_state(gst.STATE_PLAYING)
-            gobject.timeout_add(1000, self._update_position)
+            GObject.timeout_add(1000, self._update_position)
             self.is_playing = True
             button.set_stock_id(gtk.STOCK_MEDIA_PAUSE)
             self.log("Preview started")
@@ -374,11 +374,11 @@ class PreviewWidget(gtk.VBox, Loggable):
                             gst.TAG_DATE]
         for tag in tag_list.keys():
             tag_type = gst.tag_get_tag_type(tag)
-            if tag in acceptable_tags and tag_type in (gobject.TYPE_STRING,
-                                   gobject.TYPE_DOUBLE,
-                                   gobject.TYPE_FLOAT,
-                                   gobject.TYPE_INT,
-                                   gobject.TYPE_UINT):
+            if tag in acceptable_tags and tag_type in (GObject.TYPE_STRING,
+                                   GObject.TYPE_DOUBLE,
+                                   GObject.TYPE_FLOAT,
+                                   GObject.TYPE_INT,
+                                   GObject.TYPE_UINT):
                 name = gst.tag_get_nick(tag)
                 value = unicode(tag_list[tag]).replace('<', ' ').replace('>', ' ')
                 self.tags[name] = value

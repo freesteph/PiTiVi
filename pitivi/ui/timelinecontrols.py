@@ -1,5 +1,5 @@
 from gi.repository import Gtk as gtk
-from gi.repository import GObject as gobject
+from gi.repository import GObject
 from pitivi.receiver import receiver, handler
 import pitivi.stream as stream
 from gettext import gettext as _

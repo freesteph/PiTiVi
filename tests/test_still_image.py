@@ -22,8 +22,8 @@
 import os.path
 from unittest import TestCase
 
-from gi.repository import GObject as gobject
-gobject.threads_init()
+from gi.repository import GObject
+GObject.threads_init()
 import gst
 
 import common
@@ -44,7 +44,7 @@ class TestStillImage(TestCase):
     clip_duration = 3 * gst.SECOND
 
     def setUp(self):
-        self.mainloop = gobject.MainLoop()
+        self.mainloop = GObject.MainLoop()
 
         samples = os.path.join(os.path.dirname(__file__), "samples")
         self.facs = []

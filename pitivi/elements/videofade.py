@@ -23,7 +23,7 @@
 Simple video fade element
 """
 
-from gi.repository import GObject as gobject
+from gi.repository import GObject
 import gst
 
 
@@ -98,4 +98,4 @@ class VideoFade(gst.Bin):
                               self.startposition + self.duration,
                               stop)
 
-#gobject.type_register(VideoFade)
+#GObject.type_register(VideoFade)

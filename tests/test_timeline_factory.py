@@ -19,8 +19,8 @@
 # Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
 # Boston, MA 02110-1301, USA.
 
-from gi.repository import GObject as gobject
-gobject.threads_init()
+from gi.repository import GObject
+GObject.threads_init()
 import gst
 from common import TestCase
 from pitivi.factories.base import ObjectFactoryError
@@ -160,7 +160,7 @@ class MainLoopTestCase(TestCase):
     __metaclass__ = MainLoopTestCaseMeta
 
     def __init__(self, methodName='runTest'):
-        self.loop = gobject.MainLoop()
+        self.loop = GObject.MainLoop()
         TestCase.__init__(self, methodName)
 
 

@@ -21,8 +21,8 @@
 
 from logging import warning as w
 from gettext import gettext as _
-from gi.repository import GObject as gobject
-gobject.threads_init()
+from gi.repository import GObject
+GObject.threads_init()
 import gst
 import os
 
@@ -239,7 +239,7 @@ class ProjectManager(Signallable, Loggable):
 
         if self.backup_lock == 0:
             self.backup_lock = 10
-            gobject.timeout_add_seconds(self.backup_lock,
+            GObject.timeout_add_seconds(self.backup_lock,
                     self._saveBackupCb, project, uri)
         else:
             if self.backup_lock < 60:

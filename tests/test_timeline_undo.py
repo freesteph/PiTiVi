@@ -21,8 +21,8 @@
 
 from unittest import TestCase
 
-from gi.repository import GObject as gobject
-gobject.threads_init()
+from gi.repository import GObject
+GObject.threads_init()
 import gst
 
 from pitivi.pipeline import Pipeline

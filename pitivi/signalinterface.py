@@ -20,10 +20,10 @@
 # Boston, MA 02110-1301, USA.
 
 # FIXME/IDEA : Add a decorator to easily add signals (ex: @signal(name="mysignal"))
-# FIXME/IDEA : Add a function to quickly define signals (a-la pygobject gsignals)
+# FIXME/IDEA : Add a function to quickly define signals (a-la pyGObject.gsignals)
 # FIXME/IDEA : Use Weak dictionnaries for tracking connected callbacks/objects
 # FIXME/IDEA : Make specific exceptions !
-# FIXME : How to handle classes which are already using gobject (i.e. gst.Pipeline)
+# FIXME : How to handle classes which are already using GObject.(i.e. gst.Pipeline)
 
 """
 Interfaces for event-based programming

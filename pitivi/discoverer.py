@@ -26,8 +26,8 @@ Discover file multimedia information.
 
 from gettext import gettext as _
 import os
-from gi.repository import GObject as gobject
-gobject.threads_init()
+from gi.repository import GObject
+GObject.threads_init()
 import gst
 from gst import pbutils
 import tempfile
@@ -77,7 +77,7 @@ class EOSSir(gst.Element):
             self.srcpad.push_event(gst.event_new_eos())
 
         return ret
-#gobject.type_register(EOSSir)
+#GObject.type_register(EOSSir)
 
 
 class Discoverer(Signallable, Loggable):
@@ -166,10 +166,10 @@ class Discoverer(Signallable, Loggable):
         self._scheduleAnalysis()
 
     def _scheduleAnalysis(self):
-        gobject.idle_add(self._analyze)
+        GObject.idle_add(self._analyze)
 
     def _removeTimeout(self):
-        gobject.source_remove(self.timeout_id)
+        GObject.source_remove(self.timeout_id)
         self.timeout_id = 0
 
     def _checkMissingPlugins(self):
@@ -351,7 +351,7 @@ class Discoverer(Signallable, Loggable):
         return have_video, have_audio, have_image
 
     def _scheduleTimeout(self):
-        self.timeout_id = gobject.timeout_add_seconds(10, self._timeoutCb)
+        self.timeout_id = GObject.timeout_add_seconds(10, self._timeoutCb)
 
     def _createSource(self):
         source = gst.element_make_from_uri(gst.URI_SRC,
@@ -558,7 +558,7 @@ class Discoverer(Signallable, Loggable):
     def _videoPadBlockCb(self, pad, blocked):
         self.debug("video pad blocked: %s" % blocked)
         if blocked:
-            gobject.timeout_add(0, self._videoPadSeekCb, pad)
+            GObject.timeout_add(0, self._videoPadSeekCb, pad)
 
     def _addVideoBufferProbe(self, pad):
         closure = {}
@@ -735,5 +735,5 @@ if __name__ == '__main__':
 
     discoverer = Discoverer()
     discoverer.addUris(['file://%s' % i  for i in sys.argv[1:]])
-    loop = gobject.MainLoop()
+    loop = GObject.MainLoop()
     loop.run()

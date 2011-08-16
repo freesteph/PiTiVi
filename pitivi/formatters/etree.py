@@ -21,8 +21,8 @@
 # Boston, MA 02110-1301, USA.
 
 from gettext import gettext as _
-from gi.repository import GObject as gobject
-gobject.threads_init()
+from gi.repository import GObject
+GObject.threads_init()
 import gst
 
 from xml.etree.ElementTree import Element, SubElement, tostring, parse
@@ -401,10 +401,10 @@ class ElementTreeFormatter(Formatter):
     def _saveEffectProperties(self, track_object, effect_element):
         effect_properties = Element("gst-element-properties")
         effect = track_object.getElement()
-        properties = gobject.list_properties(effect)
+        properties = GObject.list_properties(effect)
         for prop in properties:
-            if prop.flags & gobject.PARAM_READABLE:
-                type_name = str(gobject.type_name(prop.value_type.fundamental))
+            if prop.flags & GObject.PARAM_READABLE:
+                type_name = str(GObject.type_name(prop.value_type.fundamental))
                 #FIXME we just take the int equivalent to the GEnum, how should it be handled?
                 if type_name == "GEnum":
                     value = str(effect.get_property(prop.name).__int__())

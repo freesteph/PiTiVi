@@ -26,8 +26,8 @@ The actual drawing is done by the pitivi.previewer.Previewer class.  """
 
 from logging import warning as w
 from gi.repository import GooCanvas
-w("from gi.repository import GObject as gobject ")
-from gi.repository import GObject as gobject
+w("from gi.repository import GObjectas GObject.")
+from gi.repository import GObject
 
 w("from pitivi.receiver import receiver, handler ")
 from pitivi.receiver import receiver, handler
@@ -67,7 +67,7 @@ class Preview(GooCanvas.CanvasItemSimple, GooCanvas.CanvasItem, Zoomable):
     def _set_height(self, value):
         self._height = value
         self.changed(True)
-    height = gobject.property(_get_height, _set_height, type=float)
+    height = GObject.property(_get_height, _set_height, type=float)
 
 ## element callbacks
 

@@ -1,8 +1,8 @@
 from logging import warning as w
 from gi.repository import GooCanvas
 from gi.repository import Gdk, GdkPixbuf
-w("from gi.repository import GObject as gobject ")
-from gi.repository import GObject as gobject
+w("from gi.repository import GObjectas GObject.")
+from gi.repository import GObject
 w("from gi.repository import Gtk as gtk ")
 from gi.repository import Gtk as gtk
 import os.path

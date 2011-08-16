@@ -27,7 +27,7 @@ Basic auto-alignment progress dialog, based on the EncodingProgressDialog
 import os
 from gettext import gettext as _
 
-from gi.repository import GObject as gobject
+from gi.repository import GObject
 from gi.repository import Gtk as gtk
 import gst
 

@@ -32,7 +32,7 @@ from pitivi.log.loggable import Loggable
 import ruler
 import dnd
 import gst
-from gi.repository import GObject as gobject
+from gi.repository import GObject
 
 from gettext import gettext as _
 from timelinecanvas import TimelineCanvas
@@ -664,7 +664,7 @@ class Timeline(gtk.Table, Loggable, Zoomable):
         if position > self.hadj.upper:
             # we can't perform the scroll because the canvas needs to be
             # updated
-            gobject.idle_add(self._scrollToPosition, position)
+            GObject.idle_add(self._scrollToPosition, position)
         else:
             self._scrollToPosition(position)
 

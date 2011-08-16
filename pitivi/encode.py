@@ -23,7 +23,7 @@
 Encoding-related utilities and classes
 """
 
-from gi.repository import GObject as gobject
+from gi.repository import GObject
 import gst
 import pitivi.log.log as log
 from pitivi.factories.base import OperationFactory, SinkFactory
@@ -233,7 +233,7 @@ class NewsegmentEater(gst.BaseTransform):
 
         return res
 
-#gobject.type_register(NewsegmentEater)
+#GObject.type_register(NewsegmentEater)
 
 
 def get_compatible_sink_pad(factoryname, caps):

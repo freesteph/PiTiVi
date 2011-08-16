@@ -24,8 +24,8 @@ from unittest import TestCase
 
 import random
 
-from gi.repository import GObject as gobject
-gobject.threads_init()
+from gi.repository import GObject
+GObject.threads_init()
 import gst
 
 from pitivi.factories.test import VideoTestSourceFactory

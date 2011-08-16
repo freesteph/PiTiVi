@@ -22,7 +22,7 @@
 GdkPixbuf thumbnail sink
 """
 
-from gi.repository import GObject as gobject
+from gi.repository import GObject
 #import gst
 from gi.repository import Gst, GstBase
 from gi.repository import cairo
@@ -39,9 +39,9 @@ class CairoSurfaceThumbnailSink(GstBase.BaseSink):
 
     # __gtype_name__ = 'CairoSurfaceThumbnailSink'
     # __gsignals__ = {
-    #     "thumbnail": (gobject.SIGNAL_RUN_LAST,
-    #                   gobject.TYPE_NONE,
-    #                   (gobject.TYPE_PYOBJECT, gobject.TYPE_UINT64))
+    #     "thumbnail": (GObject.SIGNAL_RUN_LAST,
+    #                   GObject.TYPE_NONE,
+    #                   (GObject.TYPE_PYOBJECT, GObject.TYPE_UINT64))
     #     }
 
     # __Gsttemplates__ = (
@@ -100,4 +100,4 @@ class CairoSurfaceThumbnailSink(GstBase.BaseSink):
     def do_preroll(self, buf):
         return self.do_render(buf)
 
-#gobject.type_register(CairoSurfaceThumbnailSink)
+#GObject.type_register(CairoSurfaceThumbnailSink)

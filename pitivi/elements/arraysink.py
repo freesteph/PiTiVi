@@ -22,8 +22,8 @@
 Stores audio samples in an array for plotting waveforms
 """
 
-from gi.repository import GObject as gobject
-gobject.threads_init()
+from gi.repository import GObject
+GObject.threads_init()
 import gst
 from gi.repository import Gtk as gtk
 import array
@@ -78,4 +78,4 @@ class ArraySink(gst.BaseSink):
     def do_preroll(self, buf):
         return self.do_render(buf)
 
-#gobject.type_register(ArraySink)
+#GObject.type_register(ArraySink)

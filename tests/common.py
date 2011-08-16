@@ -2,8 +2,8 @@
 A collection of objects to use for testing
 """
 
-from gi.repository import GObject as gobject
-gobject.threads_init()
+from gi.repository import GObject
+GObject.threads_init()
 import gst
 import os
 import gc

@@ -30,7 +30,7 @@ from pitivi.stream import get_src_pads_for_stream, \
      get_sink_pads_for_stream, get_stream_for_caps, \
      match_stream, get_stream_for_pad
 from pitivi.log.loggable import Loggable
-from gi.repository import GObject as gobject
+from gi.repository import GObject
 import gst
 
 (STATE_NULL,
@@ -405,10 +405,10 @@ class Pipeline(Signallable, Loggable):
         # i.e. it does NOT check for current state
         if listen:
             if self._listening and self._listeningSigId == 0:
-                self._listeningSigId = gobject.timeout_add(self._listeningInterval,
+                self._listeningSigId = GObject.timeout_add(self._listeningInterval,
                                                            self._positionListenerCb)
         elif self._listeningSigId != 0:
-            gobject.source_remove(self._listeningSigId)
+            GObject.source_remove(self._listeningSigId)
             self._listeningSigId = 0
 
     def seek(self, position, format=gst.FORMAT_TIME):
@@ -843,7 +843,7 @@ class Pipeline(Signallable, Loggable):
             self._handleErrorMessage(error, detail, message.src)
         elif message.type == gst.MESSAGE_DURATION:
             self.debug("Duration might have changed, querying it")
-            gobject.idle_add(self._queryDurationAsync)
+            GObject.idle_add(self._queryDurationAsync)
         else:
             self.info("%s [%r]", message.type, message.src)
 

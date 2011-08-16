@@ -25,7 +25,7 @@
 Main application
 """
 from logging import warning as w
-from gi.repository import GObject as gobject
+from gi.repository import GObject
 from gi.repository import Gtk as gtk
 from optparse import OptionParser
 import os
@@ -216,7 +216,7 @@ class InteractivePitivi(Pitivi):
         w("Init for InteractivePitivi")
         Pitivi.__init__(self)
         w("Done initatin PiTiVi")
-        self.mainloop = gobject.MainLoop()
+        self.mainloop = GObject.MainLoop()
         w("Mainloop created")
         self.actioner = None
         self.gui = None

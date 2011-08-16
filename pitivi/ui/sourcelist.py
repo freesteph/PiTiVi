@@ -20,7 +20,7 @@
 # Boston, MA 02110-1301, USA.
 
 from logging import warning as w
-from gi.repository import GObject as gobject
+from gi.repository import GObject
 import gst
 from gi.repository import Gtk as gtk, Gdk, GdkPixbuf
 import pango
@@ -110,8 +110,8 @@ class SourceList(gtk.VBox, Loggable):
     """ Widget for listing sources """
 
     __gsignals__ = {
-        'play': (gobject.SIGNAL_RUN_LAST, gobject.TYPE_NONE,
-                (gobject.TYPE_PYOBJECT,))
+        'play': (GObject.SIGNAL_RUN_LAST, GObject.TYPE_NONE,
+                (GObject.TYPE_PYOBJECT,))
         }
 
     def __init__(self, instance, uiman):
@@ -1096,4 +1096,4 @@ class SourceList(gtk.VBox, Loggable):
         selection.set(selection.target, 8, '\n'.join(uris))
         context.set_icon_pixbuf(INVISIBLE, 0, 0)
 
-#gobject.type_register(SourceList)
+#GObject.type_register(SourceList)

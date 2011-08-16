@@ -19,7 +19,7 @@
 # Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
 # Boston, MA 02110-1301, USA.
 
-from gi.repository import GObject as gobject
+from gi.repository import GObject
 import gst
 from pitivi.factories.base import SourceFactory, ObjectFactoryError
 
@@ -63,7 +63,7 @@ class FixSeekStart(gst.BaseTransform):
 
         return gst.BaseTransform.do_src_event(self, event)
 
-#gobject.type_register(FixSeekStart)
+#GObject.type_register(FixSeekStart)
 
 
 class TimelineSourceFactory(SourceFactory):

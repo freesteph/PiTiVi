@@ -26,7 +26,7 @@ Effects global handling
 from logging import warning as w
 import gst
 from gi.repository import Gtk as gtk
-from gi.repository import GObject as gobject
+from gi.repository import GObject
 import re
 import os
 
@@ -349,11 +349,11 @@ class EffectGstElementPropertyChangeTracker:
         if gst_element in self._tracked_effects:
             return
 
-        for prop in gobject.list_properties(gst_element):
+        for prop in GObject.list_properties(gst_element):
             gst_element.connect('notify::' + prop.name,
                                 self._propertyChangedCb,
                                 gst_element)
-            if prop.flags & gobject.PARAM_READABLE:
+            if prop.flags & GObject.PARAM_READABLE:
                 properties[prop.name] = gst_element.get_property(prop.name)
         self._tracked_effects[gst_element] = properties
 

@@ -23,7 +23,7 @@
 # set of utility functions
 
 import sys
-from gi.repository import GObject as gobject
+from gi.repository import GObject
 from gi.repository import Gtk
 import gst
 import bisect
@@ -361,14 +361,14 @@ class Seeker(Signallable):
 
         if self.pending_seek_id is None:
             if on_idle:
-                gobject.idle_add(self._seekTimeoutCb)
+                GObject.idle_add(self._seekTimeoutCb)
             else:
                 self._seekTimeoutCb()
             self.pending_seek_id = self._scheduleSeek(self.timeout,
                     self._seekTimeoutCb)
 
     def _scheduleSeek(self, timeout, callback):
-        return gobject.timeout_add(timeout, callback)
+        return GObject.timeout_add(timeout, callback)
 
     def _seekTimeoutCb(self):
         self.pending_seek_id = None
@@ -405,7 +405,7 @@ def get_controllable_properties(element):
         for child in element.elements():
             res.extend(get_controllable_properties(child))
     else:
-        for prop in gobject.list_properties(element):
+        for prop in GObject.list_properties(element):
             if prop.flags & gst.PARAM_CONTROLLABLE:
                 log.debug("utils", "adding property %r", prop)
                 res.append((element, prop))

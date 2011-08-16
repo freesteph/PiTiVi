@@ -20,7 +20,7 @@
 # Boston, MA 02110-1301, USA.
 
 from logging import warning as w
-from gi.repository import GObject as gobject
+from gi.repository import GObject
 from gi.repository import Gst as gst
 from gi.repository import GstController
 from pitivi.signalinterface import Signallable
@@ -774,7 +774,7 @@ class TrackEffect(TrackObject):
         if self.track is not None:
             element = self.getElement()
             new_element = other.getElement()
-            for prop in gobject.list_properties(element):
+            for prop in GObject.list_properties(element):
                 value = element.get_property(prop.name)
                 if value != prop.default_value:
                     new_element.set_property(prop.name, value)

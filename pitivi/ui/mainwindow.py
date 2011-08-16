@@ -28,7 +28,7 @@ import os
 import platform
 from logging import warning as w
 from gi.repository import Gtk as gtk
-from gi.repository import GObject as gobject
+from gi.repository import GObject
 from gi.repository import Gdk, GdkPixbuf
 import gst
 

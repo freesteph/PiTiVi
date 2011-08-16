@@ -19,7 +19,7 @@
 # Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
 # Boston, MA 02110-1301, USA.
 
-from gi.repository import GObject as gobject
+from gi.repository import GObject
 
 from pitivi.signalinterface import Signallable
 from pitivi.utils import PropertyChangeTracker
@@ -201,16 +201,16 @@ class TrackEffectAdded(UndoableAction):
 
     def undo(self):
         element = self.track_object.getElement()
-        props = gobject.list_properties(element)
+        props = GObject.list_properties(element)
         self.effect_props = [(prop.name, element.get_property(prop.name))
                               for prop in props
-                              if prop.flags & gobject.PARAM_WRITABLE
+                              if prop.flags & GObject.PARAM_WRITABLE
                               and prop.name not in PROPS_TO_IGNORE]
-        gnl_props = gobject.list_properties(self.track_object.gnl_object)
+        gnl_props = GObject.list_properties(self.track_object.gnl_object)
         gnl_obj = self.track_object.gnl_object
         self.gnl_obj_props = [(prop.name, gnl_obj.get_property(prop.name))
                               for prop in gnl_props
-                              if prop.flags & gobject.PARAM_WRITABLE]
+                              if prop.flags & GObject.PARAM_WRITABLE]
 
         self.timeline_object.removeTrackObject(self.track_object)
         self.track_object.track.removeTrackObject(self.track_object)
@@ -234,17 +234,17 @@ class TrackEffectRemoved(UndoableAction):
 
     def do(self):
         element = self.track_object.getElement()
-        props = gobject.list_properties(element)
+        props = GObject.list_properties(element)
         self.effect_props = [(prop.name, element.get_property(prop.name))
                               for prop in props
-                              if prop.flags & gobject.PARAM_WRITABLE
+                              if prop.flags & GObject.PARAM_WRITABLE
                               and prop.name not in PROPS_TO_IGNORE]
 
-        gnl_props = gobject.list_properties(self.track_object.gnl_object)
+        gnl_props = GObject.list_properties(self.track_object.gnl_object)
         gnl_obj = self.track_object.gnl_object
         self.gnl_obj_props = [(prop.name, gnl_obj.get_property(prop.name))
                               for prop in gnl_props
-                              if prop.flags & gobject.PARAM_WRITABLE]
+                              if prop.flags & GObject.PARAM_WRITABLE]
 
         self.timeline_object.removeTrackObject(self.track_object)
         self.track_object.track.removeTrackObject(self.track_object)

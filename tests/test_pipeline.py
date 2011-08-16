@@ -19,8 +19,8 @@
 # Free Software Foundation, Inc., 51 Franklin St, Fifth Floor,
 # Boston, MA 02110-1301, USA.
 
-from gi.repository import GObject as gobject
-gobject.threads_init()
+from gi.repository import GObject
+GObject.threads_init()
 import gst
 from unittest import main
 from pitivi.pipeline import Pipeline, STATE_NULL, STATE_READY, STATE_PAUSED, STATE_PLAYING, PipelineError
@@ -139,7 +139,7 @@ class TestPipeline(TestCase):
         p2.release()
 
     def testStateChange(self):
-        loop = gobject.MainLoop()
+        loop = GObject.MainLoop()
 
         bag = {"last_state": None}
 

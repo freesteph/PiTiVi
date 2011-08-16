@@ -20,7 +20,7 @@
 
 import gst
 from gi.repository import Gtk as gtk
-from gi.repository import GObject as gobject
+from gi.repository import GObject
 
 from pitivi.ui.gstwidget import GstElementSettingsWidget
 from pitivi.ui.dynamic import FractionWidget
@@ -60,8 +60,8 @@ class EffectsPropertiesHandling:
 
         self._current_effect_setting_ui = effect_set_ui
         element = self._current_effect_setting_ui.element
-        for prop in gobject.list_properties(element):
-            if prop.flags & gobject.PARAM_READABLE:
+        for prop in GObject.list_properties(element):
+            if prop.flags & GObject.PARAM_READABLE:
                 self._current_element_values[prop.name] = element.get_property(prop.name)
 
         return self.cache_dict[effect]

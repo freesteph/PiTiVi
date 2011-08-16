@@ -23,7 +23,7 @@
 Custom canvas item for track object keyframe curves."""
 
 from gi.repository import GooCanvas
-from gi.repository import GObject as gobject
+from gi.repository import GObject
 from gi.repository import Gtk as gtk
 from gi.repository import Gdk
 
@@ -161,7 +161,7 @@ class Curve(GooCanvas.CanvasItemSimple, GooCanvas.CanvasItem, View, Zoomable):
         self._max = value - (CURVE_STROKE_WIDTH / 2)
         self._range = self._max - self._min
         self.changed(True)
-    height = gobject.property(_get_height, _set_height, type=float)
+    height = GObject.property(_get_height, _set_height, type=float)
 
 ## element callbacks
 

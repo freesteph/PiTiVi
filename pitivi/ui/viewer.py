@@ -20,7 +20,7 @@
 # Boston, MA 02110-1301, USA.
 
 import platform
-from gi.repository import GObject as gobject
+from gi.repository import GObject
 from gi.repository import Gtk, Gdk
 import gst
 from math import pi
@@ -82,8 +82,8 @@ class PitiviViewer(Gtk.VBox, Loggable):
 
     __gtype_name__ = 'PitiviViewer'
     __gsignals__ = {
-        "activate-playback-controls": (gobject.SIGNAL_RUN_LAST,
-            gobject.TYPE_NONE, (gobject.TYPE_BOOLEAN,)),
+        "activate-playback-controls": (GObject.SIGNAL_RUN_LAST,
+            GObject.TYPE_NONE, (GObject.TYPE_BOOLEAN,)),
     }
 
     """
@@ -1113,9 +1113,9 @@ class PlayPauseButton(Gtk.Button, Loggable):
     """ Double state Gtk.Button which displays play/pause """
 
     __gsignals__ = {
-        "play": (gobject.SIGNAL_RUN_LAST,
-                   gobject.TYPE_NONE,
-                   (gobject.TYPE_BOOLEAN,))}
+        "play": (GObject.SIGNAL_RUN_LAST,
+                   GObject.TYPE_NONE,
+                   (GObject.TYPE_BOOLEAN,))}
 
     def __init__(self):
         Gtk.Button.__init__(self)

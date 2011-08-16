@@ -23,7 +23,7 @@
 A collection of helper classes and routines for dynamically creating user
 interfaces
 """
-from gi.repository import GObject as gobject
+from gi.repository import GObject
 from gi.repository import Gtk as gtk
 from gi.repository import Gdk
 import re
@@ -90,8 +90,8 @@ class TextWidget(gtk.HBox, DynamicWidget):
     __gtype_name__ = 'TextWidget'
     __gsignals__ = {
         "value-changed": (
-            gobject.SIGNAL_RUN_LAST,
-            gobject.TYPE_NONE,
+            GObject.SIGNAL_RUN_LAST,
+            GObject.TYPE_NONE,
             (),)
     }
 
@@ -196,9 +196,9 @@ class NumericWidget(gtk.HBox, DynamicWidget):
             self.slider.props.draw_value = False
 
         if upper is None:
-            upper = gobject.G_MAXDOUBLE
+            upper = GObject.G_MAXDOUBLE
         if lower is None:
-            lower = gobject.G_MINDOUBLE
+            lower = GObject.G_MINDOUBLE
         range = upper - lower
         self.adjustment.props.lower = lower
         self.adjustment.props.upper = upper
@@ -225,7 +225,7 @@ class NumericWidget(gtk.HBox, DynamicWidget):
             step = 1.0
             page = 10.0
         elif type_ == float:
-            minimum, maximum = (gobject.G_MINDOUBLE, gobject.G_MAXDOUBLE)
+            minimum, maximum = (GObject.G_MINDOUBLE, GObject.G_MAXDOUBLE)
             step = 0.01
             page = 0.1
             self.spinner.props.digits = 2
@@ -553,8 +553,8 @@ class PathWidget(gtk.FileChooserButton, DynamicWidget):
     __gtype_name__ = 'PathWidget'
 
     __gsignals__ = {
-        "value-changed": (gobject.SIGNAL_RUN_LAST,
-            gobject.TYPE_NONE,
+        "value-changed": (GObject.SIGNAL_RUN_LAST,
+            GObject.TYPE_NONE,
             ()),
     }
 

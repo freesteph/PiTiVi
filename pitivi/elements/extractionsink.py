@@ -25,8 +25,8 @@ Extract audio samples without storing the whole waveform in memory
 """
 
 import array
-from gi.repository import GObject as gobject
-gobject.threads_init()
+from gi.repository import GObject
+GObject.threads_init()
 import gst
 from pitivi.utils import native_endianness, call_false
 
@@ -88,7 +88,7 @@ class ExtractionSink(gst.BaseSink):
         self.info("Got event of type %s" % ev.type)
         if ev.type == gst.EVENT_EOS:
             if self._cb:
-                gobject.idle_add(call_false, self._cb)
+                GObject.idle_add(call_false, self._cb)
         return gst.FLOW_OK
 
-#gobject.type_register(ExtractionSink)
+#GObject.type_register(ExtractionSink)
